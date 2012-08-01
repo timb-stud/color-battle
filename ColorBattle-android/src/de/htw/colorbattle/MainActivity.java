@@ -1,6 +1,7 @@
 package de.htw.colorbattle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -10,7 +11,7 @@ public class MainActivity extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        Log.println(LOG_DEBUG, "INIT", "YEAH!");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
