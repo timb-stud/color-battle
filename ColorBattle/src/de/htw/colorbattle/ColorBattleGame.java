@@ -2,6 +2,7 @@ package de.htw.colorbattle;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,10 +54,14 @@ public class ColorBattleGame implements ApplicationListener {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		if(Gdx.input.getAccelerometerX() < -2) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerX() > 2) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() < -2) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() > 2) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerX() < -2 
+				|| Gdx.input.isKeyPressed(Keys.UP)) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerX() > 2 
+				|| Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() < -2  
+				|| Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() > 2 
+				|| Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
 		
 		if(player.x < 0) player.x = 0;
 		if(player.x > width - playerWidth) player.x = width - playerWidth;
