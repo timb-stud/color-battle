@@ -1,5 +1,6 @@
 package de.htw.colorbattle;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -19,9 +20,12 @@ public class ColorBattleGame implements ApplicationListener {
 	private int playerWidth;
 	private int playerHeight;
 	private int playerVelocity;
+	private int maxAccelerometer;
 	
 	@Override
 	public void create() {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		maxAccelerometer = 3;
 		width = 800;
 		height = 480;
 		camera = new OrthographicCamera();
@@ -31,7 +35,7 @@ public class ColorBattleGame implements ApplicationListener {
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		playerWidth = playerTexture.getWidth();
 		playerHeight = playerTexture.getHeight();
-		playerVelocity = 300;
+		playerVelocity = 200;
 		player = new Circle(width / 2 - playerWidth / 2, height / 2 - playerHeight / 2, playerWidth / 2);
 		
 	}
@@ -54,19 +58,26 @@ public class ColorBattleGame implements ApplicationListener {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		if(Gdx.input.getAccelerometerX() < -2 
-				|| Gdx.input.isKeyPressed(Keys.UP)) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerX() > 2 
-				|| Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() < -2  
-				|| Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() > 2 
-				|| Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
+		
+		float accX = Gdx.input.getAccelerometerX();
+		float accY = Gdx.input.getAccelerometerY();
+		if(accX > maxAccelerometer) accX = maxAccelerometer;
+		else if(accX < -maxAccelerometer) accX = -maxAccelerometer;
+		if(accY > maxAccelerometer) accY = maxAccelerometer;
+		else if(accY < -maxAccelerometer) accY = -maxAccelerometer;
+		
+		player.y -= playerVelocity * accX * Gdx.graphics.getDeltaTime();
+		player.x += playerVelocity * accY * Gdx.graphics.getDeltaTime();
+		
+		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
 		
 		if(player.x < 0) player.x = 0;
-		if(player.x > width - playerWidth) player.x = width - playerWidth;
+		else if(player.x > width - playerWidth) player.x = width - playerWidth;
 		if(player.y < 0) player.y = 0;
-		if(player.y > height -playerHeight) player.y = height - playerHeight;
+		else if(player.y > height -playerHeight) player.y = height - playerHeight;
 	}
 
 	@Override
