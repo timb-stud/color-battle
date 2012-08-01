@@ -5,40 +5,38 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 
 public class ColorBattleGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Texture texture;
-	private Sprite sprite;
+	private Texture playerTexture;
+	private Circle player;
+	private int width;
+	private int height;
+	private int playerWidth;
+	private int playerHeight;
 	
 	@Override
-	public void create() {		
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-		
-		camera = new OrthographicCamera(1, h/w);
+	public void create() {
+		width = 800;
+		height = 480;
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, width, height);
 		batch = new SpriteBatch();
 		
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		playerWidth = playerTexture.getWidth();
+		playerHeight = playerTexture.getHeight();
+		player = new Circle(width / 2 - playerWidth / 2, height / 2 - playerHeight / 2, playerWidth / 2);
 		
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
-		
-		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
 	}
 
 	@Override
 	public void dispose() {
+		playerTexture.dispose();
 		batch.dispose();
-		texture.dispose();
 	}
 
 	@Override
@@ -46,10 +44,22 @@ public class ColorBattleGame implements ApplicationListener {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		camera.update();
 		batch.setProjectionMatrix(camera.combined);
+		
 		batch.begin();
-		sprite.draw(batch);
+		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
+		
+		if(Gdx.input.getAccelerometerX() < -2) player.y += 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerX() > 2) player.y -= 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() < -2) player.x -= 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() > 2) player.x += 200 * Gdx.graphics.getDeltaTime();
+		
+		if(player.x < 0) player.x = 0;
+		if(player.x > width - playerWidth) player.x = width - playerWidth;
+		if(player.y < 0) player.y = 0;
+		if(player.y > height -playerHeight) player.y = height - playerHeight;
 	}
 
 	@Override
