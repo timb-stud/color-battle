@@ -14,6 +14,7 @@ public class ColorBattleGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture playerTexture;
+	private Texture colorTexture;
 	private Circle player;
 	private int width;
 	private int height;
@@ -33,6 +34,7 @@ public class ColorBattleGame implements ApplicationListener {
 		batch = new SpriteBatch();
 		
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		colorTexture = new Texture(Gdx.files.internal("color.png"));
 		playerWidth = playerTexture.getWidth();
 		playerHeight = playerTexture.getHeight();
 		playerVelocity = 200;
@@ -48,13 +50,14 @@ public class ColorBattleGame implements ApplicationListener {
 
 	@Override
 	public void render() {		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		//Gdx.gl.glClearColor(1, 1, 1, 1);
+		//Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
+		batch.draw(colorTexture, player.x, player.y);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
