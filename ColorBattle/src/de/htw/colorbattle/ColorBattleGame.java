@@ -17,6 +17,7 @@ public class ColorBattleGame implements ApplicationListener {
 	private int height;
 	private int playerWidth;
 	private int playerHeight;
+	private int playerVelocity;
 	
 	@Override
 	public void create() {
@@ -29,6 +30,7 @@ public class ColorBattleGame implements ApplicationListener {
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		playerWidth = playerTexture.getWidth();
 		playerHeight = playerTexture.getHeight();
+		playerVelocity = 300;
 		player = new Circle(width / 2 - playerWidth / 2, height / 2 - playerHeight / 2, playerWidth / 2);
 		
 	}
@@ -51,10 +53,10 @@ public class ColorBattleGame implements ApplicationListener {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		if(Gdx.input.getAccelerometerX() < -2) player.y += 200 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerX() > 2) player.y -= 200 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() < -2) player.x -= 200 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.getAccelerometerY() > 2) player.x += 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerX() < -2) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerX() > 2) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() < -2) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.getAccelerometerY() > 2) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
 		
 		if(player.x < 0) player.x = 0;
 		if(player.x > width - playerWidth) player.x = width - playerWidth;
