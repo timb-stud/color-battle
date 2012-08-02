@@ -58,7 +58,6 @@ public class ColorBattleGame implements ApplicationListener {
 		
 		batch.begin();
 		batch.draw(colorTexture, player.x, player.y);
-		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
 		
@@ -81,6 +80,9 @@ public class ColorBattleGame implements ApplicationListener {
 		else if(player.x > width - playerWidth) player.x = width - playerWidth;
 		if(player.y < 0) player.y = 0;
 		else if(player.y > height -playerHeight) player.y = height - playerHeight;
+		batch.begin();
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
 	}
 
 	@Override
