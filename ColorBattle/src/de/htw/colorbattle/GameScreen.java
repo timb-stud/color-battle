@@ -29,7 +29,9 @@ public class GameScreen implements Screen {
 	private int playerVelocity;
 	private int maxAccelerometer;
 
-	public GameScreen(ColorBattleGame game) {
+	public GameScreen(ColorBattleGame game) throws NetworkException {
+		this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
+		
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		maxAccelerometer = 3;
