@@ -48,7 +48,7 @@ public class NetworkService {
 		try {
 			mcSocket.receive(receivedPacket);
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
-			//TODO: handle obj
+			//TODO: handle obj (network architecture)
 		} catch (IOException e) {
 			Gdx.app.error("NetworkService", "Can't receive package", e);
 		}
