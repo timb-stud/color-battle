@@ -2,12 +2,15 @@ package de.htw.colorbattle;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 
 public class GameScreen implements Screen {
@@ -17,6 +20,8 @@ public class GameScreen implements Screen {
 	private Texture playerTexture;
 	private Texture colorTexture;
 	private Circle player;
+	private FrameBuffer colorFrameBuffer;
+	private TextureRegion flipper;
 	private int width;
 	private int height;
 	private int playerWidth;
@@ -34,6 +39,8 @@ public class GameScreen implements Screen {
 		camera.setToOrtho(false, width, height);
 		batch = new SpriteBatch();
 
+		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
+		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		colorTexture = new Texture(Gdx.files.internal("color.png"));
 		playerWidth = playerTexture.getWidth();
@@ -44,17 +51,25 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		Gdx.app.log("GameScreen", "render();");
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		
+		colorFrameBuffer.begin();
 		batch.begin();
 		batch.draw(colorTexture, player.x, player.y);
 		batch.end();
+		colorFrameBuffer.end();
 		
+		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
+		flipper.flip(false, true);
+		
+		batch.begin();
+		batch.draw(flipper, 0, 0);
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
 		
 		float accX = Gdx.input.getAccelerometerX();
 		float accY = Gdx.input.getAccelerometerY();
@@ -75,9 +90,6 @@ public class GameScreen implements Screen {
 		else if(player.x > width - playerWidth) player.x = width - playerWidth;
 		if(player.y < 0) player.y = 0;
 		else if(player.y > height -playerHeight) player.y = height - playerHeight;
-		batch.begin();
-		batch.draw(playerTexture, player.x, player.y);
-		batch.end();
 	}
 
 	@Override
@@ -107,5 +119,9 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		// never called automatically!!!
+		playerTexture.dispose();
+		colorTexture.dispose();
+		colorFrameBuffer.dispose();
+		batch.dispose();
 	}
 }
