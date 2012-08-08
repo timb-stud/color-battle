@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 	private NetworkService netSvc;
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
-		this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
+		//this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
 		
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -86,9 +86,8 @@ public class GameScreen implements Screen {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		player.directionX = Accelerometer.getX();
-		player.directionY = Accelerometer.getY() ;
-		
+		Accelerometer.updateDirection(player.direction);
+
 		player.move();
 		
 		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
@@ -109,12 +108,12 @@ public class GameScreen implements Screen {
 	}
 
 	private void sendPosition() {
-		try {
-			netSvc.send(player);
-		} catch (NetworkException e) {
-			Gdx.app.error("NetworkException", "Can't send position update.", e);
-			e.printStackTrace(); //TODO Handle exception
-		}
+//		try {
+//			netSvc.send(player);
+//		} catch (NetworkException e) {
+//			Gdx.app.error("NetworkException", "Can't send position update.", e);
+//			e.printStackTrace(); //TODO Handle exception
+//		}
 	}
 
 	@Override

@@ -1,23 +1,20 @@
 package de.htw.colorbattle.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
 public class Accelerometer {
 	
-	public static final float max = 3;
-	public static final float min = 0.5f;
+	public static final float max = 2.5f;
 	
-	public static float getX(){
-		return convert(Gdx.input.getAccelerometerY());
+	public static void updateDirection(Vector2 direction){
+		direction.x = applyMaximum(Gdx.input.getAccelerometerY());
+		direction.y = applyMaximum(Gdx.input.getAccelerometerX());
+		if(direction.len() > max)
+		direction.mul(max / direction.len());
 	}
 	
-	public static float getY(){
-		return convert(Gdx.input.getAccelerometerX());
-	}
-	
-	private static float convert(float acc){
-		if(acc > 0 && acc < min) acc = 0;
-		else if(acc < 0 && acc > -min) acc = 0;
+	private static float applyMaximum(float acc){
 		if(acc > max) acc = max;
 		else if(acc < -max) acc = -max;
 		return acc;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 
 public class Player implements Serializable{
@@ -13,9 +14,8 @@ public class Player implements Serializable{
 	public float radius;
 	public float speed;
 	public float maxSpeed;
-	public float directionX;
-	public float directionY;
 	public Color color;
+	public Vector2 direction;
 	
 	public Player() {
 		this(new Color(0f, 0f, 0f, 1f));
@@ -27,14 +27,13 @@ public class Player implements Serializable{
 		radius = 1;
 		maxSpeed = 3;
 		speed = 200;
-		directionX = 0;
-		directionY = 0;
+		this.direction = new Vector2(0, 0);
 		this.color = color;
 	}
 	
 	public void move(){
-		this.x += this.speed * this.directionX * Gdx.graphics.getDeltaTime();
-		this.y -= this.speed * this.directionY * Gdx.graphics.getDeltaTime();
+		this.x += this.speed * this.direction.x * Gdx.graphics.getDeltaTime();
+		this.y -= this.speed * this.direction.y * Gdx.graphics.getDeltaTime();
 	}
 	
 	@Override
