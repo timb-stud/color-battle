@@ -12,4 +12,11 @@ public class ColorBattleGame extends Game {
 		mainMenuScreen = new MainMenuScreen(this);
 		this.setScreen(mainMenuScreen);
 	}
+	
+	@Override
+	public void dispose() {
+		mainMenuScreen.dispose();
+		gameScreen.dispose();
+		super.dispose();
+	}
 }
