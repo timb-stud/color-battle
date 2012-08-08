@@ -49,6 +49,7 @@ public class NetworkService {
 			mcSocket.receive(receivedPacket);
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
 			//TODO: handle obj (network architecture)
+			throw new RuntimeException("Methode not complete implemented");
 		} catch (IOException e) {
 			Gdx.app.error("NetworkService", "Can't receive package", e);
 		}
