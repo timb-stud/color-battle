@@ -16,8 +16,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.network.PlayerMsg;
-
 import de.htw.colorbattle.gameobjects.Player;
 
 public class GameScreen implements Screen {
@@ -115,11 +113,10 @@ public class GameScreen implements Screen {
 	}
 
 	private void sendPosition() {
-		PlayerMsg msg = new PlayerMsg(player.x, player.y);
 		try {
-			netSvc.send(msg);
+			netSvc.send(player);
 		} catch (NetworkException e) {
-			Gdx.app.error("NetworkException", "Can't create network connection.", e);
+			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); //TODO Handle exception
 		}
 	}
