@@ -18,20 +18,21 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.network.PlayerMsg;
 
+import de.htw.colorbattle.gameobjects.Player;
+
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture playerTexture;
 	private Texture colorTexture;
-	private Circle player;
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
+	private Player player;
 	private int width;
 	private int height;
 	private int playerWidth;
 	private int playerHeight;
-	private int playerVelocity;
 	private int maxAccelerometer;
 	
 	private Vector2 last = new Vector2(0, 0);
@@ -49,15 +50,17 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
 		batch = new SpriteBatch();
-
+		
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		colorTexture = new Texture(Gdx.files.internal("color.png"));
 		playerWidth = playerTexture.getWidth();
 		playerHeight = playerTexture.getHeight();
-		playerVelocity = 200;
-		player = new Circle(width / 2 - playerWidth / 2, height / 2 - playerHeight / 2, playerWidth / 2);
+		player = new Player();
+		player.x = width / 2 - playerWidth / 2;
+		player.y = height / 2 - playerHeight / 2;
+		player.radius = playerWidth / 2;
 	}
 	
 	@Override
@@ -89,14 +92,15 @@ public class GameScreen implements Screen {
 		else if(accX < -maxAccelerometer) accX = -maxAccelerometer;
 		if(accY > maxAccelerometer) accY = maxAccelerometer;
 		else if(accY < -maxAccelerometer) accY = -maxAccelerometer;
+		player.directionX = accY;
+		player.directionY = accX ;
 		
-		player.y -= playerVelocity * accX * Gdx.graphics.getDeltaTime();
-		player.x += playerVelocity * accY * Gdx.graphics.getDeltaTime();
+		player.move();
 		
-		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= playerVelocity * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += playerVelocity * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
 		
 		if(player.x < 0) player.x = 0;
 		else if(player.x > width - playerWidth) player.x = width - playerWidth;
