@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.input.Accelerometer;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -42,7 +44,6 @@ public class GameScreen implements Screen {
 		
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		maxAccelerometer = 3;
 		width = 800;
 		height = 480;
 		camera = new OrthographicCamera();
@@ -55,7 +56,7 @@ public class GameScreen implements Screen {
 		colorTexture = new Texture(Gdx.files.internal("color.png"));
 		playerWidth = playerTexture.getWidth();
 		playerHeight = playerTexture.getHeight();
-		player = new Player();
+		player = new Player(Color.BLUE);
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		player.radius = playerWidth / 2;
@@ -71,6 +72,7 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		
 		colorFrameBuffer.begin();
+		batch.setColor(player.color);
 		batch.begin();
 		batch.draw(colorTexture, player.x, player.y);
 		batch.end();
@@ -84,14 +86,8 @@ public class GameScreen implements Screen {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		float accX = Gdx.input.getAccelerometerX();
-		float accY = Gdx.input.getAccelerometerY();
-		if(accX > maxAccelerometer) accX = maxAccelerometer;
-		else if(accX < -maxAccelerometer) accX = -maxAccelerometer;
-		if(accY > maxAccelerometer) accY = maxAccelerometer;
-		else if(accY < -maxAccelerometer) accY = -maxAccelerometer;
-		player.directionX = accY;
-		player.directionY = accX ;
+		player.directionX = Accelerometer.getX();
+		player.directionY = Accelerometer.getY() ;
 		
 		player.move();
 		
