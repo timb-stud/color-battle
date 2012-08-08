@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.input.Accelerometer;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -27,12 +28,10 @@ public class GameScreen implements Screen {
 	private int height;
 	private int playerWidth;
 	private int playerHeight;
-	private int maxAccelerometer;
 
 	public GameScreen(ColorBattleGame game) {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		maxAccelerometer = 3;
 		width = 800;
 		height = 480;
 		camera = new OrthographicCamera();
@@ -73,14 +72,8 @@ public class GameScreen implements Screen {
 		batch.draw(playerTexture, player.x, player.y);
 		batch.end();
 		
-		float accX = Gdx.input.getAccelerometerX();
-		float accY = Gdx.input.getAccelerometerY();
-		if(accX > maxAccelerometer) accX = maxAccelerometer;
-		else if(accX < -maxAccelerometer) accX = -maxAccelerometer;
-		if(accY > maxAccelerometer) accY = maxAccelerometer;
-		else if(accY < -maxAccelerometer) accY = -maxAccelerometer;
-		player.directionX = accY;
-		player.directionY = accX ;
+		player.directionX = Accelerometer.getX();
+		player.directionY = Accelerometer.getY() ;
 		
 		player.move();
 		
