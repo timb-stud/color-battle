@@ -12,6 +12,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
+
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.PlayerMsg;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -28,6 +33,10 @@ public class GameScreen implements Screen {
 	private int playerHeight;
 	private int playerVelocity;
 	private int maxAccelerometer;
+	
+	private Vector2 last = new Vector2(0, 0);
+	private Vector2 current = new Vector2(0,0);
+	private NetworkService netSvc;
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
@@ -53,6 +62,7 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
+		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -92,6 +102,22 @@ public class GameScreen implements Screen {
 		else if(player.x > width - playerWidth) player.x = width - playerWidth;
 		if(player.y < 0) player.y = 0;
 		else if(player.y > height -playerHeight) player.y = height - playerHeight;
+		
+		current.set(player.x, player.y);
+        if(current.dst2(last) > 3){
+                last.set(player.x, player.y);
+                sendPosition();
+        }
+	}
+
+	private void sendPosition() {
+		PlayerMsg msg = new PlayerMsg(player.x, player.y);
+		try {
+			netSvc.send(msg);
+		} catch (NetworkException e) {
+			Gdx.app.error("NetworkException", "Can't create network connection.", e);
+			e.printStackTrace(); //TODO Handle exception
+		}
 	}
 
 	@Override
