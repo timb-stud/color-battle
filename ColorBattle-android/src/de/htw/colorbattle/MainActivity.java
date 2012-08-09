@@ -1,6 +1,8 @@
 package de.htw.colorbattle;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
@@ -9,6 +11,8 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+import de.htw.colorbattle.config.BattleColorConfig;
 
 public class MainActivity extends AndroidApplication {
 	
@@ -26,7 +30,16 @@ public class MainActivity extends AndroidApplication {
         cfg.useAccelerometer = true;
         cfg.useCompass = false;
         
-        initialize(new ColorBattleGame(), cfg);
+        BattleColorConfig bcConfig = new BattleColorConfig();
+        bcConfig.isWifiConnected = isWifiConnected();
+        
+        initialize(new ColorBattleGame(bcConfig), cfg);
+    }
+    
+    private boolean isWifiConnected(){
+    	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+    	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    	return mWifi.isConnected();
     }
     
     @Override

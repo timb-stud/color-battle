@@ -3,11 +3,18 @@ package de.htw.colorbattle;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
+import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 
 public class ColorBattleGame extends Game {
 	public MainMenuScreen mainMenuScreen;
 	public GameScreen gameScreen;
+	BattleColorConfig bcConfig;
+	
+	public ColorBattleGame(BattleColorConfig bcConfig){
+		super();
+		this.bcConfig = bcConfig;
+	}
 	
 	@Override
 	public void create() {
