@@ -12,13 +12,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.input.Accelerometer;
+import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.PlayerMsg;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -40,8 +40,6 @@ public class GameScreen implements Screen {
 	private NetworkService netSvc;
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
-		//this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
-		
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = 800;
@@ -60,6 +58,10 @@ public class GameScreen implements Screen {
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		player.radius = playerWidth / 2;
+		
+		if (game.bcConfig.isWifiConnected) {
+			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort, player.id, this);
+		}
 	}
 	
 	@Override
@@ -81,10 +83,7 @@ public class GameScreen implements Screen {
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 		
-		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		batch.end();
+		drawPlayer(player);
 		
 		Accelerometer.updateDirection(player.direction);
 
@@ -100,20 +99,29 @@ public class GameScreen implements Screen {
 		if(player.y < 0) player.y = 0;
 		else if(player.y > height -playerHeight) player.y = height - playerHeight;
 		
-		current.set(player.x, player.y);
-        if(current.dst2(last) > 3){
-                last.set(player.x, player.y);
-                sendPosition();
-        }
+		if (netSvc != null){
+			current.set(player.x, player.y);
+	        if(current.dst2(last) > 3){
+	                last.set(player.x, player.y);
+	                sendPosition();
+	        }
+		}
 	}
 
+	public void drawPlayer(Player player){
+		batch.begin();
+		batch.draw(flipper, 0, 0);
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
+	}
+	
 	private void sendPosition() {
-//		try {
-//			netSvc.send(player);
-//		} catch (NetworkException e) {
-//			Gdx.app.error("NetworkException", "Can't send position update.", e);
-//			e.printStackTrace(); //TODO Handle exception
-//		}
+		try {
+			netSvc.send(new PlayerMsg(player));
+		} catch (NetworkException e) {
+			Gdx.app.error("NetworkException", "Can't send position update.", e);
+			e.printStackTrace(); //TODO Handle exception
+		}
 	}
 
 	@Override
@@ -124,6 +132,9 @@ public class GameScreen implements Screen {
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
 		
+		if (game.bcConfig.playSound){
+			game.playSound();
+		}
 		// called when this screen is set as the screen with game.setScreen();
 	}
 

@@ -1,4 +1,4 @@
-package de.htw.colorbattle.network;
+package de.htw.colorbattle.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
