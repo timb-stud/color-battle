@@ -6,7 +6,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 
+import de.htw.colorbattle.GameScreen;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.utils.SerializeUtils;
@@ -16,11 +18,15 @@ public class NetworkService {
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
 	private int mcPort;
+	private int ownId;
+	private GameScreen gameScreen;
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
 	
-	public NetworkService(String mcAddress, int mcPort) throws NetworkException{
+	public NetworkService(String mcAddress, int mcPort, int ownId, GameScreen gameScreen ) throws NetworkException{
         try {
+        	this.gameScreen = gameScreen;
+        	this.ownId = ownId;
         	this.mcPort = mcPort;
 			this.mcSocket = new MulticastSocket(mcPort);
 			this.mcGroup = InetAddress.getByName(mcAddress);
@@ -51,7 +57,15 @@ public class NetworkService {
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
 			
 //			Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
-			Gdx.app.debug("Player Info", ((PlayerMsg)obj).toString());
+			if(obj instanceof PlayerMsg) {
+				PlayerMsg pm = (PlayerMsg)obj;
+				if (pm.id != ownId){
+					Gdx.app.debug("Player Info", pm.toString());
+					Player player = new Player(pm);
+					player.setColor(Color.RED);
+					//gameScreen.drawPlayer(player); //throws exception
+				}
+			}
 			
 			//TODO: handle obj (network architecture)
 //			throw new RuntimeException("Methode not complete implemented");

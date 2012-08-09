@@ -40,10 +40,6 @@ public class GameScreen implements Screen {
 	private NetworkService netSvc;
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
-		if (game.bcConfig.isWifiConnected) {
-			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
-		}
-		
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = 800;
@@ -62,8 +58,12 @@ public class GameScreen implements Screen {
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		player.radius = playerWidth / 2;
+		
+		if (game.bcConfig.isWifiConnected) {
+			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort, player.id, this);
+		}
 	}
-
+	
 	@Override
 	public void render(float delta) {
 		
