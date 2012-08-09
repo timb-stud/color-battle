@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.utils.SerializeUtils;
 
 public class NetworkService {
 	
@@ -47,12 +48,13 @@ public class NetworkService {
 		DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
 		try {
 			mcSocket.receive(receivedPacket);
-			Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
-//			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
+			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
+			
+//			Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
+			Gdx.app.debug("Player Info", ((PlayerMsg)obj).toString());
+			
 			//TODO: handle obj (network architecture)
 //			throw new RuntimeException("Methode not complete implemented");
-//			Player p = (Player) obj;
-//			Gdx.app.debug("Receiving", p.toString());
 		} catch (IOException e) {
 			Gdx.app.error("NetworkService", "Can't receive package", e);
 		}
@@ -60,8 +62,7 @@ public class NetworkService {
 	
 	public void send(Object obj) throws NetworkException{
 		try {
-//			byte[] msg = SerializeUtils.serializeObject(obj);
-			byte[] msg = new String("Test String").getBytes(); //TODO sending object not test string
+			byte[] msg = SerializeUtils.serializeObject(obj);
 			DatagramPacket data = new DatagramPacket(msg, 0, msg.length, mcGroup, mcPort);
 			mcSocket.send(data);
 		} catch (Exception e) {
