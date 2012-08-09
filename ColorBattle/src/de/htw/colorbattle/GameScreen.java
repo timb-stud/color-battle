@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		if (game.bcConfig.isWifiConnected) {
-			this.netSvc = new NetworkService("230.0.0.1", 1234); //TODO: make address and port dynamic
+			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 		}
 		
 		this.game = game;
