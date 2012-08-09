@@ -12,14 +12,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.network.PlayerMsg;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.input.Accelerometer;
+import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.PlayerMsg;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -64,7 +63,7 @@ public class GameScreen implements Screen {
 		player.y = height / 2 - playerHeight / 2;
 		player.radius = playerWidth / 2;
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		
@@ -129,6 +128,9 @@ public class GameScreen implements Screen {
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
 		
+		if (game.bcConfig.playSound){
+			game.playSound();
+		}
 		// called when this screen is set as the screen with game.setScreen();
 	}
 
