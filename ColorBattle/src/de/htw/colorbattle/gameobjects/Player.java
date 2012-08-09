@@ -6,8 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-
-public class Player implements Serializable{
+public class Player {
 	public int id; //TODO set ID
 	public float x;
 	public float y;
