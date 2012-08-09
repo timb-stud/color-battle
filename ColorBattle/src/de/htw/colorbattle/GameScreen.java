@@ -83,10 +83,7 @@ public class GameScreen implements Screen {
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 		
-		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		batch.end();
+		drawPlayer(player);
 		
 		Accelerometer.updateDirection(player.direction);
 
@@ -111,6 +108,13 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public void drawPlayer(Player player){
+		batch.begin();
+		batch.draw(flipper, 0, 0);
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
+	}
+	
 	private void sendPosition() {
 		try {
 			netSvc.send(new PlayerMsg(player));
