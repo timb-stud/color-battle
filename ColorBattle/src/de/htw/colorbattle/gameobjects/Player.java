@@ -6,8 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import de.htw.colorbattle.network.PlayerMsg;
+
 public class Player {
-	public int id; //TODO set ID
+	public int id; 
 	public float x;
 	public float y;
 	public float radius;
@@ -21,12 +23,27 @@ public class Player {
 	}
 	
 	public Player(Color color){
+		id = (int) System.currentTimeMillis(); //TODO create method to set individual id
 		x = 0;
 		y = 0;
 		radius = 1;
 		maxSpeed = 3;
 		speed = 200;
 		this.direction = new Vector2(0, 0);
+		this.color = color;
+	}
+	
+	public Player(PlayerMsg pm) {
+		this.id = pm.id;
+		this.x = pm.x;
+		this.y = pm.y;
+		this.radius = pm.radius;
+		this.speed = pm.speed;
+		this.maxSpeed = pm.maxSpeed;
+		this.direction = pm.direction;
+	}
+	
+	public void setColor(Color color){
 		this.color = color;
 	}
 	
