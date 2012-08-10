@@ -33,7 +33,6 @@ public class GameScreen implements Screen {
 	private int height;
 	private int playerWidth;
 	private int playerHeight;
-	private int maxAccelerometer;
 	
 	private Vector2 last = new Vector2(0, 0);
 	private Vector2 current = new Vector2(0,0);
@@ -83,7 +82,10 @@ public class GameScreen implements Screen {
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 		
-		drawPlayer(player);
+		batch.begin();
+		batch.draw(flipper, 0, 0);
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
 
@@ -106,13 +108,6 @@ public class GameScreen implements Screen {
 	                sendPosition();
 	        }
 		}
-	}
-
-	public void drawPlayer(Player player){
-		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		batch.end();
 	}
 	
 	private void sendPosition() {
