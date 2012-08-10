@@ -31,9 +31,6 @@ public class GameScreen implements Screen {
 	private Player player;
 	private int width;
 	private int height;
-	private int playerWidth;
-	private int playerHeight;
-	private int maxAccelerometer;
 	
 	private Vector2 last = new Vector2(0, 0);
 	private Vector2 current = new Vector2(0,0);
@@ -52,8 +49,8 @@ public class GameScreen implements Screen {
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		colorTexture = new Texture(Gdx.files.internal("color.png"));
-		playerWidth = playerTexture.getWidth();
-		playerHeight = playerTexture.getHeight();
+		int playerWidth = playerTexture.getWidth();
+		int playerHeight = playerTexture.getHeight();
 		player = new Player(Color.BLUE);
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
@@ -83,7 +80,10 @@ public class GameScreen implements Screen {
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 		
-		drawPlayer(player);
+		batch.begin();
+		batch.draw(flipper, 0, 0);
+		batch.draw(playerTexture, player.x, player.y);
+		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
 
@@ -95,9 +95,9 @@ public class GameScreen implements Screen {
 		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
 		
 		if(player.x < 0) player.x = 0;
-		else if(player.x > width - playerWidth) player.x = width - playerWidth;
+		else if(player.x > width - player.radius * 2) player.x = width - player.radius * 2;
 		if(player.y < 0) player.y = 0;
-		else if(player.y > height -playerHeight) player.y = height - playerHeight;
+		else if(player.y > height -player.radius * 2) player.y = height - player.radius * 2;
 		
 		if (netSvc != null){
 			current.set(player.x, player.y);
@@ -106,13 +106,6 @@ public class GameScreen implements Screen {
 	                sendPosition();
 	        }
 		}
-	}
-
-	public void drawPlayer(Player player){
-		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		batch.end();
 	}
 	
 	private void sendPosition() {
