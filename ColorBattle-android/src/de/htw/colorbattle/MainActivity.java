@@ -34,7 +34,7 @@ public class MainActivity extends AndroidApplication {
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1"; 
         bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
-        bcConfig.playSound = true;
+        bcConfig.playSound = false;
         
         initialize(new ColorBattleGame(bcConfig), cfg);
     }
