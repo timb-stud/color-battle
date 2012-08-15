@@ -3,7 +3,9 @@ package de.htw.colorbattle;
 
 
 
+import java.util.Date;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -18,7 +20,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.input.Accelerometer;
@@ -35,7 +36,6 @@ public class GameScreen implements Screen {
 	private Player player;
 	private int width;
 	private int height;
-	
 	private Vector2 last = new Vector2(0, 0);
 	private Vector2 current = new Vector2(0,0);
 	private NetworkService netSvc;
