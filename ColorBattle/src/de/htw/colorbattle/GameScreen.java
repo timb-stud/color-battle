@@ -25,7 +25,6 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture playerTexture;
-	private Texture colorTexture;
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
@@ -48,13 +47,11 @@ public class GameScreen implements Screen {
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
-		colorTexture = new Texture(Gdx.files.internal("color.png"));
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
-		player = new Player(Color.BLUE);
+		player = new Player(Color.BLUE, playerWidth / 2);
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
-		player.radius = playerWidth / 2;
 		
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort, player.id, this);
@@ -73,7 +70,7 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 		batch.setColor(player.color);
 		batch.begin();
-		batch.draw(colorTexture, player.x, player.y);
+		batch.draw(player.colorTexture, player.x, player.y);
 		batch.end();
 		colorFrameBuffer.end();
 		
@@ -148,7 +145,7 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// never called automatically!!!
 		playerTexture.dispose();
-		colorTexture.dispose();
+		player.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 	}
