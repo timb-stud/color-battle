@@ -2,3 +2,4 @@ bin
 gen
 .DS_Store
 music.mp3
+.classpath

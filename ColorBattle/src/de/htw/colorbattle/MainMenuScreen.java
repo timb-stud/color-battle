@@ -39,6 +39,18 @@ public class MainMenuScreen implements Screen, InputProcessor {
 		newGameSprite.draw(spriteBatch);
 		exitGameSprite.draw(spriteBatch);
 		spriteBatch.end();
+
+//		// update and draw stuff
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        spriteBatch.begin();
+//        spriteBatch.draw(splsh, 0, 0);
+//        spriteBatch.end();
+        
+        if (Gdx.input.justTouched()) {// use your own criterion here
+        	Gdx.app.log("MainMenuScreen", "Just Touched");
+            game.setScreen(game.gameScreen);
+            game.gameScreen.j = System.currentTimeMillis() / 1000;
+        }
 	}
 
 	@Override
