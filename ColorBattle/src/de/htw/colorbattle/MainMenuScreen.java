@@ -32,6 +32,7 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.justTouched()) {// use your own criterion here
         	Gdx.app.log("MainMenuScreen", "Just Touched");
             game.setScreen(game.gameScreen);
+            game.gameScreen.j = System.currentTimeMillis() / 1000;
         }
 	}
 
