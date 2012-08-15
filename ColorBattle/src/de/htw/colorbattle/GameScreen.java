@@ -1,6 +1,12 @@
 package de.htw.colorbattle;
 
+
+
+
+import java.util.Date;
+
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -19,6 +25,8 @@ import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.network.PlayerMsg;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 
 public class GameScreen implements Screen {
 	private ColorBattleGame game;
@@ -35,6 +43,22 @@ public class GameScreen implements Screen {
 	private Vector2 last = new Vector2(0, 0);
 	private Vector2 current = new Vector2(0,0);
 	private NetworkService netSvc;
+	private int playerWidth;
+	private int playerHeight;
+	private int playerVelocity;
+	private int maxAccelerometer;
+	
+	private Texture timerTexture;
+	private Circle timer;
+	private Texture endTexture;
+	private Rectangle end;
+	private int timerWidth;
+	private int endWidth;
+	private int endHeight;
+	
+	private long i = System.currentTimeMillis() / 1000;
+	public long j;
+	
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -59,6 +83,16 @@ public class GameScreen implements Screen {
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort, player.id, this);
 		}
+		
+		timerTexture = new Texture (Gdx.files.internal("Timer1.png"));
+		timerWidth = timerTexture.getWidth();
+		timer = new Circle(0,0, timerWidth / 2);
+		
+		endTexture = new Texture(Gdx.files.internal("End.png"));
+		endHeight = endTexture.getHeight();
+		endWidth = endTexture.getWidth();
+		end = new Rectangle(400,240,endWidth,endHeight);
+		
 	}
 	
 	@Override
@@ -83,6 +117,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
+		batch.draw(timerTexture,timer.x,timer.y);
 		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
@@ -98,6 +133,19 @@ public class GameScreen implements Screen {
 		else if(player.x > width - player.radius * 2) player.x = width - player.radius * 2;
 		if(player.y < 0) player.y = 0;
 		else if(player.y > height -player.radius * 2) player.y = height - player.radius * 2;
+		
+		i = System.currentTimeMillis() / 1000;
+		
+		if (i == (j+15)){changeTimer("Timer2.png");}
+		if (i == (j+30)){changeTimer("Timer3.png");}
+		if (i == (j+45)){changeTimer("Timer4.png");}
+		if (i == (j+60)){changeTimer("Timer5.png");
+							batch.begin();
+							batch.draw(endTexture,end.x,end.y);
+							batch.end();
+							playerTexture.dispose();
+							colorTexture.dispose();
+							colorFrameBuffer.dispose();}
 		
 		if (netSvc != null){
 			current.set(player.x, player.y);
@@ -129,6 +177,7 @@ public class GameScreen implements Screen {
 			game.playSound();
 		}
 		// called when this screen is set as the screen with game.setScreen();
+		
 	}
 
 	@Override
@@ -137,7 +186,8 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void pause() {		
+	public void pause() {	
+		
 	}
 
 	@Override
@@ -148,8 +198,21 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// never called automatically!!!
 		playerTexture.dispose();
+		timerTexture.dispose();
+		endTexture.dispose();
 		colorTexture.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 	}
+	
+	
+	
+	public void changeTimer(String timerImage){
+		timerTexture = new Texture (Gdx.files.internal(timerImage));
+   	 	batch.begin();
+		batch.draw(timerTexture,timer.x,timer.y);
+		batch.end();
+		
+	}
+	
 }
