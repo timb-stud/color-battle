@@ -17,7 +17,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 public class MainActivity extends AndroidApplication {
 	
 	private  WifiManager wifiManager;
-	private MulticastLock multicastLock;
+	private MulticastLock multicastLock; 
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
