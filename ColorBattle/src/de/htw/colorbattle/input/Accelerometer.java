@@ -17,7 +17,6 @@ public class Accelerometer {
 		direction.x = buff / ACCURACY;
 		buff = Math.round(direction.y * ACCURACY);
 		direction.y = buff / ACCURACY;
-		Gdx.app.log("Direction: ", "" + direction);
 	}
 	
 	private static float applyMaximum(float acc){
