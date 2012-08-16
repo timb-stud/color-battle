@@ -49,7 +49,7 @@ public class NetworkService extends Observable {
 		try {
 			mcSocket.receive(receivedPacket);
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
-			Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
+			//Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
 		    setChanged();
 		    notifyObservers(obj);
 		} catch (IOException e) {

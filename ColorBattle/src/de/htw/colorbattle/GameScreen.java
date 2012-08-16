@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
@@ -36,6 +37,7 @@ public class GameScreen implements Screen, Observer {
 	private Player player;
 	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
+	private GameBorder gameBorder;
 	private int width;
 	private int height;
 	private NetworkService netSvc;
@@ -65,6 +67,8 @@ public class GameScreen implements Screen, Observer {
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		
+		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 		player = new Player(Color.BLUE, playerWidth / 2);
@@ -120,20 +124,18 @@ public class GameScreen implements Screen, Observer {
 		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
+		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
 
 		player.move();
 		playerSimulation.move();
 		otherPlayer.move();
 		
-		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
-		
-		if(player.x < 0) player.x = 0;
-		else if(player.x > width - player.radius * 2) player.x = width - player.radius * 2;
-		if(player.y < 0) player.y = 0;
-		else if(player.y > height -player.radius * 2) player.y = height - player.radius * 2;
+		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(otherPlayer);
+		gameBorder.handelCollision(playerSimulation);
 		
 		i = System.currentTimeMillis() / 1000;
 		
