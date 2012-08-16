@@ -53,9 +53,11 @@ public class PlayerSimulation implements Serializable{
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("Player").append(id)
-								.append("\n Position X: ").append(this.x)
-								.append("\n Position Y: ").append(this.y);
+		StringBuilder sb = new StringBuilder("{id: ").append(id)
+								.append(", x: ").append(this.x)
+								.append(", y: ").append(this.y)
+								.append(", direction: ").append(this.direction)
+								.append("}");
 		
 		return sb.toString();
 	}
