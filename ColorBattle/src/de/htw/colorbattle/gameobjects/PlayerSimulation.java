@@ -37,7 +37,8 @@ public class PlayerSimulation implements Serializable{
 		this.radius = p.radius;
 		this.speed = p.speed;
 		this.maxSpeed = p.maxSpeed;
-		this.direction = p.direction;
+		this.direction.x = p.direction.x;
+		this.direction.y = p.direction.y;
 	}
 	
 	public float distance(Player player){

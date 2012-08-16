@@ -226,11 +226,11 @@ public class GameScreen implements Screen, Observer {
 
 	@Override
 	public void update(Observable obs, Object obj) {
-		if(obj instanceof Player) {
-			Player p = (Player)obj;
-			if (p.id != ownId){
+		if(obj instanceof PlayerSimulation) {
+			PlayerSimulation ps = (PlayerSimulation)obj;
+			if (ps.id != ownId){
 				//Gdx.app.debug("Player Info", pm.toString());
-				otherPlayer.update(p);
+				otherPlayer.update(ps);
 			}
 		}
 	}
