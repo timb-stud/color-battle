@@ -7,7 +7,7 @@ public class Accelerometer {
 	
 	public static final float MAX = 2.5f;
 	public static final float ACCURACY = 100;
-	public static void updateDirection(Vector2 direction){
+	public synchronized static void updateDirection(Vector2 direction){
 		int buff;
 		direction.x = applyMaximum(Gdx.input.getAccelerometerY());
 		direction.y = applyMaximum(Gdx.input.getAccelerometerX());

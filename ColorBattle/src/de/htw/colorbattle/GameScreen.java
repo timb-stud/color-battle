@@ -1,5 +1,6 @@
 package de.htw.colorbattle;
 
+import java.awt.image.VolatileImage;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -42,8 +43,8 @@ public class GameScreen implements Screen, Observer {
 	private int height;
 	private NetworkService netSvc;
 	
-	private int incomingPackageCount = 0;
-	private int outgoingPackageCount = 0;
+	private volatile int incomingPackageCount = 0;
+	private volatile int outgoingPackageCount = 0;
 	
 	private Texture timerTexture;
 	private Circle timer;

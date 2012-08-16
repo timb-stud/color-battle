@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PlayerSimulation implements Serializable{
 	private static final long serialVersionUID = 1525952974653455375L;
-	public int id;
-	public float x;
-	public float y;
-	public float radius;
-	public float speed;
-	public float maxSpeed;
+	public volatile int id;
+	public volatile float x;
+	public volatile float y;
+	public volatile float radius;
+	public volatile float speed;
+	public volatile float maxSpeed;
 	public Vector2 direction;
 	
 	public PlayerSimulation(float radius){
@@ -30,7 +30,7 @@ public class PlayerSimulation implements Serializable{
 		update((PlayerSimulation) player);
 	}
 	
-	public void update(PlayerSimulation p) {
+	public synchronized void update(PlayerSimulation p) {
 		this.id = p.id;
 		this.x = p.x;
 		this.y = p.y;
@@ -47,7 +47,7 @@ public class PlayerSimulation implements Serializable{
 		return (float)Math.sqrt(a*a + b*b);
 	}
 	
-	public void move(){
+	public synchronized void move(){
 		this.x += this.speed * this.direction.x * Gdx.graphics.getDeltaTime();
 		this.y -= this.speed * this.direction.y * Gdx.graphics.getDeltaTime();
 	}
