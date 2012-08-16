@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MainMenuScreen implements Screen {
 	private ColorBattleGame game;
     private SpriteBatch spriteBatch;
-    private TouchSprite newGameSprite;
+    private TouchSprite joinGameSprite;
+    private TouchSprite startServerSprite;
     private TouchSprite exitGameSprite;
     
     /**
@@ -19,13 +20,18 @@ public class MainMenuScreen implements Screen {
 		this.game = game;
 		spriteBatch = new SpriteBatch();
 		
-		newGameSprite = new TouchSprite("new_game.png");
-		newGameSprite.setPosition((Gdx.graphics.getWidth() - newGameSprite.getWidth()) / 2.0f, Gdx.graphics.getHeight() - 200.0f);
+		joinGameSprite = new TouchSprite("menue_join_game.png");
+		joinGameSprite.setPosition((Gdx.graphics.getWidth() - joinGameSprite.getWidth()) / 2.0f, Gdx.graphics.getHeight() - joinGameSprite.getHeight());
 		
-		exitGameSprite = new TouchSprite("exit_game.png");
-		exitGameSprite.setPosition((Gdx.graphics.getWidth() - exitGameSprite.getWidth()) / 2.0f, Gdx.graphics.getHeight() - 400.0f);
+		startServerSprite = new TouchSprite("menue_start_server.png");
+		startServerSprite.setPosition((Gdx.graphics.getWidth() - startServerSprite.getWidth()) / 2.0f,
+				( Gdx.graphics.getHeight() - startServerSprite.getHeight()) / 2.0f);
 		
-		game.inputMultiplexer.addProcessor(newGameSprite);
+		exitGameSprite = new TouchSprite("menue_exit_game.png");
+		exitGameSprite.setPosition((Gdx.graphics.getWidth() - exitGameSprite.getWidth()) / 2.0f, 0);
+		
+		game.inputMultiplexer.addProcessor(joinGameSprite);
+		game.inputMultiplexer.addProcessor(startServerSprite);
 		game.inputMultiplexer.addProcessor(exitGameSprite);
 		Gdx.input.setInputProcessor(game.inputMultiplexer);
 	}
@@ -35,15 +41,16 @@ public class MainMenuScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		spriteBatch.begin();
-		newGameSprite.draw(spriteBatch);
+		joinGameSprite.draw(spriteBatch);
+		startServerSprite.draw(spriteBatch);
 		exitGameSprite.draw(spriteBatch);
 		spriteBatch.end();
 		
-		if (newGameSprite.isTouched()) {
+		if (joinGameSprite.isTouched()) {
 			game.setScreen(game.gameScreen);
-		}
-		
-		if (exitGameSprite.isTouched()) {
+		} else if (startServerSprite.isTouched()) {
+			game.setScreen(game.joiningScreen);
+		} else if (exitGameSprite.isTouched()) {
 			Gdx.app.exit();
 		}
 	}
