@@ -105,7 +105,6 @@ public class GameScreen implements Screen, Observer {
 		batch.setProjectionMatrix(camera.combined);
 		
 		colorFrameBuffer.begin();
-		batch.setColor(player.color);
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
