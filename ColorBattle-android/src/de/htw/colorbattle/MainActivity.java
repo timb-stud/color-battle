@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -17,7 +18,8 @@ import de.htw.colorbattle.config.BattleColorConfig;
 public class MainActivity extends AndroidApplication {
 	
 	private  WifiManager wifiManager;
-	private MulticastLock multicastLock; 
+	private MulticastLock multicastLock;
+	private WifiLock wifiLock;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,12 +52,14 @@ public class MainActivity extends AndroidApplication {
     protected void onStart() {
     	super.onStart();
     	AcquireMulticastLock();
+    	acquireWifiLock();
     }
     
     @Override
     protected void onStop() {
     	super.onStop();
     	ReleaseMulticastLock();
+    	releaseWifiLock();
     }
     
     /**
@@ -67,6 +71,18 @@ public class MainActivity extends AndroidApplication {
         multicastLock.setReferenceCounted(true);
         multicastLock.acquire();
     	Log.d("MulticastLock","multicastLock.acquire()");
+    }
+    
+    private void acquireWifiLock(){
+    	wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    	wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "myWifiLock");
+    	wifiLock.acquire();
+    	wifiLock.setReferenceCounted(true);
+    	Log.d("WIFI Lock", wifiLock.toString());
+    }
+    
+    private void releaseWifiLock(){
+    	wifiLock.release();
     }
     
     private void ReleaseMulticastLock(){
