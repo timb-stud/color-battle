@@ -21,11 +21,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.network.PlayerMsg;
@@ -38,11 +38,10 @@ public class GameScreen implements Screen, Observer {
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
+	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
 	private int width;
 	private int height;
-	private Vector2 last = new Vector2(0, 0);
-	private Vector2 current = new Vector2(0,0);
 	private NetworkService netSvc;
 	
 	private Texture timerTexture;
@@ -75,6 +74,8 @@ public class GameScreen implements Screen, Observer {
 		player = new Player(Color.BLUE, playerWidth / 2);
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
+		
+		playerSimulation = new PlayerSimulation(player);
 		
 		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
 		otherPlayer.x = width / 2 - playerWidth / 2;
@@ -126,6 +127,7 @@ public class GameScreen implements Screen, Observer {
 		Accelerometer.updateDirection(player.direction);
 
 		player.move();
+		playerSimulation.move();
 		otherPlayer.move();
 		
 		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
@@ -152,11 +154,10 @@ public class GameScreen implements Screen, Observer {
 							colorFrameBuffer.dispose();}
 		
 		if (netSvc != null){
-			current.set(player.x, player.y);
-	        if(current.dst2(last) > game.bcConfig.networkPxlUpdateIntervall){
-	                last.set(player.x, player.y);
-	                sendPosition();
-	        }
+			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
+				playerSimulation.update(player);
+				sendPosition();
+			}
 		}
 		
 		// testbutton für score
@@ -233,7 +234,7 @@ public class GameScreen implements Screen, Observer {
 		if(obj instanceof PlayerMsg) {
 			PlayerMsg pm = (PlayerMsg)obj;
 			if (pm.id != ownId){
-				Gdx.app.debug("Player Info", pm.toString());
+				//Gdx.app.debug("Player Info", pm.toString());
 				otherPlayer.update(pm);
 			}
 		}
