@@ -42,6 +42,9 @@ public class GameScreen implements Screen, Observer {
 	private int height;
 	private NetworkService netSvc;
 	
+	private int incomingPackageCount = 0;
+	private int outgoingPackageCount = 0;
+	
 	private Texture timerTexture;
 	private Circle timer;
 	private Texture endTexture;
@@ -170,6 +173,8 @@ public class GameScreen implements Screen, Observer {
 			ownId = player.id;
 		try {
 			netSvc.send(playerSimulation);
+			outgoingPackageCount ++;
+			Gdx.app.log("Packages", "in: " + incomingPackageCount + " OUT: " + outgoingPackageCount);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); //TODO Handle exception
@@ -233,6 +238,8 @@ public class GameScreen implements Screen, Observer {
 			if (ps.id != ownId){
 				//Gdx.app.debug("Player Info", pm.toString());
 				otherPlayer.update(ps);
+				incomingPackageCount ++;
+				Gdx.app.log("Packages", "IN: " + incomingPackageCount + " out: " + outgoingPackageCount);
 			}
 		}
 	}
