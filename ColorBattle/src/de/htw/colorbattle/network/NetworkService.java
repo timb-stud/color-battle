@@ -7,11 +7,8 @@ import java.net.MulticastSocket;
 import java.util.Observable;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 
-import de.htw.colorbattle.GameScreen;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.utils.SerializeUtils;
 
 public class NetworkService extends Observable {
