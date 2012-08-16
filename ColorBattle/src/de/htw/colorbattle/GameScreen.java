@@ -1,8 +1,5 @@
 package de.htw.colorbattle;
 
-
-
-
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -28,7 +25,6 @@ import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.network.PlayerMsg;
 
 public class GameScreen implements Screen, Observer {
 	private ColorBattleGame game;
@@ -172,7 +168,7 @@ public class GameScreen implements Screen, Observer {
 		if (ownId == 0)
 			ownId = player.id;
 		try {
-			netSvc.send(new PlayerMsg(player));
+			netSvc.send(playerSimulation);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); //TODO Handle exception
@@ -231,11 +227,11 @@ public class GameScreen implements Screen, Observer {
 
 	@Override
 	public void update(Observable obs, Object obj) {
-		if(obj instanceof PlayerMsg) {
-			PlayerMsg pm = (PlayerMsg)obj;
-			if (pm.id != ownId){
+		if(obj instanceof Player) {
+			Player p = (Player)obj;
+			if (p.id != ownId){
 				//Gdx.app.debug("Player Info", pm.toString());
-				otherPlayer.update(pm);
+				otherPlayer.update(p);
 			}
 		}
 	}
