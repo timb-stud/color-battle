@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Gdx.app.setLogLevel(LOG_DEBUG);
         Log.println(LOG_DEBUG, "INIT", "YEAH!");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
@@ -32,10 +34,10 @@ public class MainActivity extends AndroidApplication {
         
         BattleColorConfig bcConfig = new BattleColorConfig();
         bcConfig.isWifiConnected = isWifiConnected();
-        bcConfig.multicastAddress = "230.0.0.1"; 
+        bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
         bcConfig.playSound = false;
-        bcConfig.networkPxlUpdateIntervall = 4;
+        bcConfig.networkPxlUpdateIntervall = 1;
         
         initialize(new ColorBattleGame(bcConfig), cfg);
     }
