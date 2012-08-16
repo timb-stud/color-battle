@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import de.htw.colorbattle.gameobjects.Player;
 
 public class PlayerMsg implements Serializable{
+	private static final long serialVersionUID = -5024250749188322621L;
+
 	public int id = 0; //TODO set ID
 	public float x = 0;
 	public float y = 0;
@@ -19,6 +21,16 @@ public class PlayerMsg implements Serializable{
 
 	public PlayerMsg(Player player) {
 		super();
+		this.id = player.id;
+		this.x = player.x;
+		this.y = player.y;
+		this.radius = player.radius;
+		this.speed = player.speed;
+		this.maxSpeed = player.maxSpeed;
+		this.direction = player.direction;
+	}
+	
+	public void set(Player player) {
 		this.id = player.id;
 		this.x = player.x;
 		this.y = player.y;

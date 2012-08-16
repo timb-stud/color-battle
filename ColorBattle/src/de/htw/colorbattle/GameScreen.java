@@ -36,6 +36,7 @@ public class GameScreen implements Screen, Observer {
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
+	private Player otherPlayer;
 	private int width;
 	private int height;
 	private Vector2 last = new Vector2(0, 0);
@@ -73,6 +74,10 @@ public class GameScreen implements Screen, Observer {
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		
+		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
+		otherPlayer.x = width / 2 - playerWidth / 2;
+		otherPlayer.y = height / 2 - playerHeight / 2;
+		
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
@@ -102,6 +107,7 @@ public class GameScreen implements Screen, Observer {
 		batch.setColor(player.color);
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
+		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 		batch.end();
 		colorFrameBuffer.end();
 		
@@ -111,12 +117,14 @@ public class GameScreen implements Screen, Observer {
 		batch.begin();
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
+		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
 		batch.draw(timerTexture,timer.x,timer.y);
 		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
 
 		player.move();
+		otherPlayer.move();
 		
 		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
 		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
@@ -153,7 +161,6 @@ public class GameScreen implements Screen, Observer {
 	private void sendPosition() {
 		if (ownId == 0)
 			ownId = player.id;
-		
 		try {
 			netSvc.send(new PlayerMsg(player));
 		} catch (NetworkException e) {
@@ -218,8 +225,7 @@ public class GameScreen implements Screen, Observer {
 			PlayerMsg pm = (PlayerMsg)obj;
 			if (pm.id != ownId){
 				Gdx.app.debug("Player Info", pm.toString());
-				Player player = new Player(pm);
-				//TODO: set player
+				otherPlayer.update(pm);
 			}
 		}
 	}

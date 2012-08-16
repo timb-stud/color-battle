@@ -41,7 +41,7 @@ public class Player {
 		colorPixmap.dispose();
 	}
 	
-	public Player(PlayerMsg pm) {
+	public void update(PlayerMsg pm) {
 		this.id = pm.id;
 		this.x = pm.x;
 		this.y = pm.y;
