@@ -12,6 +12,7 @@ import de.htw.colorbattle.exception.NetworkException;
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
 	public GameScreen gameScreen;
+	public JoiningScreen joiningScreen;
 	BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
@@ -25,9 +26,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public void create() {
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
-			gameScreen = new GameScreen(this);
 			mainMenuScreen = new MainMenuScreen(this);
-
+			joiningScreen = new JoiningScreen(this);
+			gameScreen = new GameScreen(this);
+			
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);
