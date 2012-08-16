@@ -3,6 +3,9 @@ package de.htw.colorbattle;
 
 
 
+import java.util.Observable;
+import java.util.Observer;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -25,7 +28,7 @@ import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.network.PlayerMsg;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, Observer {
 	private ColorBattleGame game;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -50,6 +53,7 @@ public class GameScreen implements Screen {
 	private long i = System.currentTimeMillis() / 1000;
 	public long j;
 	
+	private int ownId;
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -70,7 +74,8 @@ public class GameScreen implements Screen {
 		player.y = height / 2 - playerHeight / 2;
 		
 		if (game.bcConfig.isWifiConnected) {
-			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort, player.id, this);
+			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
+			netSvc.addObserver(this);
 		}
 		
 		timerTexture = new Texture (Gdx.files.internal("Timer1.png"));
@@ -138,7 +143,7 @@ public class GameScreen implements Screen {
 		
 		if (netSvc != null){
 			current.set(player.x, player.y);
-	        if(current.dst2(last) > 3){
+	        if(current.dst2(last) > game.bcConfig.networkPxlUpdateIntervall){
 	                last.set(player.x, player.y);
 	                sendPosition();
 	        }
@@ -146,6 +151,9 @@ public class GameScreen implements Screen {
 	}
 	
 	private void sendPosition() {
+		if (ownId == 0)
+			ownId = player.id;
+		
 		try {
 			netSvc.send(new PlayerMsg(player));
 		} catch (NetworkException e) {
@@ -202,6 +210,18 @@ public class GameScreen implements Screen {
 		batch.draw(timerTexture,timer.x,timer.y);
 		batch.end();
 		
+	}
+
+	@Override
+	public void update(Observable obs, Object obj) {
+		if(obj instanceof PlayerMsg) {
+			PlayerMsg pm = (PlayerMsg)obj;
+			if (pm.id != ownId){
+				Gdx.app.debug("Player Info", pm.toString());
+				Player player = new Player(pm);
+				//TODO: set player
+			}
+		}
 	}
 	
 }

@@ -23,7 +23,7 @@ public class ColorBattleGame extends Game {
 		try {
 			gameScreen = new GameScreen(this);
 			mainMenuScreen = new MainMenuScreen(this);
-			
+
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);

@@ -5,5 +5,5 @@ public class BattleColorConfig {
 	public String multicastAddress;
 	public int multicastPort;
 	public boolean playSound;
-	
+	public int networkPxlUpdateIntervall = 3;
 }
