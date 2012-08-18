@@ -157,7 +157,7 @@ public class GameScreen implements Screen, Observer {
 			}
 		}
 		
-		// testbutton für score
+		// testbutton fuer score
 		if(Gdx.input.isKeyPressed(Keys.B)){
 			computeScore();
 		} 
@@ -238,29 +238,8 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void computeScore(){
-		
-		int currentPixel;		
-		int pixelCount;
-		HashMap<Integer, Integer> pixelMap = new HashMap<Integer, Integer>();
-		byte[] bytePixelArray = ScreenUtils.getFrameBufferPixels(false);
-		
-		for(int i= 0 ; i < bytePixelArray.length-4 ; i=i+4){
-			currentPixel = (bytePixelArray[i] & 0xFF) 
-		            | ((bytePixelArray[i+1] & 0xFF) << 8) 
-		            | ((bytePixelArray[i+2] & 0xFF) << 16) 
-		            | ((bytePixelArray[i+3] & 0xFF) << 24);
-			Integer x = new Integer(currentPixel);
-			if(pixelMap.containsKey(currentPixel)){
-			    pixelCount = pixelMap.get(currentPixel);
-				pixelCount++ ;
-				pixelMap.put(currentPixel,pixelCount);
-			}else{
-				pixelMap.put(currentPixel, 1);
-			}
-		}
-//		System.out.println(pixelMap.size());
-//		System.out.println(pixelMap.toString());
-		
+		GameResult gr = new GameResult();
+		gr.computeScore();
 		
 	}
 }
