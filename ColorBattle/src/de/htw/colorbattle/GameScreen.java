@@ -1,6 +1,5 @@
 package de.htw.colorbattle;
 
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -102,7 +100,7 @@ public class GameScreen implements Screen, Observer {
 		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+				
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		
@@ -237,9 +235,14 @@ public class GameScreen implements Screen, Observer {
 		}
 	}
 	
-	private void computeScore(){
+	private void computeScore(){		
 		GameResult gr = new GameResult();
-		gr.computeScore();
+	//	gr.computeScore();
+		//gr.computeScorev2(colorFrameBuffer);
 		
+		batch.begin();
+		batch.draw(gr.paintfarbe(),100,100);
+		batch.end();
+
 	}
 }
