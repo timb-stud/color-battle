@@ -9,27 +9,37 @@ public class Player extends PlayerSimulation {
 	private static final long serialVersionUID = 5797914124072045957L;
 	public Color color;
 	public Texture colorTexture;
-	
+	private double gameScore;
+
 	public Player() {
 		this(Color.MAGENTA, 30);
 	}
-	
-	public Player(Color color, float radius){
+
+	public Player(Color color, float radius) {
 		super(radius);
 		int r = Math.round(radius);
-		Pixmap colorPixmap = new Pixmap(r* 2, r* 2, Format.RGBA8888);
+		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
 		colorPixmap.setColor(color);
 		colorPixmap.fillCircle(r, r, r);
 		colorTexture = new Texture(colorPixmap);
 		colorPixmap.dispose();
 		this.color = color;
 	}
-	
-	public void setColor(Color color){
+
+	public void setColor(Color color) {
 		this.color = color;
 	}
 
-	public void dispose(){
+	public void dispose() {
 		colorTexture.dispose();
 	}
+
+	public double getGameScore() {
+		return gameScore;
+	}
+
+	public void setGameScore(double gameScore) {
+		this.gameScore = gameScore;
+	}
+
 }

@@ -1,5 +1,6 @@
 package de.htw.colorbattle;
 
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -236,7 +237,11 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void computeScore(){		
-		GameResult gr = new GameResult(null);
+		LinkedList<Player> playerList = new LinkedList<Player>();
+		playerList.add(player);
+		playerList.add(otherPlayer);
+		
+		GameResult gr = new GameResult(playerList);
 		
 	//	GameResultOld gr = new GameResultOld();
 	//	gr.computeScore();
