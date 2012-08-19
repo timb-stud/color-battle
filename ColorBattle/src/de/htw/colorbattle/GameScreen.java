@@ -8,16 +8,21 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -242,14 +247,6 @@ public class GameScreen implements Screen, Observer {
 		playerList.add(otherPlayer);
 		
 		GameResult gr = new GameResult(playerList);
-		
-	//	GameResultOld gr = new GameResultOld();
-	//	gr.computeScore();
-		//gr.computeScorev2(colorFrameBuffer);
-		
-//		batch.begin();
-//		batch.draw(gr.paintfarbe(),100,100);
-//		batch.end();
-
+		System.out.println(gr.getScoredPlayerList().toString());
 	}
 }
