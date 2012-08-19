@@ -46,4 +46,10 @@ public class Player extends PlayerSimulation {
 		return color;
 	}
 
+	@Override
+	public String toString() {
+		return "Player [color=" + color + ", colorTexture=" + colorTexture
+				+ ", gameScore=" + gameScore + "]";
+	}
+
 }
