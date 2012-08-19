@@ -236,13 +236,15 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void computeScore(){		
-		GameResult gr = new GameResult();
+		GameResult gr = new GameResult(null);
+		
+	//	GameResultOld gr = new GameResultOld();
 	//	gr.computeScore();
 		//gr.computeScorev2(colorFrameBuffer);
 		
-		batch.begin();
-		batch.draw(gr.paintfarbe(),100,100);
-		batch.end();
+//		batch.begin();
+//		batch.draw(gr.paintfarbe(),100,100);
+//		batch.end();
 
 	}
 }
