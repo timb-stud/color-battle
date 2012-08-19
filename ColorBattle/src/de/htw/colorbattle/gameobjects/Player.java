@@ -42,4 +42,8 @@ public class Player extends PlayerSimulation {
 		this.gameScore = gameScore;
 	}
 
+	public Color getColor() {
+		return color;
+	}
+
 }
