@@ -106,8 +106,8 @@ public class GameResult {
 				Color.rgba8888ToColor(currentColor, currentkey);
 				if (colorIsSimlarToColor(playerColor, currentColor)) {
 					currentvalue = pixelMap.get(currentkey);
-					pl.setGameScore((double) currentvalue
-							/ (double) pixelNumber);
+					pl.setGameScore(((double) currentvalue
+							/ (double) pixelNumber)*100.0);
 					break;
 				}
 			}

@@ -147,6 +147,7 @@ public class GameScreen implements Screen, Observer {
 		if (i == (j+30)){changeTimer("Timer3.png");}
 		if (i == (j+45)){changeTimer("Timer4.png");}
 		if (i == (j+60)){changeTimer("Timer5.png");
+							computeScore();
 							batch.begin();
 							batch.draw(endTexture,end.x,end.y);
 							batch.end();
@@ -242,11 +243,14 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void computeScore(){		
+
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		playerList.add(otherPlayer);
-		
+
 		GameResult gr = new GameResult(playerList);
 		System.out.println(gr.getScoredPlayerList().toString());
+		Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
+		
 	}
 }
