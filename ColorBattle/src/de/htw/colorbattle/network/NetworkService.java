@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.Formatter;
 import java.util.Observable;
 
 import com.badlogic.gdx.Gdx;
@@ -25,6 +30,7 @@ public class NetworkService extends Observable {
 			this.mcSocket = new MulticastSocket(mcPort);
 			this.mcGroup = InetAddress.getByName(mcAddress);
 	        mcSocket.joinGroup(mcGroup);
+	        mcSocket.setLoopbackMode(true);
 	      //socket.setSoTimeout(1000); //throws timeout exception
 	        executeService();
 		} catch (Exception e) {
