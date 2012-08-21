@@ -57,8 +57,6 @@ public class GameScreen implements Screen, Observer {
 	private long i = System.currentTimeMillis() / 1000;
 	public long j;
 	
-	private int ownId;
-
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -171,8 +169,6 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void sendPosition() {
-		if (ownId == 0)
-			ownId = player.id;
 		try {
 			netSvc.send(playerSimulation);
 		} catch (NetworkException e) {
@@ -235,10 +231,8 @@ public class GameScreen implements Screen, Observer {
 	public void update(Observable obs, Object obj) {
 		if(obj instanceof PlayerSimulation) {
 			PlayerSimulation ps = (PlayerSimulation)obj;
-			if (ps.id != ownId){
-				//Gdx.app.debug("Player Info", pm.toString());
-				otherPlayer.update(ps);
-			}
+			//Gdx.app.debug("Player Info", pm.toString());
+			otherPlayer.update(ps);
 		}
 	}
 	

@@ -16,6 +16,7 @@ public class NetworkService extends Observable {
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
 	private int mcPort;
+	private InetAddress ownIpAddress;
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
 	
@@ -48,6 +49,9 @@ public class NetworkService extends Observable {
 		DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
 		try {
 			mcSocket.receive(receivedPacket);
+			Gdx.app.debug("IP Address", "own IP: " + ownIpAddress + " received IP: " + receivedPacket.getAddress());
+			if(receivedPacket.getAddress().equals(ownIpAddress))
+				return;
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
 			//Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
 		    setChanged();
@@ -61,6 +65,8 @@ public class NetworkService extends Observable {
 		try {
 			byte[] msg = SerializeUtils.serializeObject(obj);
 			DatagramPacket data = new DatagramPacket(msg, 0, msg.length, mcGroup, mcPort);
+			if (this.ownIpAddress.equals(null))
+				this.ownIpAddress = data.getAddress();
 			mcSocket.send(data);
 		} catch (Exception e) {
 			Gdx.app.error("NetworkService", "Can't send message", e);
