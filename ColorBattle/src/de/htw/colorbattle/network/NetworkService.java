@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.Formatter;
 import java.util.Observable;
 
 import com.badlogic.gdx.Gdx;
@@ -16,7 +21,7 @@ public class NetworkService extends Observable {
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
 	private int mcPort;
-	private InetAddress ownIpAddress;
+	private String ownIpAddress;
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
 	
@@ -27,6 +32,7 @@ public class NetworkService extends Observable {
 			this.mcGroup = InetAddress.getByName(mcAddress);
 	        mcSocket.joinGroup(mcGroup);
 	      //socket.setSoTimeout(1000); //throws timeout exception
+	        this.ownIpAddress = getLocalIpAddress();
 	        executeService();
 		} catch (Exception e) {
 			Gdx.app.error("NetworkService", "Can't create NetworkService", e);
@@ -50,7 +56,7 @@ public class NetworkService extends Observable {
 		try {
 			mcSocket.receive(receivedPacket);
 			Gdx.app.debug("IP Address", "own IP: " + ownIpAddress + " received IP: " + receivedPacket.getAddress());
-			if(receivedPacket.getAddress().equals(ownIpAddress))
+			if(receivedPacket.getAddress().toString().equals(ownIpAddress))
 				return;
 			Object obj = SerializeUtils.deserializeObject(receivedPacket.getData());
 			//Gdx.app.debug("Receiving", "new package from " + receivedPacket.getAddress());
@@ -65,13 +71,31 @@ public class NetworkService extends Observable {
 		try {
 			byte[] msg = SerializeUtils.serializeObject(obj);
 			DatagramPacket data = new DatagramPacket(msg, 0, msg.length, mcGroup, mcPort);
-			if (this.ownIpAddress.equals(null))
-				this.ownIpAddress = data.getAddress();
 			mcSocket.send(data);
 		} catch (Exception e) {
 			Gdx.app.error("NetworkService", "Can't send message", e);
 			throw new NetworkException("Can't send message: \n" + e.toString());
 		}
+	}
+	
+	private String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    String ip = InetAddress.getByName(inetAddress.toString()).toString();
+	                    return ip;
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	    	Gdx.app.error("NetworkService", "Can't get own IP", ex);
+	    } catch (UnknownHostException e) {
+	    	Gdx.app.error("NetworkService", "Can't get own IP", e);
+		}
+	    return null;
 	}
 
 }
