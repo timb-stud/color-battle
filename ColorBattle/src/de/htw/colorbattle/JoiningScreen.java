@@ -5,13 +5,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.PlayerSimulation;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
+
 public class JoiningScreen implements Screen {
 	private ColorBattleGame game;
     private SpriteBatch spriteBatch;
     private TouchSprite waitingForPlayerSprite;
-    
 	
-	public JoiningScreen(ColorBattleGame game) {
+	public JoiningScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		spriteBatch = new SpriteBatch();
 		
@@ -19,6 +22,7 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.setPosition((Gdx.graphics.getWidth() - waitingForPlayerSprite.getWidth()) / 2.0f,
 										   ( Gdx.graphics.getHeight() - waitingForPlayerSprite.getHeight()) / 2.0f);
 	}
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -26,6 +30,9 @@ public class JoiningScreen implements Screen {
 		spriteBatch.begin();
 		waitingForPlayerSprite.draw(spriteBatch);
 		spriteBatch.end();
+		
+		if(game.mainMenuScreen.multiGame.isGameStarted())
+			game.setScreen(game.gameScreen);
 		
 		//do some other stuff, waiting for players
 	}

@@ -5,12 +5,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
+
 public class MainMenuScreen implements Screen {
 	private ColorBattleGame game;
     private SpriteBatch spriteBatch;
     private TouchSprite joinGameSprite;
     private TouchSprite startServerSprite;
     private TouchSprite exitGameSprite;
+	public MultigameLogic multiGame;
     
     public boolean isServer = false; //TODO variable only for PoC
     
@@ -48,13 +52,23 @@ public class MainMenuScreen implements Screen {
 		exitGameSprite.draw(spriteBatch);
 		spriteBatch.end();
 		
-		if (joinGameSprite.isTouched()) {
-			game.setScreen(game.gameScreen);
-		} else if (startServerSprite.isTouched()) {
-			isServer = true;
-			game.setScreen(game.joiningScreen);
-		} else if (exitGameSprite.isTouched()) {
-			Gdx.app.exit();
+		try {
+			if (joinGameSprite.isTouched()) {
+				joinGameSprite.setIsTouched(false);
+				multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
+				multiGame.joinGame();
+				game.setScreen(game.joiningScreen);
+				//game.setScreen(game.gameScreen);
+			} else if (startServerSprite.isTouched()) {
+				startServerSprite.setIsTouched(false);
+				multiGame = new MultigameLogic(game.bcConfig, true, game.gameScreen.getPlayerSimulation());
+				multiGame.startServer();
+				game.setScreen(game.joiningScreen);
+			} else if (exitGameSprite.isTouched()) {
+				Gdx.app.exit();
+			}
+		} catch (NetworkException e) {
+			Gdx.app.error("Network Service", "Mainmenu sending problem");
 		}
 	}
 

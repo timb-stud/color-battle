@@ -17,7 +17,6 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
-	public MultigameLogic multiGame;
 	
 	public ColorBattleGame(BattleColorConfig bcConfig){
 		super();
@@ -29,10 +28,8 @@ public class ColorBattleGame extends Game implements InputProcessor {
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			mainMenuScreen = new MainMenuScreen(this);
-			joiningScreen = new JoiningScreen(this);
 			gameScreen = new GameScreen(this);
-			
-			multiGame = new MultigameLogic(bcConfig, mainMenuScreen.isServer, gameScreen.getPlayerSimulation());
+			joiningScreen = new JoiningScreen(this);
 			
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {
