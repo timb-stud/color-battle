@@ -7,10 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MainMenuScreen implements Screen {
 	private ColorBattleGame game;
-    private SpriteBatch spriteBatch;
+	
+    private SpriteBatch batch;
     private TouchSprite joinGameSprite;
     private TouchSprite startServerSprite;
     private TouchSprite exitGameSprite;
+    private float width;
+    private float height;
     
     /**
      * Constructor for the menue screen
@@ -18,17 +21,20 @@ public class MainMenuScreen implements Screen {
      */
 	public MainMenuScreen(ColorBattleGame game) {
 		this.game = game;
-		spriteBatch = new SpriteBatch();
+		width = game.camera.viewportWidth;
+		height = game.camera.viewportHeight;
+		batch = new SpriteBatch();
 		
-		joinGameSprite = new TouchSprite("menue_join_game.png");
-		joinGameSprite.setPosition((Gdx.graphics.getWidth() - joinGameSprite.getWidth()) / 2.0f, Gdx.graphics.getHeight() - joinGameSprite.getHeight());
+		joinGameSprite = new TouchSprite(Gdx.files.internal("menu/JoinGame.png"), game.camera);
+		joinGameSprite.setPosition((width - joinGameSprite.getWidth()) / 2.0f,
+									height - joinGameSprite.getHeight());
 		
-		startServerSprite = new TouchSprite("menue_start_server.png");
-		startServerSprite.setPosition((Gdx.graphics.getWidth() - startServerSprite.getWidth()) / 2.0f,
-				( Gdx.graphics.getHeight() - startServerSprite.getHeight()) / 2.0f);
+		startServerSprite = new TouchSprite(Gdx.files.internal("menu/StartServer.png"), game.camera);
+		startServerSprite.setPosition((width - startServerSprite.getWidth()) / 2.0f,
+									  (height - startServerSprite.getHeight()) / 2.0f);
 		
-		exitGameSprite = new TouchSprite("menue_exit_game.png");
-		exitGameSprite.setPosition((Gdx.graphics.getWidth() - exitGameSprite.getWidth()) / 2.0f, 0);
+		exitGameSprite = new TouchSprite(Gdx.files.internal("menu/ExitGame.png"), game.camera);
+		exitGameSprite.setPosition((width - exitGameSprite.getWidth()) / 2.0f, 0);
 		
 		game.inputMultiplexer.addProcessor(joinGameSprite);
 		game.inputMultiplexer.addProcessor(startServerSprite);
@@ -40,16 +46,19 @@ public class MainMenuScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		spriteBatch.begin();
-		joinGameSprite.draw(spriteBatch);
-		startServerSprite.draw(spriteBatch);
-		exitGameSprite.draw(spriteBatch);
-		spriteBatch.end();
+		game.camera.update();
+		batch.setProjectionMatrix(game.camera.combined);
+		
+		batch.begin();
+		joinGameSprite.draw(batch);
+		startServerSprite.draw(batch);
+		exitGameSprite.draw(batch);
+		batch.end();
 		
 		if (joinGameSprite.isTouched()) {
 			game.setScreen(game.gameScreen);
 		} else if (startServerSprite.isTouched()) {
-			game.setScreen(game.joiningScreen);
+			game.setScreen(game.selectplayerScreen);
 		} else if (exitGameSprite.isTouched()) {
 			Gdx.app.exit();
 		}
@@ -65,7 +74,9 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
+		game.inputMultiplexer.removeProcessor(startServerSprite);
+		game.inputMultiplexer.removeProcessor(joinGameSprite);
+		game.inputMultiplexer.removeProcessor(exitGameSprite);
 	}
 
 	@Override
@@ -78,6 +89,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		Gdx.input.setInputProcessor(null);
+		game.inputMultiplexer.removeProcessor(startServerSprite);
+		game.inputMultiplexer.removeProcessor(joinGameSprite);
+		game.inputMultiplexer.removeProcessor(exitGameSprite);
 	}
 }

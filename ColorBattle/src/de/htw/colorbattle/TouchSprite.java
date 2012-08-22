@@ -1,33 +1,44 @@
 package de.htw.colorbattle;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector3;
 
 public class TouchSprite extends Sprite implements InputProcessor {
-	private boolean isTouched = false;
-	public TouchSprite(Texture t) {
+	private OrthographicCamera camera;
+	public boolean isTouched = false;
+	
+	public TouchSprite(Texture t, OrthographicCamera camera) {
 		super(t);
+		this.camera = camera;
 	}
 	
-	/**
-	 * 
-	 * @param path to the Texture
-	 */
-	public TouchSprite(String path) {
-		super(new Texture(Gdx.files.internal(path)));
-	}
-	
-	
-	public TouchSprite(FileHandle f) {
+	public TouchSprite(FileHandle f, OrthographicCamera camera) {
 		super(new Texture(f));
+		this.camera = camera;
 	}
+	
+	/*
+	 * Get the current resolution from the OrthographicCamera
+	 */
+	private Vector3 transformCoordinates(int x, int y) {
+		Vector3 touchPos = new Vector3();
+	    touchPos.set(x, y, 0);
+	    camera.unproject(touchPos);
+	    return touchPos;
+	}
+
 	
 	public boolean isTouched() {
 		return isTouched;
+	}
+	
+	public void resetIsTouched() {
+		isTouched = false;
 	}
 
 	@Override
@@ -47,18 +58,21 @@ public class TouchSprite extends Sprite implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		Gdx.app.log("touched", "touchDown");
-		if (this.getBoundingRectangle().contains(x, Gdx.graphics.getHeight() - y)) {
+		Vector3 touchPos = transformCoordinates(x, y);
+		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
 			this.setColor(Color.RED);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
-		Gdx.app.log("touched", "touchUp");
-		if (this.getBoundingRectangle().contains(x, Gdx.graphics.getHeight() - y)) {
+		Vector3 touchPos = transformCoordinates(x, y);
+		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
+			this.setColor(Color.WHITE);
 			isTouched = true;
+			return true;
 		}
 		return false;
 	}

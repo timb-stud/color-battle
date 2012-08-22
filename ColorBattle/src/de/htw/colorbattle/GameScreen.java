@@ -8,21 +8,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -33,7 +27,6 @@ import de.htw.colorbattle.network.NetworkService;
 
 public class GameScreen implements Screen, Observer {
 	private ColorBattleGame game;
-	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture playerTexture;
 	private FrameBuffer colorFrameBuffer;
@@ -60,10 +53,8 @@ public class GameScreen implements Screen, Observer {
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		width = 800;
-		height = 480;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
+		width = (int) this.game.camera.viewportWidth;
+		height = (int) this.game.camera.viewportHeight;
 		batch = new SpriteBatch();
 		
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
@@ -101,12 +92,11 @@ public class GameScreen implements Screen, Observer {
 	
 	@Override
 	public void render(float delta) {
-		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
+		game.camera.update();
+		batch.setProjectionMatrix(game.camera.combined);
 		
 		colorFrameBuffer.begin();
 		batch.begin();
