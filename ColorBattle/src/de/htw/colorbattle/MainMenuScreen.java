@@ -48,6 +48,7 @@ public class MainMenuScreen implements Screen {
 		
 		if (joinGameSprite.isTouched()) {
 			game.setScreen(game.gameScreen);
+			game.gameScreen.endTime = (System.currentTimeMillis() / 1000) + game.bcConfig.gameTime;
 		} else if (startServerSprite.isTouched()) {
 			game.setScreen(game.joiningScreen);
 		} else if (exitGameSprite.isTouched()) {
