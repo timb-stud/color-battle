@@ -38,7 +38,8 @@ public class MainActivity extends AndroidApplication {
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         bcConfig.width = 800;
         bcConfig.height = 480;
-        
+        bcConfig.multigamePlayerCount = 2;
+
         initialize(new ColorBattleGame(bcConfig), cfg);
     }
     

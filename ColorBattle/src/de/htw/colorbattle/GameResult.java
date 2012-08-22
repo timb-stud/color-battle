@@ -3,6 +3,7 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+
 import de.htw.colorbattle.gameobjects.Player;
 
 public class GameResult {

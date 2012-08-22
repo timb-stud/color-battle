@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -38,7 +39,7 @@ public class GameScreen implements Screen, Observer {
 	private NetworkService netSvc;
 	
 	private CountDown countDown;
-	public long endTime;
+	private long endTime;
 	private boolean gameEnd = false;
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
@@ -67,8 +68,7 @@ public class GameScreen implements Screen, Observer {
 		otherPlayer.y = height / 2 - playerHeight / 2;
 
 		if (game.bcConfig.isWifiConnected) {
-			this.netSvc = new NetworkService(game.bcConfig.multicastAddress,
-					game.bcConfig.multicastPort);
+			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
 		}
 
@@ -161,6 +161,7 @@ public class GameScreen implements Screen, Observer {
 
 	@Override
 	public void show() {
+		endTime = System.currentTimeMillis() /1000 + game.bcConfig.gameTime;
 		Gdx.app.log("GameScreen", "show();");
 
 		if (game.bcConfig.playSound) {
@@ -216,4 +217,13 @@ public class GameScreen implements Screen, Observer {
 		batch.draw(endtexture, 100, 50);
 		batch.end();
 	}
+
+	public PlayerSimulation getPlayerSimulation() {
+		return playerSimulation;
+	}
+
+	public void setPlayerSimulation(PlayerSimulation playerSimulation) {
+		this.playerSimulation = playerSimulation;
+	}
+	
 }
