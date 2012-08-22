@@ -21,10 +21,11 @@ public class NetworkService extends Observable {
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
 	private int mcPort;
+	private static NetworkService netSvc;
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
 	
-	public NetworkService(String mcAddress, int mcPort) throws NetworkException{
+	private NetworkService(String mcAddress, int mcPort) throws NetworkException{
         try {
         	this.mcPort = mcPort;
 			this.mcSocket = new MulticastSocket(mcPort);
@@ -37,6 +38,16 @@ public class NetworkService extends Observable {
 			Gdx.app.error("NetworkService", "Can't create NetworkService", e);
 			throw new NetworkException("Can't create NetworkService: \n" + e.toString());
 		} 
+	}
+	
+	public static NetworkService getInstance(String mcAddress, int mcPort) throws NetworkException{
+		if( netSvc == null)
+			netSvc = new NetworkService(mcAddress, mcPort);
+		
+		if(!(mcAddress.equals(netSvc.mcGroup) || (mcPort != netSvc.mcPort )))
+			Gdx.app.error("NetworkService instance", "HINT: NetworkService will only create once!");
+		
+		return netSvc;
 	}
 	
 	private void executeService() {

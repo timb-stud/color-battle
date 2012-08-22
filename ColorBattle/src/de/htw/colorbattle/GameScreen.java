@@ -84,7 +84,7 @@ public class GameScreen implements Screen, Observer {
 		otherPlayer.y = height / 2 - playerHeight / 2;
 		
 		if (game.bcConfig.isWifiConnected) {
-			this.netSvc = new NetworkService(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
+			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
 		}
 		
