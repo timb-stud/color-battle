@@ -39,7 +39,7 @@ public class GameScreen implements Screen, Observer {
 	private NetworkService netSvc;
 	
 	private CountDown countDown;
-	public long endTime;
+	private long endTime;
 	private boolean gameEnd = false;
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
@@ -161,6 +161,7 @@ public class GameScreen implements Screen, Observer {
 
 	@Override
 	public void show() {
+		endTime = System.currentTimeMillis() /1000 + game.bcConfig.gameTime;
 		Gdx.app.log("GameScreen", "show();");
 
 		if (game.bcConfig.playSound) {
