@@ -5,6 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
+
 public class SelectPlayerScreen implements Screen {
 	private ColorBattleGame game;
 	
@@ -56,16 +59,29 @@ public class SelectPlayerScreen implements Screen {
 		fourPlayerSprite.draw(batch);
 		batch.end();
 		
+		boolean playerSetted = false;
 		if (twoPlayerSprite.isTouched()) {
-			game.joiningScreen.setMaxPlayer(2);
-			game.setScreen(game.joiningScreen);
+			twoPlayerSprite.resetIsTouched();
+			game.bcConfig.multigamePlayerCount = 2;
+			playerSetted = true;
 		} else if (threePlayerSprite.isTouched()) {
-			game.joiningScreen.setMaxPlayer(3);
-			game.setScreen(game.joiningScreen);
+			threePlayerSprite.resetIsTouched();
+			game.bcConfig.multigamePlayerCount = 3;
+			playerSetted = true;
 		} else if (fourPlayerSprite.isTouched()) {
-			Gdx.app.log("heinz", "touched");
-			game.joiningScreen.setMaxPlayer(4);
-			game.setScreen(game.joiningScreen);
+			fourPlayerSprite.resetIsTouched();
+			game.bcConfig.multigamePlayerCount = 4;
+			playerSetted = true;
+		}
+		if (playerSetted) {
+			try {
+				game.multiGame = new MultigameLogic(game.bcConfig, true,
+											   game.gameScreen.getPlayerSimulation());
+				game.multiGame.startServer();
+				game.setScreen(game.joiningScreen);
+			} catch (NetworkException e) {
+				Gdx.app.error("Network Service", "Mainmenu sending problem");
+			}
 		}
 	}
 

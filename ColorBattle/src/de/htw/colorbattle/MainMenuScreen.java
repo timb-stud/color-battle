@@ -17,7 +17,7 @@ public class MainMenuScreen implements Screen {
     private TouchSprite exitGameSprite;
     private float width;
     private float height;
-	public MultigameLogic multiGame;
+
     public boolean isServer = false; //TODO variable only for PoC
     
     /**
@@ -62,16 +62,13 @@ public class MainMenuScreen implements Screen {
 		
 		try {
 			if (joinGameSprite.isTouched()) {
-				joinGameSprite.setIsTouched(false);
-				multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
-				multiGame.joinGame();
+				joinGameSprite.resetIsTouched();
+				game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
+				game.multiGame.joinGame();
 				game.setScreen(game.joiningScreen);
-				//game.setScreen(game.gameScreen);
 			} else if (startServerSprite.isTouched()) {
-				startServerSprite.setIsTouched(false);
-				multiGame = new MultigameLogic(game.bcConfig, true, game.gameScreen.getPlayerSimulation());
-				multiGame.startServer();
-				game.setScreen(game.joiningScreen);
+				startServerSprite.resetIsTouched();
+				game.setScreen(game.selectplayerScreen);
 			} else if (exitGameSprite.isTouched()) {
 				Gdx.app.exit();
 			}

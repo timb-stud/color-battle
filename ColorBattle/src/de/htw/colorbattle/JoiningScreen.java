@@ -37,11 +37,8 @@ public class JoiningScreen implements Screen {
 		batch.begin();
 		waitingForPlayerSprite.draw(batch);
 		batch.end();
-	}
-	
-	public void setMaxPlayer(int maxPlayer) {
-		this.maxPlayer = maxPlayer;
-		if(game.mainMenuScreen.multiGame.isGameStarted())
+		
+		if(game.multiGame.isGameStarted())
 			game.setScreen(game.gameScreen);
 	}
 

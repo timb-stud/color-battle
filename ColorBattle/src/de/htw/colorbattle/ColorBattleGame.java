@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
 	public SelectPlayerScreen selectplayerScreen;
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
+	public MultigameLogic multiGame;
 	BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
