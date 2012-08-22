@@ -21,11 +21,11 @@ public class GameResult {
 	private LinkedList<Player> playerList;
 
 	// Graphics
-	private static final int BAR_HEIGHT = 30;
-	private static final int BAR_MAX_WIDTH = 400;
+	private static final int BAR_HEIGHT = 70;
+	private static final int BAR_MAX_WIDTH = 1100;
 
-	private static final int WINDOW_HEIGHT = 200;
-	private static final int WINDOW_WIDTH = 600;
+	private static final int WINDOW_HEIGHT = 400;
+	private static final int WINDOW_WIDTH = 700;
 
 	public GameResult(LinkedList<Player> playersList) {
 		this.playerList = playersList;
@@ -156,10 +156,10 @@ public class GameResult {
 		batch.begin();
 		batch.draw(tex, 0, 0);
 
-		int y = 0;
+		int y = 10;
 		for (Texture tex2 : this.getPlayerScoreTextures()) {
 			batch.draw(tex2, 100, y);
-			y += 40;
+			y += BAR_HEIGHT+10;
 		}
 
 		batch.end();
