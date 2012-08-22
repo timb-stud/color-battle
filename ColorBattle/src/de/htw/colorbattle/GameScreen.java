@@ -247,4 +247,13 @@ public class GameScreen implements Screen, Observer {
 		Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
 		
 	}
+
+	public PlayerSimulation getPlayerSimulation() {
+		return playerSimulation;
+	}
+
+	public void setPlayerSimulation(PlayerSimulation playerSimulation) {
+		this.playerSimulation = playerSimulation;
+	}
+	
 }

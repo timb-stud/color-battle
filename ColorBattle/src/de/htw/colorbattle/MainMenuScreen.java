@@ -12,6 +12,8 @@ public class MainMenuScreen implements Screen {
     private TouchSprite startServerSprite;
     private TouchSprite exitGameSprite;
     
+    public boolean isServer = false; //TODO variable only for PoC
+    
     /**
      * Constructor for the menue screen
      * @param ColorBattleGame game which called this menue screen.
@@ -49,6 +51,7 @@ public class MainMenuScreen implements Screen {
 		if (joinGameSprite.isTouched()) {
 			game.setScreen(game.gameScreen);
 		} else if (startServerSprite.isTouched()) {
+			isServer = true;
 			game.setScreen(game.joiningScreen);
 		} else if (exitGameSprite.isTouched()) {
 			Gdx.app.exit();

@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Music;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
@@ -16,6 +17,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
+	public MultigameLogic multiGame;
 	
 	public ColorBattleGame(BattleColorConfig bcConfig){
 		super();
@@ -29,6 +31,8 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			mainMenuScreen = new MainMenuScreen(this);
 			joiningScreen = new JoiningScreen(this);
 			gameScreen = new GameScreen(this);
+			
+			multiGame = new MultigameLogic(bcConfig, mainMenuScreen.isServer, gameScreen.getPlayerSimulation());
 			
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {
