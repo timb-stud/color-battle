@@ -1,6 +1,6 @@
 package de.htw.colorbattle;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -8,19 +8,24 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
@@ -36,6 +41,7 @@ public class GameScreen implements Screen, Observer {
 	private Player player;
 	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
+	private GameBorder gameBorder;
 	private int width;
 	private int height;
 	private NetworkService netSvc;
@@ -51,8 +57,6 @@ public class GameScreen implements Screen, Observer {
 	private long i = System.currentTimeMillis() / 1000;
 	public long j;
 	
-	private int ownId;
-
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -65,6 +69,8 @@ public class GameScreen implements Screen, Observer {
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		
+		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 		player = new Player(Color.BLUE, playerWidth / 2);
@@ -98,7 +104,7 @@ public class GameScreen implements Screen, Observer {
 		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+				
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		
@@ -120,20 +126,18 @@ public class GameScreen implements Screen, Observer {
 		batch.end();
 		
 		Accelerometer.updateDirection(player.direction);
+		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= player.speed * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
 
 		player.move();
 		playerSimulation.move();
 		otherPlayer.move();
 		
-		if(Gdx.input.isKeyPressed(Keys.UP)) player.y += player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.DOWN)) player.y -= player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) player.x -= player.speed * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Keys.RIGHT)) player.x += player.speed * Gdx.graphics.getDeltaTime();
-		
-		if(player.x < 0) player.x = 0;
-		else if(player.x > width - player.radius * 2) player.x = width - player.radius * 2;
-		if(player.y < 0) player.y = 0;
-		else if(player.y > height -player.radius * 2) player.y = height - player.radius * 2;
+		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(otherPlayer);
+		gameBorder.handelCollision(playerSimulation);
 		
 		i = System.currentTimeMillis() / 1000;
 		
@@ -141,6 +145,7 @@ public class GameScreen implements Screen, Observer {
 		if (i == (j+30)){changeTimer("Timer3.png");}
 		if (i == (j+45)){changeTimer("Timer4.png");}
 		if (i == (j+60)){changeTimer("Timer5.png");
+							computeScore();
 							batch.begin();
 							batch.draw(endTexture,end.x,end.y);
 							batch.end();
@@ -155,7 +160,7 @@ public class GameScreen implements Screen, Observer {
 			}
 		}
 		
-		// testbutton für score
+		// testbutton fuer score
 		if(Gdx.input.isKeyPressed(Keys.B)){
 			computeScore();
 		} 
@@ -164,8 +169,6 @@ public class GameScreen implements Screen, Observer {
 	}
 	
 	private void sendPosition() {
-		if (ownId == 0)
-			ownId = player.id;
 		try {
 			netSvc.send(playerSimulation);
 		} catch (NetworkException e) {
@@ -226,39 +229,22 @@ public class GameScreen implements Screen, Observer {
 
 	@Override
 	public void update(Observable obs, Object obj) {
-		if(obj instanceof Player) {
-			Player p = (Player)obj;
-			if (p.id != ownId){
-				//Gdx.app.debug("Player Info", pm.toString());
-				otherPlayer.update(p);
-			}
+		if(obj instanceof PlayerSimulation) {
+			PlayerSimulation ps = (PlayerSimulation)obj;
+			//Gdx.app.debug("Player Info", pm.toString());
+			otherPlayer.update(ps);
 		}
 	}
 	
-	private void computeScore(){
-		
-		int currentPixel;		
-		int pixelCount;
-		HashMap<Integer, Integer> pixelMap = new HashMap<Integer, Integer>();
-		byte[] bytePixelArray = ScreenUtils.getFrameBufferPixels(false);
-		
-		for(int i= 0 ; i < bytePixelArray.length-4 ; i=i+4){
-			currentPixel = (bytePixelArray[i] & 0xFF) 
-		            | ((bytePixelArray[i+1] & 0xFF) << 8) 
-		            | ((bytePixelArray[i+2] & 0xFF) << 16) 
-		            | ((bytePixelArray[i+3] & 0xFF) << 24);
-			Integer x = new Integer(currentPixel);
-			if(pixelMap.containsKey(currentPixel)){
-			    pixelCount = pixelMap.get(currentPixel);
-				pixelCount++ ;
-				pixelMap.put(currentPixel,pixelCount);
-			}else{
-				pixelMap.put(currentPixel, 1);
-			}
-		}
-//		System.out.println(pixelMap.size());
-//		System.out.println(pixelMap.toString());
-		
+	private void computeScore(){		
+
+		LinkedList<Player> playerList = new LinkedList<Player>();
+		playerList.add(player);
+		playerList.add(otherPlayer);
+
+		GameResult gr = new GameResult(playerList);
+		System.out.println(gr.getScoredPlayerList().toString());
+		Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
 		
 	}
 }
