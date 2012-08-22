@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Rectangle;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -39,11 +38,6 @@ public class GameScreen implements Screen, Observer {
 	private int width;
 	private int height;
 	private NetworkService netSvc;
-
-	private Texture endTexture;
-	private Rectangle end;
-	private int endWidth;
-	private int endHeight;
 	
 	private CountDown countDown;
 	public long endTime;
@@ -82,12 +76,7 @@ public class GameScreen implements Screen, Observer {
 			netSvc.addObserver(this);
 		}
 
-		countDown = new CountDown(Color.RED, 480);
-		
-		endTexture = new Texture(Gdx.files.internal("End.png"));
-		endHeight = endTexture.getHeight();
-		endWidth = endTexture.getWidth();
-		end = new Rectangle(400, 240, endWidth, endHeight);
+		countDown = new CountDown(Color.ORANGE, 480);
 
 	}
 
@@ -205,7 +194,6 @@ public class GameScreen implements Screen, Observer {
 		// never called automatically!!!
 		playerTexture.dispose();
 		player.dispose();
-		endTexture.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 	}
