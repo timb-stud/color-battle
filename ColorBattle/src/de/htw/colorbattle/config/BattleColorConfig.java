@@ -9,4 +9,6 @@ public class BattleColorConfig {
 	public int multigamePlayerCount = 1; 
 	public float networkPxlUpdateIntervall = 1;
 	public int gameTime = 60;
+	public int width;
+	public int height;
 }
