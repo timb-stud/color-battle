@@ -19,14 +19,12 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
-	private final int width = 800;
-	private final int height = 480;
 	
 	public ColorBattleGame(BattleColorConfig bcConfig){
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, width, height);
+		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
 	}
 	
 	@Override

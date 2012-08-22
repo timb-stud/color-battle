@@ -36,6 +36,8 @@ public class MainActivity extends AndroidApplication {
         bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
         bcConfig.playSound = false;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
+        bcConfig.width = 800;
+        bcConfig.height = 480;
         
         initialize(new ColorBattleGame(bcConfig), cfg);
     }

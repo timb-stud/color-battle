@@ -7,4 +7,6 @@ public class BattleColorConfig {
 	public boolean playSound;
 	public float networkPxlUpdateIntervall = 1;
 	public int gameTime = 60;
+	public int width;
+	public int height;
 }
