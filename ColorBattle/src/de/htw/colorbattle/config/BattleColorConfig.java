@@ -6,4 +6,5 @@ public class BattleColorConfig {
 	public int multicastPort;
 	public boolean playSound;
 	public float networkPxlUpdateIntervall = 1;
+	public int gameTime = 60;
 }

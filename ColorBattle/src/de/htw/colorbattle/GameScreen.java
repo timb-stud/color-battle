@@ -16,9 +16,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
@@ -40,17 +40,15 @@ public class GameScreen implements Screen, Observer {
 	private int height;
 	private NetworkService netSvc;
 
-	private Texture timerTexture;
-	private Circle timer;
 	private Texture endTexture;
 	private Rectangle end;
-	private int timerWidth;
 	private int endWidth;
 	private int endHeight;
-
-	private long i = System.currentTimeMillis() / 1000;
-	public long j;
-
+	
+	private CountDown countDown;
+	public long endTime;
+	private boolean gameEnd = false;
+	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -84,10 +82,8 @@ public class GameScreen implements Screen, Observer {
 			netSvc.addObserver(this);
 		}
 
-		timerTexture = new Texture(Gdx.files.internal("Timer1.png"));
-		timerWidth = timerTexture.getWidth();
-		timer = new Circle(0, 0, timerWidth / 2);
-
+		countDown = new CountDown(Color.RED, 480);
+		
 		endTexture = new Texture(Gdx.files.internal("End.png"));
 		endHeight = endTexture.getHeight();
 		endWidth = endTexture.getWidth();
@@ -118,7 +114,9 @@ public class GameScreen implements Screen, Observer {
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
-		batch.draw(timerTexture, timer.x, timer.y);
+
+		batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
+
 		batch.end();
 
 		Accelerometer.updateDirection(player.direction);
@@ -138,31 +136,20 @@ public class GameScreen implements Screen, Observer {
 		gameBorder.handelCollision(player);
 		gameBorder.handelCollision(otherPlayer);
 		gameBorder.handelCollision(playerSimulation);
-
-		i = System.currentTimeMillis() / 1000;
-
-		if (i == (j + 15)) {
-			changeTimer("Timer2.png");
-		}
-		if (i == (j + 30)) {
-			changeTimer("Timer3.png");
-		}
-		if (i == (j + 45)) {
-			changeTimer("Timer4.png");
-		}
-		if (i == (j + 60)) {
-			changeTimer("Timer5.png");
-			computeScore();
+		
+		gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
+		if (gameEnd){
 			batch.begin();
-			batch.draw(endTexture, end.x, end.y);
+			batch.draw(endTexture,end.x,end.y);
 			batch.end();
 			playerTexture.dispose();
 			player.dispose();
 			colorFrameBuffer.dispose();
 		}
 
-		if (netSvc != null) {
-			if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
+		
+		if (netSvc != null){
+			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
 				playerSimulation.update(player);
 				sendPosition();
 			}
@@ -218,17 +205,9 @@ public class GameScreen implements Screen, Observer {
 		// never called automatically!!!
 		playerTexture.dispose();
 		player.dispose();
-		timerTexture.dispose();
 		endTexture.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
-	}
-
-	public void changeTimer(String timerImage) {
-		timerTexture = new Texture(Gdx.files.internal(timerImage));
-		batch.begin();
-		batch.draw(timerTexture, timer.x, timer.y);
-		batch.end();
 	}
 
 	@Override
