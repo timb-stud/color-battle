@@ -137,14 +137,14 @@ public class GameScreen implements Screen, Observer {
 		gameBorder.handelCollision(otherPlayer);
 		gameBorder.handelCollision(playerSimulation);
 		
-		gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
-		if (gameEnd){
-			batch.begin();
-			batch.draw(endTexture,end.x,end.y);
-			batch.end();
+		if (!gameEnd){
+			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
+		}
+		if (gameEnd){	
+			computeScore();
 			playerTexture.dispose();
 			player.dispose();
-			colorFrameBuffer.dispose();
+//			colorFrameBuffer.dispose();
 		}
 
 		
