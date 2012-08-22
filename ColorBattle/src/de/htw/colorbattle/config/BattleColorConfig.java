@@ -5,6 +5,6 @@ public class BattleColorConfig {
 	public String multicastAddress;
 	public int multicastPort;
 	public boolean playSound;
-	public int multigamePlayerCount = 1;
+	public int multigamePlayerCount = 1; //only default value, count set in main activity
 	public float networkPxlUpdateIntervall = 1;
 }
