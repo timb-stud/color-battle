@@ -35,8 +35,8 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			inputMultiplexer = new InputMultiplexer(this);
 			mainMenuScreen = new MainMenuScreen(this);
 			selectplayerScreen = new SelectPlayerScreen(this);
-			joiningScreen = new JoiningScreen(this);
 			gameScreen = new GameScreen(this);
+			joiningScreen = new JoiningScreen(this);
 			
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {

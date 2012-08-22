@@ -31,6 +31,14 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	    camera.unproject(touchPos);
 	    return touchPos;
 	}
+	
+	public void setIsTouched(boolean touch){
+		this.isTouched = touch;
+	}
+	
+	public TouchSprite(FileHandle f) {
+		super(new Texture(f));
+	}
 
 	
 	public boolean isTouched() {
