@@ -44,8 +44,8 @@ public class NetworkService extends Observable {
 		if( netSvc == null)
 			netSvc = new NetworkService(mcAddress, mcPort);
 		
-		if(!(mcAddress.equals(netSvc.mcGroup) || (mcPort != netSvc.mcPort )))
-			Gdx.app.error("NetworkService instance", "HINT: NetworkService will only create once!");
+		if(mcPort != netSvc.mcPort )
+			Gdx.app.debug("NetworkService instance", "HINT: NetworkService will only create once!");
 		
 		return netSvc;
 	}
