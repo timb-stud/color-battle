@@ -41,6 +41,8 @@ public class GameScreen implements Screen, Observer {
 	private CountDown countDown;
 	private long endTime;
 	private boolean gameEnd = false;
+	private boolean scoreComputed = false;
+	private Texture endTexture;
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -125,10 +127,19 @@ public class GameScreen implements Screen, Observer {
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
 		}
 		if (gameEnd){	
-			computeScore();
-			playerTexture.dispose();
-			player.dispose();
-//			colorFrameBuffer.dispose();
+			if (scoreComputed){
+				if (endTexture != null){
+					batch.begin();
+					batch.draw(endTexture, 100, 50);
+					batch.end();
+				}
+			}else {
+				this.endTexture = computeScore();
+				scoreComputed = true;
+			}
+		//	playerTexture.dispose();
+		//	player.dispose();
+		//	colorFrameBuffer.dispose();
 		}
 
 		
@@ -138,12 +149,6 @@ public class GameScreen implements Screen, Observer {
 				sendPosition();
 			}
 		}
-
-		// testbutton fuer score
-		if (Gdx.input.isKeyPressed(Keys.B)) {
-			computeScore();
-		}
-
 	}
 
 	private void sendPosition() {
@@ -203,7 +208,7 @@ public class GameScreen implements Screen, Observer {
 		}
 	}
 
-	private void computeScore() {
+	private Texture computeScore() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		playerList.add(otherPlayer);
@@ -211,11 +216,7 @@ public class GameScreen implements Screen, Observer {
 		GameResult gr = new GameResult(playerList);
 		//System.out.println(gr.getScoredPlayerList().toString());
 		//Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
-
-		Texture endtexture = gr.getScoreScreen(batch);
-		batch.begin();
-		batch.draw(endtexture, 100, 50);
-		batch.end();
+		return gr.getScoreScreen(batch);
 	}
 
 	public PlayerSimulation getPlayerSimulation() {
