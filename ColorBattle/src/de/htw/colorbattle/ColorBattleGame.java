@@ -8,7 +8,6 @@ import com.badlogic.gdx.audio.Music;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
