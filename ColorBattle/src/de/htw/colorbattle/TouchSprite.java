@@ -21,6 +21,10 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		super(new Texture(Gdx.files.internal(path)));
 	}
 	
+	public void setIsTouched(boolean touch){
+		this.isTouched = touch;
+	}
+	
 	
 	public TouchSprite(FileHandle f) {
 		super(new Texture(f));
