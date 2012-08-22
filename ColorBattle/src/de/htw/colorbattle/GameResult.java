@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.htw.colorbattle.gameobjects.Player;
 
@@ -15,6 +17,13 @@ public class GameResult {
 	private static final int FILTER_COLOR_MIN_FREQUENCY = 100;
 	private int pixelNumber;
 	private LinkedList<Player> playerList;
+
+	// Graphics
+	private static final int BAR_HEIGHT = 30;
+	private static final int BAR_MAX_WIDTH = 400;
+
+	private static final int WINDOW_HEIGHT = 200;
+	private static final int WINDOW_WIDTH = 600;
 
 	public GameResult(LinkedList<Player> playersList) {
 		this.playerList = playersList;
@@ -61,10 +70,8 @@ public class GameResult {
 		for (int currentkey : keyset) {
 			currentvalue = pixelMap.get(currentkey);
 			if (currentvalue > FILTER_COLOR_MIN_FREQUENCY) {
-				Color.rgba8888ToColor(currentColor, currentkey); // das hier
-																	// kann man
-																	// ev
-																	// ptimieren
+				Color.rgba8888ToColor(currentColor, currentkey);
+				// das hier kann man ev optimieren
 				newMap.put(currentColor.toIntBits(), currentvalue);
 			}
 		}
@@ -106,16 +113,57 @@ public class GameResult {
 				Color.rgba8888ToColor(currentColor, currentkey);
 				if (colorIsSimlarToColor(playerColor, currentColor)) {
 					currentvalue = pixelMap.get(currentkey);
-					pl.setGameScore(((double) currentvalue
-							/ (double) pixelNumber)*100.0);
+					pl.setGameScore(((double) currentvalue / (double) pixelNumber) * 100.0);
 					break;
 				}
 			}
 		}
 	}
 
-	public Texture getScoreScreen() {
-		return null;
+	private LinkedList<Texture> getPlayerScoreTextures() {
+		LinkedList<Texture> texList = new LinkedList<Texture>();
+		Pixmap pm;
+		Texture tex;
+		for (Player pl : playerList) {
+			pm = new Pixmap(BAR_MAX_WIDTH, BAR_HEIGHT, Format.RGBA8888);
+			pm.setColor(pl.getColor());
+			pm.fillRectangle(0, 0,
+					(int) ((double) BAR_MAX_WIDTH / 100.0 * pl.getGameScore()),
+					BAR_HEIGHT);
+			tex = new Texture(pm);
+			texList.add(tex);
+		}
+		return texList;
+	}
+
+	public Texture getScoreScreen(SpriteBatch batch) {
+
+		Pixmap pm;
+		Texture tex;
+		FrameBuffer scoreFrameBuffer = new FrameBuffer(Format.RGBA8888,
+				WINDOW_WIDTH, WINDOW_HEIGHT, false);
+		// Attention Framebuffer flipped ?
+
+		// Hintergrund
+		pm = new Pixmap(WINDOW_WIDTH, WINDOW_HEIGHT, Format.RGBA8888);
+		pm.setColor(Color.GRAY);
+		pm.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		tex = new Texture(pm);
+
+		scoreFrameBuffer.begin();
+		batch.begin();
+		batch.draw(tex, 0, 0);
+
+		int y = 0;
+		for (Texture tex2 : this.getPlayerScoreTextures()) {
+			batch.draw(tex2, 100, y);
+			y += 40;
+		}
+
+		batch.end();
+		scoreFrameBuffer.end();
+
+		return scoreFrameBuffer.getColorBufferTexture();
 	}
 
 	public LinkedList<Player> getScoredPlayerList() {
