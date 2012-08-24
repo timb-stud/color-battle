@@ -1,6 +1,8 @@
 package de.htw.colorbattle;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
@@ -10,10 +12,12 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import de.htw.colorbattle.config.BattleColorConfig;
+
 public class MainActivity extends AndroidApplication {
 	
 	private  WifiManager wifiManager;
-	private MulticastLock multicastLock;
+	private MulticastLock multicastLock; 
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,23 @@ public class MainActivity extends AndroidApplication {
         cfg.useAccelerometer = true;
         cfg.useCompass = false;
         
-        initialize(new ColorBattleGame(), cfg);
+        BattleColorConfig bcConfig = new BattleColorConfig();
+        bcConfig.isWifiConnected = isWifiConnected();
+        bcConfig.multicastAddress = "230.0.0.1";
+        bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
+        bcConfig.playSound = false;
+        bcConfig.networkPxlUpdateIntervall = 0.1f;
+        bcConfig.width = 800;
+        bcConfig.height = 480;
+        bcConfig.multigamePlayerCount = 2;
+
+        initialize(new ColorBattleGame(bcConfig), cfg);
+    }
+    
+    private boolean isWifiConnected(){
+    	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+    	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    	return mWifi.isConnected();
     }
     
     @Override
