@@ -1,5 +1,6 @@
 package de.htw.colorbattle;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -33,6 +34,7 @@ public class GameScreen implements Screen, Observer {
 	private Player player;
 	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
+	private ArrayList<Player> playerList;
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
@@ -59,23 +61,29 @@ public class GameScreen implements Screen, Observer {
 		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
+		
 		player = new Player(Color.BLUE, playerWidth / 2);
-		player.x = width / 2 - playerWidth / 2;
-		player.y = height / 2 - playerHeight / 2;
-
 		playerSimulation = new PlayerSimulation(player);
-
 		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
-		otherPlayer.x = width / 2 - playerWidth / 2;
-		otherPlayer.y = height / 2 - playerHeight / 2;
+
+		playerList.add(player);
+		playerList.add(otherPlayer);
+		for (Player p : playerList){
+			p.x = width / 2 - playerWidth / 2;
+			p.y = height / 2 - playerHeight / 2;
+		}
 
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
 		}
-
 		countDown = new CountDown(Color.ORANGE, 480);
-
+	}
+	
+	public void addPlayer(PlayerSimulation ps){
+		Player newPlayer = new Player(Color.GREEN, player.radius);
+		newPlayer.update(ps);
+		this.playerList.add(newPlayer);
 	}
 
 	@Override
