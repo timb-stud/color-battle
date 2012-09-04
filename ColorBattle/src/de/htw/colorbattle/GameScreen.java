@@ -127,6 +127,7 @@ public class GameScreen implements Screen, Observer {
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
 		}
 		if (gameEnd){	
+			game.setScreen(game.gameEndScreen);
 			if (scoreComputed){
 				if (endTexture != null){
 					batch.begin();
@@ -208,7 +209,7 @@ public class GameScreen implements Screen, Observer {
 		}
 	}
 
-	private Texture computeScore() {
+	public Texture computeScore() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		playerList.add(otherPlayer);
@@ -217,6 +218,13 @@ public class GameScreen implements Screen, Observer {
 		//System.out.println(gr.getScoredPlayerList().toString());
 		//Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
 		return gr.getScoreScreen(batch);
+	}
+	public LinkedList<Player> getPlayerList(){
+		LinkedList<Player> playerList = new LinkedList<Player>();
+		playerList.add(player);
+		playerList.add(otherPlayer);
+		
+		return playerList;
 	}
 
 	public PlayerSimulation getPlayerSimulation() {

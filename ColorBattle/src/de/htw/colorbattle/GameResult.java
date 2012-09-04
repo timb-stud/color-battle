@@ -148,7 +148,7 @@ public class GameResult {
 
 		// Hintergrund
 		pm = new Pixmap(WINDOW_WIDTH, WINDOW_HEIGHT, Format.RGBA8888);
-		pm.setColor(Color.GRAY);
+		pm.setColor(Color.LIGHT_GRAY);
 		pm.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		tex = new Texture(pm);
 

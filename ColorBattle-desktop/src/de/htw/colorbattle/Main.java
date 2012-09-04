@@ -18,6 +18,8 @@ public class Main {
         bcConfig.multicastAddress = "230.0.0.1"; 
         bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
         bcConfig.playSound = false;
+        bcConfig.width = 800;
+        bcConfig.height = 480;
 		
 		new LwjglApplication(new ColorBattleGame(bcConfig), cfg);
 	}
