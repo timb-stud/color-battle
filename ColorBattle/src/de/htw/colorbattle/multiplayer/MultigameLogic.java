@@ -1,8 +1,10 @@
 package de.htw.colorbattle.multiplayer;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 
@@ -51,13 +53,13 @@ public class MultigameLogic implements Observer{
 	}
 	
 	public void startServer(){
-		playerList = new ArrayList<PlayerSimulation>();
-		playerList.add(ownPlayer);
+		ownPlayerSim.id = 1; //joinedPlayers;
+		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayerSim);
 		Gdx.app.debug("Multiplayer Game", "multi game server is started. game time: " + gameTime + " player count: " + playerCount);
 	}
 	
 	public void joinGame(){
-		sendJoinMsg(ownPlayer);	
+		sendJoinMsg(ownPlayerSim);	
 	}
 	
 	private void checkIfGameCanStart(){
@@ -65,27 +67,40 @@ public class MultigameLogic implements Observer{
 			sendGameStartMsg();
 	}
 	
-	private void addPlayerToGame(PlayerSimulation player){
+	private void addPlayerToGame(PlayerSimulation playerSim){
 		//TODO set start position of player
-		playerList.add(player);
+		game.gameScreen.getPlayerMap().put(playerSim.id, playerSim);
+		Gdx.app.debug("Multiplayer Game", "player with id " + playerSim.id + " has joined the game.");
 	}
 	
-	private void sendJoinMsg(PlayerSimulation ownPlayer){
+	private void sendJoinMsg(final PlayerSimulation ownPlayerSim){
 		//TODO add Timer to send messages in intervall
-		if(!isGameStarted){
+		ToggleTask toggleTask = new ToggleTask();
+		Timer timer = new Timer();
+		timer.schedule(toggleTask, 3000);
+//		while(!isGameStarted){
 			try{
-				netSvc.send(ownPlayer);
+//				if(!toggleTask.toggleState()){
+					netSvc.send(ownPlayerSim);
+//				}
 				Gdx.app.debug("Multiplayer Game", "sent join msg");
 			} catch (NetworkException e) {
 				Gdx.app.error("NetworkException", "Can't send join message.", e);
 			}
-		}
+//		}
+		timer.cancel();
 	}
 	
 	private void sendGameStartMsg(){
+		Gdx.app.debug("Multiplayer Game", "Game could be start, send message to other players.");
+		HashMap<Integer, PlayerSimulation> playerMap 
+											= game.gameScreen.getPlayerMap();
 		StartGameMsg start = new StartGameMsg();
 		start.gameTime = gameTime;
-		//TODO add playerList;
+		start.playerMap = playerMap;
+		
+		updatePlayerMap(playerMap);
+		
 		try
 		{
 			netSvc.send(start);
@@ -98,15 +113,55 @@ public class MultigameLogic implements Observer{
 	@Override
 	public void update(Observable obs, Object obj) {
 		if(obj instanceof StartGameMsg) {
+			StartGameMsg startGameMsg = (StartGameMsg) obj;
+			
+			updatePlayerMap(startGameMsg.playerMap);
+			
 			isGameStarted = true;
 			Gdx.app.debug("Multiplayer Game", "game is started");
 		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
 			Gdx.app.debug("Multiplayer Game", "new player try to join game");
-			PlayerSimulation player = (PlayerSimulation) obj;
-			addPlayerToGame(player);
+			PlayerSimulation playerSim = (PlayerSimulation) obj;
 			joinedPlayers++;
+			playerSim.id = joinedPlayers;
+			addPlayerToGame(playerSim);
 			checkIfGameCanStart();
+		} else if (isGameStarted && (obj instanceof PlayerSimulation)){
+			PlayerSimulation playerSim = (PlayerSimulation) obj;
+			game.gameScreen.getPlayerMap().put(playerSim.id, playerSim);
+			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
 		}
+	}
+	
+	private void updatePlayerMap(HashMap<Integer, PlayerSimulation> playerMap){
+		int ownId = getAndSetOwnId(playerMap);
+		
+		Player player = game.gameScreen.getPlayer();
+		PlayerSimulation playerSim = playerMap.get(ownId);
+		if (playerSim == null)
+			throw new RuntimeException("own player not in playerMap");
+		player.update(playerSim);
+		
+		game.gameScreen.getPlayerMap().remove(ownId);
+		game.gameScreen.setPlayerMap(playerMap);
+	}
+	
+	private int getAndSetOwnId(HashMap<Integer, PlayerSimulation> playerMap){
+		int id;
+		for (PlayerSimulation ps : playerMap.values()){
+			if (ps.networkIdentifier.equals(ownPlayerSim.networkIdentifier)){
+				id = ps.id;
+				Player player = game.gameScreen.getPlayer();
+				player.id = id;
+				game.gameScreen.setPlayer(player);
+				PlayerSimulation playerSim = game.gameScreen.getPlayerSimulation();
+				playerSim.id = id;
+				game.gameScreen.setPlayerSimulation(playerSim);
+				Gdx.app.debug("Multiplayer Game", "found player id " + id + " in playerMap.");
+				return id;
+			}
+		}
+		throw new RuntimeException("own player could not found in playerMap");
 	}
 
 	public boolean isGameStarted() {
