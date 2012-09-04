@@ -136,6 +136,7 @@ public class GameScreen implements Screen {
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
 		}
 		if (gameEnd){	
+			game.setScreen(game.gameEndScreen);
 			if (scoreComputed){
 				if (endTexture != null){
 					batch.begin();
@@ -208,17 +209,30 @@ public class GameScreen implements Screen {
 		batch.dispose();
 	}
 
-	private Texture computeScore() {
-		LinkedList<Player> playerList = new LinkedList<Player>(); //TODO: change list to player simulation list
-		for (PlayerSimulation ps : playerList){
-			player.update(ps);
-			playerList.add(player);
+
+	public Texture computeScore() {
+		LinkedList<Player> playerList = new LinkedList<Player>();
+		playerList.add(player);
+		for (PlayerSimulation ps : playerMap.values()){
+			otherPlayer.update(ps);
+			playerList.add(otherPlayer);
 		}
 
 		GameResult gr = new GameResult(playerList);
 		//System.out.println(gr.getScoredPlayerList().toString());
 		//Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
 		return gr.getScoreScreen(batch);
+	}
+	
+	public LinkedList<Player> getPlayerList(){
+		LinkedList<Player> playerList = new LinkedList<Player>();
+		playerList.add(player);
+		for (PlayerSimulation ps : playerMap.values()){
+			otherPlayer.update(ps);
+			playerList.add(otherPlayer);
+		}
+		
+		return playerList;
 	}
 
 	public PlayerSimulation getPlayerSimulation() {

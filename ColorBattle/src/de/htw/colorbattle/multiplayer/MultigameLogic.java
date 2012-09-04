@@ -69,8 +69,23 @@ public class MultigameLogic implements Observer{
 	
 	private void addPlayerToGame(PlayerSimulation playerSim){
 		//TODO set start position of player
-		game.gameScreen.getPlayerMap().put(playerSim.id, playerSim);
 		Gdx.app.debug("Multiplayer Game", "player with id " + playerSim.id + " has joined the game.");
+		//TODO set player color
+		switch (joinedPlayers) {
+			case 2: //unten rechts
+					// player.x = 
+					// player.y = 
+				break;
+			case 3: //oben rechts
+					// player.x = 
+					// player.y = 
+				break;
+			case 4: //unten links
+					// player.x = 
+					// player.y = 
+				break;
+		}
+		game.gameScreen.getPlayerMap().put(playerSim.id, playerSim);
 	}
 	
 	private void sendJoinMsg(final PlayerSimulation ownPlayerSim){
