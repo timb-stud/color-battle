@@ -14,9 +14,11 @@ public class PlayerSimulation implements Serializable{
 	public float speed;
 	public float maxSpeed;
 	public Vector2 direction;
+	public String networkIdentifier;
 	
 	public PlayerSimulation(float radius){
-		id = (int) System.currentTimeMillis(); //TODO create method to set individual id
+		id = 0;
+		networkIdentifier = Long.toString( System.currentTimeMillis() ); //TODO should be changed to network ip
 		x = 0;
 		y = 0;
 		this.radius = radius;
@@ -39,6 +41,7 @@ public class PlayerSimulation implements Serializable{
 		this.maxSpeed = p.maxSpeed;
 		this.direction.x = p.direction.x;
 		this.direction.y = p.direction.y;
+		this.networkIdentifier = p.networkIdentifier;
 	}
 	
 	public float distance(Player player){
