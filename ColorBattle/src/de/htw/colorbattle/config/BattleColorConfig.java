@@ -5,6 +5,7 @@ public class BattleColorConfig {
 	public String multicastAddress;
 	public int multicastPort;
 	public boolean playSound;
+	public boolean bluetoothGame;
 	
 	//only default value, values updated in main activity
 	public int multigamePlayerCount = 1; 
