@@ -43,7 +43,9 @@ public class BluetoothMultiplayer extends Observable {
 	}
 	
 	public void send(Object obj){
-		connectionThread.write(SerializeUtils.serializeObject(obj));
+		if(connectionThread != null){
+			connectionThread.write(SerializeUtils.serializeObject(obj));
+		}
 	}
 	
 	private void receive(Object obj){

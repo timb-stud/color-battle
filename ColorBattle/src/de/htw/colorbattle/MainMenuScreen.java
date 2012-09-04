@@ -63,8 +63,12 @@ public class MainMenuScreen implements Screen {
 		try {
 			if (joinGameSprite.isTouched()) {
 				joinGameSprite.resetIsTouched();
-				game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
-				game.multiGame.joinGame();
+				if (!game.bcConfig.bluetoothGame){
+					game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
+					game.multiGame.joinGame();
+				} else {
+					game.bluetoothActionResolver.connect();
+				}
 				game.setScreen(game.joiningScreen);
 			} else if (startServerSprite.isTouched()) {
 				startServerSprite.resetIsTouched();

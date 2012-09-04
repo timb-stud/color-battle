@@ -72,7 +72,7 @@ public class GameScreen implements Screen, Observer {
 		if (!game.bcConfig.bluetoothGame && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
-		}
+		} 
 
 		countDown = new CountDown(Color.ORANGE, 480);
 
@@ -154,7 +154,10 @@ public class GameScreen implements Screen, Observer {
 
 	private void sendPosition() {
 		try {
-			netSvc.send(playerSimulation);
+			if(!game.bcConfig.bluetoothGame)
+				netSvc.send(playerSimulation);
+			else
+				game.bluetoothActionResolver.send(playerSimulation);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception
