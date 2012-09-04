@@ -75,8 +75,7 @@ public class SelectPlayerScreen implements Screen {
 		}
 		if (playerSetted) {
 			try {
-				game.multiGame = new MultigameLogic(game.bcConfig, true,
-											   game.gameScreen.getPlayerSimulation());
+				game.multiGame = new MultigameLogic(game, true);
 				game.multiGame.startServer();
 				game.setScreen(game.joiningScreen);
 			} catch (NetworkException e) {

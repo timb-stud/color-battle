@@ -6,10 +6,13 @@ import java.util.Observer;
 
 import com.badlogic.gdx.Gdx;
 
+import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.utils.ToggleTask;
 
 public class MultigameLogic implements Observer{
 
@@ -18,12 +21,14 @@ public class MultigameLogic implements Observer{
 	int joinedPlayers;
 	BattleColorConfig bcConfig;
 	NetworkService netSvc;
-	ArrayList<PlayerSimulation> playerList;
 	boolean isGameStarted;
 	boolean isServer;
-	PlayerSimulation ownPlayer;
+	PlayerSimulation ownPlayerSim;
+	ColorBattleGame game;
 	
-	public MultigameLogic(BattleColorConfig bcConfig,boolean isServer, PlayerSimulation ownPlayer) throws NetworkException{
+	public MultigameLogic(ColorBattleGame game,boolean isServer) throws NetworkException{
+		this.game = game;
+		this.bcConfig = game.bcConfig;
 		if (bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
 			this.netSvc.addObserver(this);
@@ -33,10 +38,12 @@ public class MultigameLogic implements Observer{
 			this.gameTime = bcConfig.gameTime;
 			this.playerCount = bcConfig.multigamePlayerCount;
 			this.joinedPlayers = 1; //1 for own Player
-			this.ownPlayer = ownPlayer;
-
+			this.ownPlayerSim = game.gameScreen.getPlayerSimulation();
+			
+			if (playerCount == 1) //TODO only needed to test with one device. can be removed in final version
+				game.gameScreen.getPlayerMap().put(1, ownPlayerSim);
 		} else {
-			//TODO chould throw exception ?
+			//TODO could throw exception ?
 			Gdx.app.error("Multiplayer Game", "Can't create MultiGame, set PlayerCount to 1");
 			this.playerCount = 1;
 		}

@@ -17,7 +17,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
 	public MultigameLogic multiGame;
-	BattleColorConfig bcConfig;
+	public BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
