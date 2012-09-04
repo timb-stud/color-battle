@@ -22,7 +22,7 @@ public class GameResult {
 	private LinkedList<Player> playerList;
 
 	// Graphics
-	private static final int BAR_HEIGHT = 100;
+	private static final int BAR_HEIGHT = 90;
 	private static final int BAR_MAX_WIDTH = 1100;
 
 	private static final int WINDOW_HEIGHT = 350;

@@ -1,6 +1,6 @@
 package de.htw.colorbattle;
 
-import java.util.LinkedList;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.gameobjects.Player;
-import de.htw.colorbattle.multiplayer.MultigameLogic;
+
 
 public class GameEndScreen implements Screen {
 
@@ -21,18 +19,16 @@ public class GameEndScreen implements Screen {
     private Texture endTexture;
     private Texture scoreTexture;
     private float width;
-    private float height;
     private boolean scoreComputed = false;
     
    
 	public GameEndScreen(ColorBattleGame game) {
 		this.game = game;
 		width = game.camera.viewportWidth;
-		height = game.camera.viewportHeight;
 		batch = new SpriteBatch();
 		
 		backSprite = new TouchSprite(Gdx.files.internal("Back.png"), game.camera);
-		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f,0);
+		backSprite.setPosition((width - backSprite.getWidth()),5);
 		
 		endTexture = new Texture(Gdx.files.internal("Finish.png"));
 		
@@ -67,7 +63,7 @@ public class GameEndScreen implements Screen {
 		
 		if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
-			game.setScreen(game.mainMenuScreen);
+			game.create();
 		}
 		
 	}
