@@ -21,6 +21,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
+	public GameEndScreen gameEndScreen;
 	
 	public ColorBattleGame(BattleColorConfig bcConfig){
 		super();
@@ -37,6 +38,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			selectplayerScreen = new SelectPlayerScreen(this);
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
+			gameEndScreen = new GameEndScreen(this);
 			
 			this.setScreen(mainMenuScreen);
 		} catch (NetworkException e) {
