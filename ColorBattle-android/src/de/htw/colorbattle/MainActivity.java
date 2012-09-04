@@ -12,12 +12,15 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
 import de.htw.colorbattle.config.BattleColorConfig;
 
 public class MainActivity extends AndroidApplication {
 	
 	private  WifiManager wifiManager;
 	private MulticastLock multicastLock; 
+	private ColorBattleGame colorBattleGame;
+	BluetoothMultiplayer bluetoothMultiplayer;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,15 @@ public class MainActivity extends AndroidApplication {
         bcConfig.width = 800;
         bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2;
-
-        initialize(new ColorBattleGame(bcConfig), cfg);
+        bcConfig.bluetoothGame = true;
+        
+        this.colorBattleGame = new ColorBattleGame(bcConfig);
+        
+        if(bcConfig.bluetoothGame){
+        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
+        	bluetoothMultiplayer.addObserver(colorBattleGame.gameScreen);
+        }
+        initialize(colorBattleGame, cfg);
     }
     
     private boolean isWifiConnected(){
