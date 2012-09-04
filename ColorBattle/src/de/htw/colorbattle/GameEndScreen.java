@@ -1,5 +1,7 @@
 package de.htw.colorbattle;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class GameEndScreen implements Screen {
@@ -21,13 +24,7 @@ public class GameEndScreen implements Screen {
     private float height;
     private boolean scoreComputed = false;
     
-
-    public boolean isServer = false; //TODO variable only for PoC
-    
-    /**
-     * Constructor for the menue screen
-     * @param ColorBattleGame game which called this menue screen.
-     */
+   
 	public GameEndScreen(ColorBattleGame game) {
 		this.game = game;
 		width = game.camera.viewportWidth;
@@ -37,7 +34,7 @@ public class GameEndScreen implements Screen {
 		backSprite = new TouchSprite(Gdx.files.internal("Back.png"), game.camera);
 		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f,0);
 		
-		endTexture = new Texture(Gdx.files.internal("End.png"));
+		endTexture = new Texture(Gdx.files.internal("Finish.png"));
 		
 		game.inputMultiplexer.addProcessor(backSprite);
 		Gdx.input.setInputProcessor(game.inputMultiplexer);
@@ -56,10 +53,11 @@ public class GameEndScreen implements Screen {
 		backSprite.draw(batch);
 		batch.end();
 		
+		
 		if (scoreComputed){
 			if (scoreTexture != null){
 				batch.begin();
-				batch.draw(scoreTexture, 100, 50);
+				batch.draw(scoreTexture, 100, 0);
 				batch.end();
 			}
 		}else {
@@ -67,11 +65,10 @@ public class GameEndScreen implements Screen {
 			scoreComputed = true;
 		}
 		
-		
-			if (backSprite.isTouched()) {
-				backSprite.resetIsTouched();
-				game.setScreen(game.mainMenuScreen);
-			}
+		if (backSprite.isTouched()) {
+			backSprite.resetIsTouched();
+			game.setScreen(game.mainMenuScreen);
+		}
 		
 	}
 
