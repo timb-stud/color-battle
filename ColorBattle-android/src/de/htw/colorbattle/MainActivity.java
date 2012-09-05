@@ -38,7 +38,7 @@ public class MainActivity extends AndroidApplication {
         BattleColorConfig bcConfig = new BattleColorConfig();
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
-        bcConfig.multicastPort = 1234; //TODO read multicast port from settings view
+        bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
         bcConfig.playSound = false;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         bcConfig.width = 800;
@@ -52,8 +52,7 @@ public class MainActivity extends AndroidApplication {
         initialize(colorBattleGame, cfg);
         
         if(bcConfig.bluetoothGame){
-        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
-        	bluetoothMultiplayer.addObserver(colorBattleGame.gameScreen);
+        	this.bluetoothMultiplayer = new BluetoothMultiplayer(colorBattleGame);
         }
     }
     

@@ -1,28 +1,25 @@
 package de.htw.colorbattle.bluetooth;
 
 import java.util.Iterator;
-import java.util.Observable;
-
-import com.badlogic.gdx.utils.Json.Serializable;
-
-import de.htw.colorbattle.GameScreen;
-import de.htw.colorbattle.utils.SerializeUtils;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import de.htw.colorbattle.ColorBattleGame;
+import de.htw.colorbattle.utils.SerializeUtils;
 
-public class BluetoothMultiplayer extends Observable {
+public class BluetoothMultiplayer {
 	public static final int MESSAGE_READ = 1;
 	public static AcceptThread acceptThread;
 	public static ConnectThread connectThread;
 	public ConnectionThread connectionThread;
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+	private ColorBattleGame colorBattleGame;
 	
-	public BluetoothMultiplayer() {
+	public BluetoothMultiplayer(ColorBattleGame colorBattleGame) {
+		this.colorBattleGame = colorBattleGame;
 		this.acceptThread = new AcceptThread(this);
 		this.acceptThread.start();
 	}
@@ -49,8 +46,7 @@ public class BluetoothMultiplayer extends Observable {
 	}
 	
 	private void receive(Object obj){
-	    setChanged();
-	    notifyObservers(obj);
+		colorBattleGame.gameScreen.update(null, obj);
 	}
 	
     public final Handler mHandler = new Handler() {
