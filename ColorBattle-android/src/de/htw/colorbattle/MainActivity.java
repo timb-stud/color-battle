@@ -1,5 +1,6 @@
 package de.htw.colorbattle;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -44,7 +46,12 @@ public class MainActivity extends AndroidApplication {
         bcConfig.width = 800;
         bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2;
-        bcConfig.bluetoothGame = true;
+        bcConfig.bluetoothGame = isBluetoothEnabled();
+        
+        if(bcConfig.bluetoothGame)
+        	Gdx.app.log("GameMode", "Bluetooth game is enabled. Hint: Disable your bluetooth to start Wifi game!");
+        else
+        	Gdx.app.log("GameMode", "Wifi game is enabled. Hint: Enable your bluetooth to start bluetooth game!");
         
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid);
@@ -60,6 +67,13 @@ public class MainActivity extends AndroidApplication {
     	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
     	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
     	return mWifi.isConnected();
+    }
+    
+    private boolean isBluetoothEnabled(){
+    	BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    	if(mBluetoothAdapter == null) //device doesn't support bluetooth
+    		return false;
+    	return mBluetoothAdapter.isEnabled();
     }
     
     @Override
