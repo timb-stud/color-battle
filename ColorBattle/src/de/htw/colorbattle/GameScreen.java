@@ -70,11 +70,6 @@ public class GameScreen implements Screen {
 		player.y = height / 2 - playerHeight / 2;
 		
 		playerMap = new HashMap<Integer, PlayerSimulation>();
-		for (PlayerSimulation ps : playerMap.values()){ //TODO check if can be deleted
-			otherPlayer.update(ps);
-			otherPlayer.x = width / 2 - playerWidth / 2;
-			otherPlayer.y = height / 2 - playerHeight / 2;
-		}
 
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
@@ -94,26 +89,25 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(game.camera.combined);
 
 		colorFrameBuffer.begin();
-		batch.begin();
-		batch.draw(player.colorTexture, player.x, player.y);
-		for (PlayerSimulation ps : playerMapCopy.values()){
-			otherPlayer.update(ps);
-			batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		}
-		batch.end();
+			batch.begin();
+				batch.draw(player.colorTexture, player.x, player.y);
+				for (PlayerSimulation ps : playerMapCopy.values()){
+					otherPlayer.update(ps);
+					batch.draw(otherPlayer.colorTexture, ps.x, ps.y);
+				}
+			batch.end();
 		colorFrameBuffer.end();
 
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 
 		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		for (PlayerSimulation ps : playerMapCopy.values()){
-			otherPlayer.update(ps);
-			batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
-		}
-		batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
+			batch.draw(flipper, 0, 0);
+			batch.draw(playerTexture, player.x, player.y);
+			for (PlayerSimulation ps : playerMapCopy.values()){
+				batch.draw(playerTexture, ps.x, ps.y);
+			}
+			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
 		Accelerometer.updateDirection(player.direction);
@@ -127,14 +121,14 @@ public class GameScreen implements Screen {
 			player.x += player.speed * Gdx.graphics.getDeltaTime();
 
 		player.move();
+		playerSimulation.move();
 		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(playerSimulation);
 		for (PlayerSimulation ps : playerMapCopy.values()){
 			otherPlayer.update(ps);
 			otherPlayer.move();
 			gameBorder.handelCollision(otherPlayer);
 		}
-		playerSimulation.move();
-		gameBorder.handelCollision(playerSimulation);
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);

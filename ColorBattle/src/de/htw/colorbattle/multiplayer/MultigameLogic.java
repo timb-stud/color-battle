@@ -133,7 +133,7 @@ public class MultigameLogic implements Observer{
 			updatePlayerMap(startGameMsg.playerMap);
 			
 			isGameStarted = true;
-			Gdx.app.debug("Multiplayer Game", "game is started");
+			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
 		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
 			Gdx.app.debug("Multiplayer Game", "new player try to join game");
 			PlayerSimulation playerSim = (PlayerSimulation) obj;
@@ -143,8 +143,9 @@ public class MultigameLogic implements Observer{
 			checkIfGameCanStart();
 		} else if (isGameStarted && (obj instanceof PlayerSimulation)){
 			PlayerSimulation playerSim = (PlayerSimulation) obj;
+			
 			game.gameScreen.getPlayerMap().put(playerSim.id, playerSim);
-			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
+//			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
 		}
 	}
 	
@@ -157,7 +158,7 @@ public class MultigameLogic implements Observer{
 			throw new RuntimeException("own player not in playerMap");
 		player.update(playerSim);
 		
-		game.gameScreen.getPlayerMap().remove(ownId);
+		playerMap.remove(ownId);
 		Gdx.app.debug("Multiplayer Game", "removed own player with id " + ownId + " in playerMap.");
 		game.gameScreen.setPlayerMap(playerMap);
 	}
@@ -172,6 +173,7 @@ public class MultigameLogic implements Observer{
 				game.gameScreen.setPlayer(player);
 				PlayerSimulation playerSim = game.gameScreen.getPlayerSimulation();
 				playerSim.id = id;
+				ownPlayerSim.id = id;
 				game.gameScreen.setPlayerSimulation(playerSim);
 				Gdx.app.debug("Multiplayer Game", "found player id " + id + " in playerMap.");
 				return id;
