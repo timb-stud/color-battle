@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -69,7 +70,7 @@ public class GameScreen implements Screen, Observer {
 		otherPlayer.x = width / 2 - playerWidth / 2;
 		otherPlayer.y = height / 2 - playerHeight / 2;
 
-		if (!game.bcConfig.bluetoothGame && game.bcConfig.isWifiConnected) {
+		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 			netSvc.addObserver(this);
 		} 
@@ -154,7 +155,7 @@ public class GameScreen implements Screen, Observer {
 
 	private void sendPosition() {
 		try {
-			if(!game.bcConfig.bluetoothGame)
+			if(game.bcConfig.gameMode == GameMode.WIFI)
 				netSvc.send(playerSimulation);
 			else
 				game.bluetoothActionResolver.send(playerSimulation);

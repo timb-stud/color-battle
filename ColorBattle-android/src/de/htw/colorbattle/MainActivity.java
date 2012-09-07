@@ -17,6 +17,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.GameMode;
 
 public class MainActivity extends AndroidApplication {
 	
@@ -46,9 +47,9 @@ public class MainActivity extends AndroidApplication {
         bcConfig.width = 800;
         bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2;
-        bcConfig.bluetoothGame = isBluetoothEnabled();
+        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI;
         
-        if(bcConfig.bluetoothGame)
+        if(bcConfig.gameMode == GameMode.BLUETOOTH)
         	Gdx.app.log("GameMode", "Bluetooth game is enabled. Hint: Disable your bluetooth to start Wifi game!");
         else
         	Gdx.app.log("GameMode", "Wifi game is enabled. Hint: Enable your bluetooth to start bluetooth game!");
@@ -58,7 +59,7 @@ public class MainActivity extends AndroidApplication {
         
         initialize(colorBattleGame, cfg);
         
-        if(bcConfig.bluetoothGame){
+        if(bcConfig.gameMode == GameMode.BLUETOOTH){
         	this.bluetoothMultiplayer = new BluetoothMultiplayer(colorBattleGame);
         }
     }

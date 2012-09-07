@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
@@ -63,7 +64,7 @@ public class MainMenuScreen implements Screen {
 		try {
 			if (joinGameSprite.isTouched()) {
 				joinGameSprite.resetIsTouched();
-				if (!game.bcConfig.bluetoothGame){
+				 if(game.bcConfig.gameMode == GameMode.WIFI){
 					game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
 					game.multiGame.joinGame();
 				} else {
