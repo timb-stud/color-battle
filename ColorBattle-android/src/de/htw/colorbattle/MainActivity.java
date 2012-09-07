@@ -50,9 +50,9 @@ public class MainActivity extends AndroidApplication {
         bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI;
         
         if(bcConfig.gameMode == GameMode.BLUETOOTH)
-        	Gdx.app.log("GameMode", "Bluetooth game is enabled. Hint: Disable your bluetooth to start Wifi game!");
+        	Log.i("GameMode", "Bluetooth game is enabled. Hint: Disable your bluetooth to start Wifi game!");
         else
-        	Gdx.app.log("GameMode", "Wifi game is enabled. Hint: Enable your bluetooth to start bluetooth game!");
+        	Log.i("GameMode", "Wifi game is enabled. Hint: Enable your bluetooth to start bluetooth game!");
         
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid);
