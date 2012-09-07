@@ -1,6 +1,7 @@
 package de.htw.colorbattle;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Application;
@@ -83,6 +84,9 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
+		HashMap<Integer, PlayerSimulation> playerMapCopy = new HashMap<Integer, PlayerSimulation>();
+		playerMapCopy.putAll(playerMap);
+		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				
@@ -92,7 +96,7 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
-		for (PlayerSimulation ps : playerMap.values()){
+		for (PlayerSimulation ps : playerMapCopy.values()){
 			otherPlayer.update(ps);
 			batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 		}
@@ -105,7 +109,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
-		for (PlayerSimulation ps : playerMap.values()){
+		for (PlayerSimulation ps : playerMapCopy.values()){
 			otherPlayer.update(ps);
 			batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
 		}
@@ -124,7 +128,7 @@ public class GameScreen implements Screen {
 
 		player.move();
 		gameBorder.handelCollision(player);
-		for (PlayerSimulation ps : playerMap.values()){
+		for (PlayerSimulation ps : playerMapCopy.values()){
 			otherPlayer.update(ps);
 			otherPlayer.move();
 			gameBorder.handelCollision(otherPlayer);
