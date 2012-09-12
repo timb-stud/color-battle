@@ -14,7 +14,6 @@ import de.htw.colorbattle.network.BluetoothActionResolver;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
-	public SelectPlayerScreen selectplayerScreen;
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
 	public MultigameLogic multiGame;
@@ -38,7 +37,6 @@ public class ColorBattleGame extends Game implements InputProcessor {
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			mainMenuScreen = new MainMenuScreen(this);
-			selectplayerScreen = new SelectPlayerScreen(this);
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
