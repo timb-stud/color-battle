@@ -90,11 +90,11 @@ public class GameScreen implements Screen {
 
 		colorFrameBuffer.begin();
 			batch.begin();
-				batch.draw(player.colorTexture, player.x, player.y);
 				for (PlayerSimulation ps : playerMapCopy.values()){
 					otherPlayer.update(ps);
 					batch.draw(otherPlayer.colorTexture, ps.x, ps.y);
 				}
+				batch.draw(player.colorTexture, player.x, player.y);
 			batch.end();
 		colorFrameBuffer.end();
 
@@ -103,10 +103,10 @@ public class GameScreen implements Screen {
 
 		batch.begin();
 			batch.draw(flipper, 0, 0);
-			batch.draw(playerTexture, player.x, player.y);
 			for (PlayerSimulation ps : playerMapCopy.values()){
 				batch.draw(playerTexture, ps.x, ps.y);
 			}
+			batch.draw(playerTexture, player.x, player.y);
 			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
@@ -120,15 +120,15 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.RIGHT))
 			player.x += player.speed * Gdx.graphics.getDeltaTime();
 
-		player.move();
-		playerSimulation.move();
-		gameBorder.handelCollision(player);
-		gameBorder.handelCollision(playerSimulation);
 		for (PlayerSimulation ps : playerMapCopy.values()){
 			otherPlayer.update(ps);
 			otherPlayer.move();
 			gameBorder.handelCollision(otherPlayer);
 		}
+		player.move();
+		playerSimulation.move();
+		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(playerSimulation);
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
