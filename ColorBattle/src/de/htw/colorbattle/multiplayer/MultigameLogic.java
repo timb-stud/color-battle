@@ -3,8 +3,6 @@ package de.htw.colorbattle.multiplayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 
@@ -14,7 +12,6 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.utils.ToggleTask;
 
 public class MultigameLogic implements Observer{
 
