@@ -44,6 +44,7 @@ public class MultigameLogic implements Observer{
 			if (playerCount == 1){ //TODO only needed to test with one device. can be removed in final version
 				Player playerBuffer = new Player(Color.MAGENTA, 64 / 2);
 				playerBuffer.update(ownPlayer);
+				playerBuffer.setColorInt(Color.MAGENTA);
 				game.gameScreen.getPlayerMap().put(1, playerBuffer);
 			}
 		} else {
@@ -55,9 +56,9 @@ public class MultigameLogic implements Observer{
 	}
 	
 	public void startServer(){
-		ownPlayer.id = 1; //joinedPlayers;
+		ownPlayer.id = joinedPlayers;
 		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
-		Gdx.app.debug("Multiplayer Game", "multi game server is started. game time: " + gameTime + " player count: " + playerCount);
+		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 	}
 	
 	public void joinGame(){
@@ -77,31 +78,34 @@ public class MultigameLogic implements Observer{
 			return;
 		
 		joinedPlayers++;
-		playerSim.id = joinedPlayers;
-		
-		//TODO set start position of player
-		Gdx.app.debug("Multiplayer Game", "player with id " + playerSim.id + " has joined the game.");
+		//TODO set start position of playerSim. HINT: playerSim will update playerBuffer
+		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
 					// player.x = 
 					// player.y =
 				playerBuffer = new Player(Color.GREEN, 64 / 2); //TODO replace 64 with player width var
+				playerSim.setColorInt(Color.GREEN);
 				break;
 			case 3: //oben rechts
 					// player.x = 
 					// player.y =
 				playerBuffer = new Player(Color.RED, 64 / 2); //TODO replace 64 with player width var
+				playerSim.setColorInt(Color.RED);
 				break;
 			case 4: //unten links
 					// player.x = 
 					// player.y =
-				playerBuffer = new Player(Color.ORANGE, 64 / 2); //TODO replace 64 with player width var
+				playerBuffer = new Player(Color.PINK, 64 / 2); //TODO replace 64 with player width var
+				playerSim.setColorInt(Color.PINK);
 				break;
 			default:
 				throw new RuntimeException("Undefined number of joined players");
 		}
 		playerBuffer.update(playerSim);
+		playerBuffer.id = joinedPlayers;
 		playerMap.put(playerBuffer.id, playerBuffer);
+		Gdx.app.debug("Multiplayer Game", "add player with id " + playerBuffer.id + " to playerMap.");
 		checkIfGameCanStart();
 	}
 	
@@ -164,28 +168,21 @@ public class MultigameLogic implements Observer{
 	}
 	
 	private void updatePlayerMap(HashMap<Integer, Player> playerMap){
-		int ownId = getAndSetOwnId(playerMap);
-		
-		Player player = playerMap.get(ownId);
-		if (player == null)
-			throw new RuntimeException("own player not in playerMap");
+		Player player = getOwnPlayer(playerMap);
 		game.gameScreen.setPlayer(player);
-		
-		playerMap.remove(ownId);
-		Gdx.app.debug("Multiplayer Game", "removed own player with id " + ownId + " in playerMap.");
+		game.gameScreen.setPlayer(player);
+		game.gameScreen.getPlayerSimulation().update(player);
+		ownPlayer.id = player.id;
+		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");
+		playerMap.remove(player.id);
+		Gdx.app.debug("Multiplayer Game", "removed own player with id " + player.id + " in playerMap.");
 		game.gameScreen.setPlayerMap(playerMap);
 	}
 	
-	private int getAndSetOwnId(HashMap<Integer, Player> playerMap){
+	private Player getOwnPlayer(HashMap<Integer, Player> playerMap){
 		for (Player p : playerMap.values()){
 			if (p.networkIdentifier.equals(ownPlayer.networkIdentifier)){
-				game.gameScreen.setPlayer(p);
-				PlayerSimulation playerSim = game.gameScreen.getPlayerSimulation();
-				playerSim.id = p.id;
-				game.gameScreen.setPlayerSimulation(playerSim);
-				ownPlayer.id = p.id;
-				Gdx.app.debug("Multiplayer Game", "found player id " + p.id + " in playerMap.");
-				return p.id;
+				return p;
 			}
 		}
 		throw new RuntimeException("own player could not found in playerMap");

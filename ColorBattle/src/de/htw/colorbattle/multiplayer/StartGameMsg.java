@@ -3,6 +3,9 @@ package de.htw.colorbattle.multiplayer;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 
@@ -25,8 +28,9 @@ public class StartGameMsg implements Serializable{
 	public HashMap<Integer, Player> getPlayerMap(){
 		HashMap<Integer, Player> pMap = new HashMap<Integer, Player>();
 		for (PlayerSimulation ps : playerMap.values()){
-			Player p = new Player();
+			Player p = new Player(ps.getColorInt(), ps.radius);
 			p.update(ps);
+			Gdx.app.debug("Multiplayer Game", "player with id " + p.id + " colorTexture: " + p.colorTexture);
 			pMap.put(p.id, p);
 		}
 		return pMap;

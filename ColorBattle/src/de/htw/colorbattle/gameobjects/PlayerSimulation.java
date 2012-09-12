@@ -16,7 +16,7 @@ public class PlayerSimulation implements Serializable{
 	public float maxSpeed;
 	public Vector2 direction;
 	public String networkIdentifier;
-	private int color;
+	public int colorInt;
 	
 	public PlayerSimulation(float radius){
 		id = 0;
@@ -44,6 +44,8 @@ public class PlayerSimulation implements Serializable{
 		this.direction.x = p.direction.x;
 		this.direction.y = p.direction.y;
 		this.networkIdentifier = p.networkIdentifier;
+		this.colorInt = p.colorInt;
+		Gdx.app.debug("PS", "update PlayerSim playerid: " + this.id + " colorInt " + this.colorInt);
 	}
 	
 	public float distance(Player player){
@@ -72,9 +74,9 @@ public class PlayerSimulation implements Serializable{
 	 * liefert ColorObjekt aus int rgba8888
 	 * @return
 	 */
-	public Color getColor() {
+	public Color getColorInt() {
 		Color colorObj = new Color();
-		Color.rgba8888ToColor(colorObj, this.color);
+		Color.rgba8888ToColor(colorObj, this.colorInt);
 		return colorObj;
 	}
 
@@ -82,8 +84,8 @@ public class PlayerSimulation implements Serializable{
 	 * speichert ColorObjekt als int rgba8888
 	 * @param colorObj
 	 */
-	public void setColor(Color colorObj) {
-		this.color =Color.rgba8888(colorObj);		 
+	public void setColorInt(Color colorObj) {
+		this.colorInt = Color.rgba8888(colorObj);	
 	}
 	
 	

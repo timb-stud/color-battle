@@ -61,6 +61,7 @@ public class GameScreen implements Screen {
 		int playerHeight = playerTexture.getHeight();
 		
 		player = new Player(Color.BLUE, playerWidth / 2);
+		player.setColorInt(Color.BLUE);
 		playerSimulation = new PlayerSimulation(player);
 
 		player.x = width / 2 - playerWidth / 2;
