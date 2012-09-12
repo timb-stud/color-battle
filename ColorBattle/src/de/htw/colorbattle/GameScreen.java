@@ -1,6 +1,5 @@
 package de.htw.colorbattle;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
