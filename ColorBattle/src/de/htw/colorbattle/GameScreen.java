@@ -92,6 +92,7 @@ public class GameScreen implements Screen {
 					otherPlayer.update(ps);
 					batch.draw(otherPlayer.colorTexture, ps.x, ps.y);
 				}
+				batch.draw(player.colorTexture, player.x, player.y);
 			batch.end();
 		colorFrameBuffer.end();
 
@@ -104,6 +105,7 @@ public class GameScreen implements Screen {
 			for (PlayerSimulation ps : playerMap.values()){
 				batch.draw(playerTexture, ps.x, ps.y);
 			}
+			batch.draw(playerTexture, player.x, player.y);
 			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
@@ -126,6 +128,10 @@ public class GameScreen implements Screen {
 			otherPlayer.move();
 			gameBorder.handelCollision(otherPlayer);
 		}
+		player.move();
+		playerSimulation.move();
+		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(playerSimulation);
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
