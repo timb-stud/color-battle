@@ -1,6 +1,5 @@
 package de.htw.colorbattle;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -34,7 +33,6 @@ public class GameScreen implements Screen, Observer {
 	private Player player;
 	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
-	private ArrayList<Player> playerList;
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
