@@ -3,6 +3,7 @@ package de.htw.colorbattle.gameobjects;
 import java.io.Serializable;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerSimulation implements Serializable{
@@ -15,6 +16,7 @@ public class PlayerSimulation implements Serializable{
 	public float maxSpeed;
 	public Vector2 direction;
 	public String networkIdentifier;
+	private int color;
 	
 	public PlayerSimulation(float radius){
 		id = 0;
@@ -65,4 +67,26 @@ public class PlayerSimulation implements Serializable{
 		
 		return sb.toString();
 	}
+
+	/**
+	 * liefert ColorObjekt aus int rgba8888
+	 * @return
+	 */
+	public Color getColor() {
+		Color colorObj = new Color();
+		Color.rgba8888ToColor(colorObj, this.color);
+		return colorObj;
+	}
+
+	/**
+	 * speichert ColorObjekt als int rgba8888
+	 * @param colorObj
+	 */
+	public void setColor(Color colorObj) {
+		this.color =Color.rgba8888(colorObj);		 
+	}
+	
+	
+	
+	
 }

@@ -41,7 +41,8 @@ public class GameScreen implements Screen {
 	private long endTime;
 	private boolean gameEnd = false;
 	private boolean scoreComputed = false;
-	private Texture endTexture;
+	public Texture endTexture;
+	private LinkedList<Player> playerList = new LinkedList<Player>();
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -131,11 +132,12 @@ public class GameScreen implements Screen {
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
 		}
 		if (gameEnd){	
+			enterPlayerList();
 			game.setScreen(game.gameEndScreen);
 			if (scoreComputed){
 				if (endTexture != null){
 					batch.begin();
-					batch.draw(endTexture, 100, 50);
+//					batch.draw(endTexture, 100, 50);
 					batch.end();
 				}
 			}else {
@@ -218,13 +220,14 @@ public class GameScreen implements Screen {
 		return gr.getScoreScreen(batch);
 	}
 	
-	public LinkedList<Player> getPlayerList(){
-		LinkedList<Player> playerList = new LinkedList<Player>();
-		playerList.add(player);
-		for (Player p : playerMap.values()){
-			playerList.add(p);
+	private void enterPlayerList(){
+		this.playerList.add(player);
+		for(Player p : playerMap.values()){
+			this.playerList.add(p);
 		}
-		
+	}
+	
+	public LinkedList<Player> getPlayerList(){		
 		return playerList;
 	}
 
