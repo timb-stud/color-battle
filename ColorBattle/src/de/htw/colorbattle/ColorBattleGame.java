@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
+import de.htw.colorbattle.network.BluetoothActionResolver;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
@@ -22,12 +23,14 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
 	public GameEndScreen gameEndScreen;
+	public BluetoothActionResolver bluetoothActionResolver;
 	
-	public ColorBattleGame(BattleColorConfig bcConfig){
+	public ColorBattleGame(BattleColorConfig bcConfig, BluetoothActionResolver bluetoothActionResolver){
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
+		this.bluetoothActionResolver = bluetoothActionResolver;
 	}
 	
 	@Override

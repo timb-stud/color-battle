@@ -1,6 +1,7 @@
 package de.htw.colorbattle;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Application;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -30,6 +32,7 @@ public class GameScreen implements Screen {
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
+	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
 	private HashMap<Integer, Player> playerMap;
 	private GameBorder gameBorder;
@@ -60,21 +63,24 @@ public class GameScreen implements Screen {
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 		
-		player = new Player(Color.BLUE, playerWidth / 2);
-		player.setColorInt(Color.BLUE);
+		player = new Player(Color.GREEN, playerWidth / 2);
+		player.setColorInt(Color.GREEN);
 		playerSimulation = new PlayerSimulation(player);
+		
+		otherPlayer = new Player(Color.RED, playerWidth / 2);
+		otherPlayer.setColorInt(Color.RED);
 
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		
 		playerMap = new HashMap<Integer, Player>();
 
-		if (game.bcConfig.isWifiConnected) {
+		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 		}
 		countDown = new CountDown(Color.ORANGE, 480);
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -86,10 +92,10 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 			batch.begin();
 				batch.draw(player.colorTexture, player.x, player.y);
-				for (Player p : playerMap.values()){
-					batch.draw(p.colorTexture, p.x, p.y);
-				}
-				batch.draw(player.colorTexture, player.x, player.y);
+//				for (Player p : playerMap.values()){
+//					batch.draw(p.colorTexture, p.x, p.y);
+//				}
+				batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 			batch.end();
 		colorFrameBuffer.end();
 
@@ -99,10 +105,10 @@ public class GameScreen implements Screen {
 		batch.begin();
 			batch.draw(flipper, 0, 0);
 			batch.draw(playerTexture, player.x, player.y);
-			for (Player p : playerMap.values()){
-				batch.draw(playerTexture, p.x, p.y);
-			}
-			batch.draw(playerTexture, player.x, player.y);
+//			for (Player p : playerMap.values()){
+//				batch.draw(playerTexture, p.x, p.y);
+//			}
+			batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
 			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
@@ -117,17 +123,16 @@ public class GameScreen implements Screen {
 			player.x += player.speed * Gdx.graphics.getDeltaTime();
 
 		player.move();
-		playerSimulation.move();
 		gameBorder.handelCollision(player);
-		gameBorder.handelCollision(playerSimulation);
-		for (Player p : playerMap.values()){
-			p.move();
-			gameBorder.handelCollision(p);
-		}
-		player.move();
 		playerSimulation.move();
-		gameBorder.handelCollision(player);
 		gameBorder.handelCollision(playerSimulation);
+//		for (Player p : playerMap.values()){
+//			p.move();
+//			gameBorder.handelCollision(p);
+//		}
+		otherPlayer.move();
+		gameBorder.handelCollision(otherPlayer);
+
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
@@ -151,7 +156,7 @@ public class GameScreen implements Screen {
 		}
 
 		
-		if (netSvc != null){
+		if (netSvc != null || game.bcConfig.gameMode == GameMode.BLUETOOTH){
 			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
 				playerSimulation.update(player);
 				sendPosition();
@@ -161,7 +166,10 @@ public class GameScreen implements Screen {
 
 	private void sendPosition() {
 		try {
-			netSvc.send(playerSimulation);
+			if(game.bcConfig.gameMode == GameMode.WIFI)
+				netSvc.send(playerSimulation);
+			else
+				game.bluetoothActionResolver.send(playerSimulation);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception
@@ -203,6 +211,7 @@ public class GameScreen implements Screen {
 		// never called automatically!!!
 		playerTexture.dispose();
 		player.dispose();
+		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 	}
@@ -245,7 +254,8 @@ public class GameScreen implements Screen {
 	}
 
 	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
-		
+		Iterator<Player> i = playerMap.values().iterator();
+		this.otherPlayer.update(i.next()); //TODO only for playing with 2 players
 		this.playerMap = playerMap;
 	}
 	
@@ -255,5 +265,9 @@ public class GameScreen implements Screen {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	public void updateOtherPlayer(PlayerSimulation ps){
+		otherPlayer.update(ps);
 	}
 }
