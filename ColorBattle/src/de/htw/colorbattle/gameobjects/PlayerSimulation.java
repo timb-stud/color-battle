@@ -45,7 +45,7 @@ public class PlayerSimulation implements Serializable{
 		this.direction.y = p.direction.y;
 		this.networkIdentifier = p.networkIdentifier;
 		this.colorInt = p.colorInt;
-		Gdx.app.debug("PS", "update PlayerSim playerid: " + this.id + " colorInt " + this.colorInt);
+//		Gdx.app.debug("PS", "update PlayerSim playerid: " + this.id + " colorInt " + this.colorInt);
 	}
 	
 	public float distance(Player player){

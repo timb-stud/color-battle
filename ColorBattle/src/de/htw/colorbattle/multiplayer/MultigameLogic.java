@@ -161,7 +161,8 @@ public class MultigameLogic implements Observer{
 			addPlayerToGame(playerSim);
 		} else if (isGameStarted && (obj instanceof PlayerSimulation)){
 			PlayerSimulation playerSim = (PlayerSimulation) obj;
-			game.gameScreen.getPlayerMap().get(playerSim.id).update(playerSim);
+//			game.gameScreen.getPlayerMap().get(playerSim.id).update(playerSim);
+			game.gameScreen.updateOtherPlayer(playerSim); //only for two player mode
 			
 //			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
 		}
@@ -169,7 +170,6 @@ public class MultigameLogic implements Observer{
 	
 	private void updatePlayerMap(HashMap<Integer, Player> playerMap){
 		Player player = getOwnPlayer(playerMap);
-		game.gameScreen.setPlayer(player);
 		game.gameScreen.setPlayer(player);
 		game.gameScreen.getPlayerSimulation().update(player);
 		ownPlayer.id = player.id;

@@ -51,7 +51,7 @@ public class BluetoothMultiplayer {
 	}
 	
 	private void receive(Object obj){
-		colorBattleGame.gameScreen.update(null, obj);
+		colorBattleGame.multiGame.update(null, obj);
 		Log.d("BT", "receive: " + obj.toString());
 	}
 	
