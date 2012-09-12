@@ -5,8 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import de.htw.colorbattle.exception.NetworkException;
-
 public class JoiningScreen implements Screen {
 	private ColorBattleGame game;
     private SpriteBatch batch;
@@ -15,7 +13,7 @@ public class JoiningScreen implements Screen {
     private float height;
     int maxPlayer;
 	
-	public JoiningScreen(ColorBattleGame game) throws NetworkException {
+	public JoiningScreen(ColorBattleGame game) {
 		this.game = game;
 		batch = new SpriteBatch();
 		

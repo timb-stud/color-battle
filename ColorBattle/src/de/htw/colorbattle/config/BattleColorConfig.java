@@ -1,14 +1,8 @@
 package de.htw.colorbattle.config;
 
 public class BattleColorConfig {
-	public boolean isWifiConnected;
-	public String multicastAddress;
-	public int multicastPort;
-	public boolean playSound;
-	public GameMode gameMode;
-	
 	//only default value, values updated in main activity
-	public int multigamePlayerCount = 1; 
+	public boolean playSound = true;
 	public float networkPxlUpdateIntervall = 1;
 	public int gameTime = 60;
 	public int width = 800;

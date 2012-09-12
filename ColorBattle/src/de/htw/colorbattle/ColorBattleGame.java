@@ -8,15 +8,12 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import de.htw.colorbattle.config.BattleColorConfig;
-import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
 
 public class ColorBattleGame extends Game implements InputProcessor {
 	public MainMenuScreen mainMenuScreen;
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
-	public MultigameLogic multiGame;
 	BattleColorConfig bcConfig;
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
@@ -34,19 +31,13 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	
 	@Override
 	public void create() {
-		try {
-			inputMultiplexer = new InputMultiplexer(this);
-			mainMenuScreen = new MainMenuScreen(this);
-			gameScreen = new GameScreen(this);
-			joiningScreen = new JoiningScreen(this);
-			gameEndScreen = new GameEndScreen(this);
-			
-			this.setScreen(mainMenuScreen);
-		} catch (NetworkException e) {
-			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);
-			e.printStackTrace();
-			//TODO: handle exception
-		}
+		inputMultiplexer = new InputMultiplexer(this);
+		mainMenuScreen = new MainMenuScreen(this);
+		gameScreen = new GameScreen(this);
+		joiningScreen = new JoiningScreen(this);
+		gameEndScreen = new GameEndScreen(this);
+		
+		this.setScreen(mainMenuScreen);
 	}
 	
 	public void playSound() {

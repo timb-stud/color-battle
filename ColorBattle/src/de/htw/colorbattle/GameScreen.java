@@ -16,14 +16,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
-import de.htw.colorbattle.config.GameMode;
-import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
-import de.htw.colorbattle.network.NetworkService;
 
 public class GameScreen implements Screen, Observer {
 	private ColorBattleGame game;
@@ -37,7 +34,6 @@ public class GameScreen implements Screen, Observer {
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
-	private NetworkService netSvc;
 	
 	private CountDown countDown;
 	private long endTime;
@@ -46,7 +42,7 @@ public class GameScreen implements Screen, Observer {
 	public Texture endTexture;
 	private LinkedList<Player> playerList = new LinkedList<Player>();
 	
-	public GameScreen(ColorBattleGame game) throws NetworkException {
+	public GameScreen(ColorBattleGame game) {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		width = (int) this.game.camera.viewportWidth;
@@ -59,7 +55,6 @@ public class GameScreen implements Screen, Observer {
 
 		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
-		int playerHeight = playerTexture.getHeight();
 		
 		player = new Player(Color.BLUE, playerWidth / 2);
 		player.x = 50;
@@ -71,11 +66,6 @@ public class GameScreen implements Screen, Observer {
 
 		playerList.add(player);
 		playerList.add(otherPlayer);
-
-		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
-			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
-			netSvc.addObserver(this);
-		} 
 
 		countDown = new CountDown(Color.ORANGE, 480);
 	}
@@ -147,24 +137,14 @@ public class GameScreen implements Screen, Observer {
 		}
 
 		
-		if (netSvc != null || game.bcConfig.gameMode == GameMode.BLUETOOTH){
-			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
-				playerSimulation.update(player);
-				sendPosition();
-			}
+		if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
+			playerSimulation.update(player);
+			sendPosition();
 		}
 	}
 
 	private void sendPosition() {
-		try {
-			if(game.bcConfig.gameMode == GameMode.WIFI)
-				netSvc.send(playerSimulation);
-			else
-				game.bluetoothActionResolver.send(playerSimulation);
-		} catch (NetworkException e) {
-			Gdx.app.error("NetworkException", "Can't send position update.", e);
-			e.printStackTrace(); // TODO Handle exception
-		}
+		game.bluetoothActionResolver.send(playerSimulation);
 	}
 	
 	public void swapPlayers(){
