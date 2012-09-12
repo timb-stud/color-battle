@@ -62,6 +62,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 		setScreen(gameScreen);
 	}
 	
+	public void showJoiningScreen(){
+		setScreen(joiningScreen);
+	}
+	
 	@Override
 	public void dispose() {
 		mainMenuScreen.dispose();

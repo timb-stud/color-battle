@@ -69,12 +69,12 @@ public class MainMenuScreen implements Screen {
 					game.multiGame.joinGame();
 				} else {
 					game.bluetoothActionResolver.connect();
+					game.showJoiningScreen();
 				}
-				//game.setScreen(game.joiningScreen);
 			} else if (startServerSprite.isTouched()) {
 				startServerSprite.resetIsTouched();
-				//game.setScreen(game.selectplayerScreen);
 				game.bluetoothActionResolver.startServer();
+				game.showJoiningScreen();
 			} else if (exitGameSprite.isTouched()) {
 				Gdx.app.exit();
 			}
