@@ -34,7 +34,6 @@ public class GameScreen implements Screen, Observer {
 	private Player player;
 	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
-	private ArrayList<Player> playerList;
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
