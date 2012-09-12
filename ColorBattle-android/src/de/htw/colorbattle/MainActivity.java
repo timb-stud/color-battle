@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -54,13 +53,16 @@ public class MainActivity extends AndroidApplication {
         else
         	Log.i("GameMode", "Wifi game is enabled. Hint: Enable your bluetooth to start bluetooth game!");
         
+        if(bcConfig.gameMode == GameMode.BLUETOOTH){
+        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
+        }
+        
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid);
         
         initialize(colorBattleGame, cfg);
-        
         if(bcConfig.gameMode == GameMode.BLUETOOTH){
-        	this.bluetoothMultiplayer = new BluetoothMultiplayer(colorBattleGame);
+        	this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
         }
     }
     

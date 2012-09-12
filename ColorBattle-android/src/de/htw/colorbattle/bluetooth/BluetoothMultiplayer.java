@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.utils.SerializeUtils;
 
@@ -18,8 +19,7 @@ public class BluetoothMultiplayer {
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	private ColorBattleGame colorBattleGame;
 	
-	public BluetoothMultiplayer(ColorBattleGame colorBattleGame) {
-		this.colorBattleGame = colorBattleGame;
+	public BluetoothMultiplayer() {
 		this.acceptThread = new AcceptThread(this);
 		this.acceptThread.start();
 	}
@@ -28,6 +28,10 @@ public class BluetoothMultiplayer {
 	public void manageConnectedSocket(BluetoothSocket socket) {
     	connectionThread = new ConnectionThread(socket, mHandler);
     	connectionThread.start();
+	}
+	
+	public void setColorBattleGame(ColorBattleGame colorBattleGame) {
+		this.colorBattleGame = colorBattleGame;
 	}
 	
 	public void connect(){
@@ -41,12 +45,14 @@ public class BluetoothMultiplayer {
 	
 	public void send(Object obj){
 		if(connectionThread != null){
+			Log.d("BT", "send: " + obj.toString());
 			connectionThread.write(SerializeUtils.serializeObject(obj));
 		}
 	}
 	
 	private void receive(Object obj){
 		colorBattleGame.gameScreen.update(null, obj);
+		Log.d("BT", "receive: " + obj.toString());
 	}
 	
     public final Handler mHandler = new Handler() {

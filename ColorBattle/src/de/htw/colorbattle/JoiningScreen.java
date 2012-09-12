@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 
 public class JoiningScreen implements Screen {
@@ -38,7 +39,7 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.draw(batch);
 		batch.end();
 		
-		if(game.multiGame.isGameStarted())
+//		if(game.bcConfig.gameMode == GameMode.BLUETOOTH) && game.multiGame.isGameStarted())
 			game.setScreen(game.gameScreen);
 	}
 

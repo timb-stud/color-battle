@@ -145,12 +145,12 @@ public class GameScreen implements Screen, Observer {
 		}
 
 		
-		if (netSvc != null){
+		//if (netSvc != null){
 			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
 				playerSimulation.update(player);
 				sendPosition();
 			}
-		}
+		//}
 	}
 
 	private void sendPosition() {
