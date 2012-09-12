@@ -34,6 +34,7 @@ public class GameScreen implements Screen, Observer {
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
+	private float extrapolatingTimer = 0;
 	
 	private CountDown countDown;
 	private long endTime;
@@ -136,8 +137,10 @@ public class GameScreen implements Screen, Observer {
 		//	colorFrameBuffer.dispose();
 		}
 
-		
-		if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
+		extrapolatingTimer += Gdx.graphics.getDeltaTime() * 1000;
+		Gdx.app.log("ET",  extrapolatingTimer + " ms");
+		if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall || extrapolatingTimer > 100){
+			extrapolatingTimer = 0;
 			playerSimulation.update(player);
 			sendPosition();
 		}
