@@ -43,7 +43,8 @@ public class GameScreen implements Screen, Observer {
 	private long endTime;
 	private boolean gameEnd = false;
 	private boolean scoreComputed = false;
-	private Texture endTexture;
+	public Texture endTexture;
+	private LinkedList<Player> playerList = new LinkedList<Player>();
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -60,15 +61,17 @@ public class GameScreen implements Screen, Observer {
 		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
+		
 		player = new Player(Color.BLUE, playerWidth / 2);
-		player.x = width / 2 - playerWidth / 2;
-		player.y = height / 2 - playerHeight / 2;
-
 		playerSimulation = new PlayerSimulation(player);
-
 		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
-		otherPlayer.x = width / 2 - playerWidth / 2;
-		otherPlayer.y = height / 2 - playerHeight / 2;
+
+		playerList.add(player);
+		playerList.add(otherPlayer);
+		for (Player p : playerList){
+			p.x = width / 2 - playerWidth / 2;
+			p.y = height / 2 - playerHeight / 2;
+		}
 
 		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
@@ -127,11 +130,12 @@ public class GameScreen implements Screen, Observer {
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
 		}
 		if (gameEnd){	
+			enterPlayerList();
 			game.setScreen(game.gameEndScreen);
 			if (scoreComputed){
 				if (endTexture != null){
 					batch.begin();
-					batch.draw(endTexture, 100, 50);
+//					batch.draw(endTexture, 100, 50);
 					batch.end();
 				}
 			}else {
@@ -222,11 +226,13 @@ public class GameScreen implements Screen, Observer {
 		//Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
 		return gr.getScoreScreen(batch);
 	}
-	public LinkedList<Player> getPlayerList(){
-		LinkedList<Player> playerList = new LinkedList<Player>();
-		playerList.add(player);
-		playerList.add(otherPlayer);
-		
+	
+	private void enterPlayerList(){
+		this.playerList.add(player);
+		this.playerList.add(otherPlayer);
+	}
+	
+	public LinkedList<Player> getPlayerList(){		
 		return playerList;
 	}
 

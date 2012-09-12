@@ -60,6 +60,21 @@ public class MultigameLogic implements Observer{
 	
 	private void addPlayerToGame(PlayerSimulation player){
 		//TODO set start position of player
+		//TODO set player color
+		switch (joinedPlayers) {
+		case 2: //unten rechts
+				// player.x = 
+				// player.y = 
+			break;
+		case 3: //oben rechts
+				// player.x = 
+				// player.y = 
+			break;
+		case 4: //unten links
+				// player.x = 
+				// player.y = 
+			break;
+		}
 		playerList.add(player);
 	}
 	
@@ -96,8 +111,8 @@ public class MultigameLogic implements Observer{
 		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
 			Gdx.app.debug("Multiplayer Game", "new player try to join game");
 			PlayerSimulation player = (PlayerSimulation) obj;
-			addPlayerToGame(player);
 			joinedPlayers++;
+			addPlayerToGame(player);
 			checkIfGameCanStart();
 		}
 	}
