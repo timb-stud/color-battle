@@ -25,7 +25,7 @@ public class Player extends PlayerSimulation {
 		colorPixmap.dispose();
 		this.color = color;
 	}
-
+	
 	public void setColor(Color color) {
 		this.color = color;
 	}

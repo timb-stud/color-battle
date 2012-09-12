@@ -1,7 +1,6 @@
 package de.htw.colorbattle;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Application;
@@ -31,9 +30,8 @@ public class GameScreen implements Screen {
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
-	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, PlayerSimulation> playerMap;
+	private HashMap<Integer, Player> playerMap;
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
@@ -44,7 +42,6 @@ public class GameScreen implements Screen {
 	private boolean gameEnd = false;
 	private boolean scoreComputed = false;
 	private Texture endTexture;
-	private int playerListIndex = 0; //TODO set right id
 	
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -63,13 +60,12 @@ public class GameScreen implements Screen {
 		int playerHeight = playerTexture.getHeight();
 		
 		player = new Player(Color.BLUE, playerWidth / 2);
-		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
 		playerSimulation = new PlayerSimulation(player);
 
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		
-		playerMap = new HashMap<Integer, PlayerSimulation>();
+		playerMap = new HashMap<Integer, Player>();
 
 		if (game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
@@ -79,9 +75,6 @@ public class GameScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		HashMap<Integer, PlayerSimulation> playerMapCopy = new HashMap<Integer, PlayerSimulation>();
-		playerMapCopy.putAll(playerMap);
-		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				
@@ -91,10 +84,10 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 			batch.begin();
 				batch.draw(player.colorTexture, player.x, player.y);
-				for (PlayerSimulation ps : playerMap.values()){
-					otherPlayer.update(ps);
-					batch.draw(otherPlayer.colorTexture, ps.x, ps.y);
+				for (Player p : playerMap.values()){
+					batch.draw(p.colorTexture, p.x, p.y);
 				}
+				batch.draw(player.colorTexture, player.x, player.y);
 			batch.end();
 		colorFrameBuffer.end();
 
@@ -104,9 +97,10 @@ public class GameScreen implements Screen {
 		batch.begin();
 			batch.draw(flipper, 0, 0);
 			batch.draw(playerTexture, player.x, player.y);
-			for (PlayerSimulation ps : playerMap.values()){
-				batch.draw(playerTexture, ps.x, ps.y);
+			for (Player p : playerMap.values()){
+				batch.draw(playerTexture, p.x, p.y);
 			}
+			batch.draw(playerTexture, player.x, player.y);
 			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
@@ -124,11 +118,14 @@ public class GameScreen implements Screen {
 		playerSimulation.move();
 		gameBorder.handelCollision(player);
 		gameBorder.handelCollision(playerSimulation);
-		for (PlayerSimulation ps : playerMap.values()){
-			otherPlayer.update(ps);
-			otherPlayer.move();
-			gameBorder.handelCollision(otherPlayer);
+		for (Player p : playerMap.values()){
+			p.move();
+			gameBorder.handelCollision(p);
 		}
+		player.move();
+		playerSimulation.move();
+		gameBorder.handelCollision(player);
+		gameBorder.handelCollision(playerSimulation);
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
@@ -211,9 +208,8 @@ public class GameScreen implements Screen {
 	public Texture computeScore() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		for (PlayerSimulation ps : playerMap.values()){
-			otherPlayer.update(ps);
-			playerList.add(otherPlayer);
+		for (Player p : playerMap.values()){
+			playerList.add(p);
 		}
 
 		GameResult gr = new GameResult(playerList);
@@ -225,9 +221,8 @@ public class GameScreen implements Screen {
 	public LinkedList<Player> getPlayerList(){
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		for (PlayerSimulation ps : playerMap.values()){
-			otherPlayer.update(ps);
-			playerList.add(otherPlayer);
+		for (Player p : playerMap.values()){
+			playerList.add(p);
 		}
 		
 		return playerList;
@@ -241,11 +236,12 @@ public class GameScreen implements Screen {
 		this.playerSimulation = playerSimulation;
 	}
 
-	public HashMap<Integer, PlayerSimulation> getPlayerMap() {
+	public HashMap<Integer, Player> getPlayerMap() {
 		return playerMap;
 	}
 
-	public void setPlayerMap(HashMap<Integer, PlayerSimulation> playerMap) {
+	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
+		
 		this.playerMap = playerMap;
 	}
 	
