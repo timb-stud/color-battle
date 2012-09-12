@@ -70,10 +70,11 @@ public class MainMenuScreen implements Screen {
 				} else {
 					game.bluetoothActionResolver.connect();
 				}
-				game.setScreen(game.joiningScreen);
+				//game.setScreen(game.joiningScreen);
 			} else if (startServerSprite.isTouched()) {
 				startServerSprite.resetIsTouched();
-				game.setScreen(game.selectplayerScreen);
+				//game.setScreen(game.selectplayerScreen);
+				game.bluetoothActionResolver.startServer();
 			} else if (exitGameSprite.isTouched()) {
 				Gdx.app.exit();
 			}
@@ -81,7 +82,7 @@ public class MainMenuScreen implements Screen {
 			Gdx.app.error("Network Service", "Mainmenu sending problem");
 		}
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 	}

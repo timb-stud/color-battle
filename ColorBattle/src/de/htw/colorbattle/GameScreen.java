@@ -53,8 +53,7 @@ public class GameScreen implements Screen, Observer {
 		height = (int) this.game.camera.viewportHeight;
 		batch = new SpriteBatch();
 
-		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height,
-				false);
+		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 
@@ -63,15 +62,15 @@ public class GameScreen implements Screen, Observer {
 		int playerHeight = playerTexture.getHeight();
 		
 		player = new Player(Color.BLUE, playerWidth / 2);
+		player.x = 50;
+		player.y = 50;
 		playerSimulation = new PlayerSimulation(player);
 		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
+		otherPlayer.x = 600;
+		otherPlayer.y = 200;
 
 		playerList.add(player);
 		playerList.add(otherPlayer);
-		for (Player p : playerList){
-			p.x = width / 2 - playerWidth / 2;
-			p.y = height / 2 - playerHeight / 2;
-		}
 
 		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
@@ -166,6 +165,12 @@ public class GameScreen implements Screen, Observer {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception
 		}
+	}
+	
+	public void swapPlayers(){
+		Player buffer = player;
+		player = otherPlayer;
+		otherPlayer = buffer;
 	}
 
 	@Override

@@ -13,21 +13,25 @@ import de.htw.colorbattle.utils.SerializeUtils;
 
 public class BluetoothMultiplayer {
 	public static final int MESSAGE_READ = 1;
-	public static AcceptThread acceptThread;
-	public static ConnectThread connectThread;
+	public AcceptThread acceptThread;
+	public ConnectThread connectThread;
 	public ConnectionThread connectionThread;
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	private ColorBattleGame colorBattleGame;
+	private boolean  isServer = false;
 	
 	public BluetoothMultiplayer() {
-		this.acceptThread = new AcceptThread(this);
-		this.acceptThread.start();
 	}
 	
 	
 	public void manageConnectedSocket(BluetoothSocket socket) {
     	connectionThread = new ConnectionThread(socket, mHandler);
     	connectionThread.start();
+    	
+    	if(this.isServer){
+    		colorBattleGame.gameScreen.swapPlayers();
+    	}
+    	colorBattleGame.showGameScreen();
 	}
 	
 	public void setColorBattleGame(ColorBattleGame colorBattleGame) {
@@ -41,6 +45,12 @@ public class BluetoothMultiplayer {
 		BluetoothDevice device = bluetoothIterator.next();
 		connectThread = new ConnectThread(device, this);
 		connectThread.start();
+	}
+	
+	public void startServer(){
+		this.acceptThread = new AcceptThread(this);
+		this.acceptThread.start();
+		this.isServer = true;
 	}
 	
 	public void send(Object obj){

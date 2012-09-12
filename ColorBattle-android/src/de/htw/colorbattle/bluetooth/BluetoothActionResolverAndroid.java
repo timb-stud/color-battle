@@ -14,6 +14,10 @@ public class BluetoothActionResolverAndroid implements BluetoothActionResolver{
 		bluetoothMultiplayer.send(obj);
 	}
 	
+	public void startServer(){
+		bluetoothMultiplayer.startServer();
+	}
+	
 	public void connect(){
 		bluetoothMultiplayer.connect();
 	}

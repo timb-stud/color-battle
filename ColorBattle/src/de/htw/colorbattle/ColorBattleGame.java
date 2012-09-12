@@ -58,6 +58,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 		music.play();
 	}
 	
+	public void showGameScreen(){
+		setScreen(gameScreen);
+	}
+	
 	@Override
 	public void dispose() {
 		mainMenuScreen.dispose();
