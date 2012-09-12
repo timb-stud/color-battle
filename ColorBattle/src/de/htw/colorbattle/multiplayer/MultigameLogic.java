@@ -14,7 +14,6 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.utils.ToggleTask;
 
 public class MultigameLogic implements Observer{
 

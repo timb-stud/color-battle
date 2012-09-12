@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 			batch.begin();
 				batch.draw(player.colorTexture, player.x, player.y);
-				for (PlayerSimulation ps : playerMapCopy.values()){
+				for (PlayerSimulation ps : playerMap.values()){
 					otherPlayer.update(ps);
 					batch.draw(otherPlayer.colorTexture, ps.x, ps.y);
 				}
@@ -104,7 +104,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 			batch.draw(flipper, 0, 0);
 			batch.draw(playerTexture, player.x, player.y);
-			for (PlayerSimulation ps : playerMapCopy.values()){
+			for (PlayerSimulation ps : playerMap.values()){
 				batch.draw(playerTexture, ps.x, ps.y);
 			}
 			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
@@ -124,7 +124,7 @@ public class GameScreen implements Screen {
 		playerSimulation.move();
 		gameBorder.handelCollision(player);
 		gameBorder.handelCollision(playerSimulation);
-		for (PlayerSimulation ps : playerMapCopy.values()){
+		for (PlayerSimulation ps : playerMap.values()){
 			otherPlayer.update(ps);
 			otherPlayer.move();
 			gameBorder.handelCollision(otherPlayer);
