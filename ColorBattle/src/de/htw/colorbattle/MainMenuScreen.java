@@ -5,10 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import de.htw.colorbattle.config.GameMode;
-import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.multiplayer.MultigameLogic;
-
 public class MainMenuScreen implements Screen {
 	private ColorBattleGame game;
 	
@@ -61,25 +57,16 @@ public class MainMenuScreen implements Screen {
 		exitGameSprite.draw(batch);
 		batch.end();
 		
-		try {
-			if (joinGameSprite.isTouched()) {
-				joinGameSprite.resetIsTouched();
-				 if(game.bcConfig.gameMode == GameMode.WIFI){
-					game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
-					game.multiGame.joinGame();
-				} else {
-					game.bluetoothActionResolver.connect();
-					game.showJoiningScreen();
-				}
-			} else if (startServerSprite.isTouched()) {
-				startServerSprite.resetIsTouched();
-				game.bluetoothActionResolver.startServer();
-				game.showJoiningScreen();
-			} else if (exitGameSprite.isTouched()) {
-				Gdx.app.exit();
-			}
-		} catch (NetworkException e) {
-			Gdx.app.error("Network Service", "Mainmenu sending problem");
+		if (joinGameSprite.isTouched()) {
+			joinGameSprite.resetIsTouched();
+			game.bluetoothActionResolver.connect();
+			game.showJoiningScreen();
+		} else if (startServerSprite.isTouched()) {
+			startServerSprite.resetIsTouched();
+			game.bluetoothActionResolver.startServer();
+			game.showJoiningScreen();
+		} else if (exitGameSprite.isTouched()) {
+			Gdx.app.exit();
 		}
 	}
 	
