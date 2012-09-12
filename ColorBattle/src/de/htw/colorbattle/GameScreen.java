@@ -76,7 +76,6 @@ public class GameScreen implements Screen, Observer {
 		} 
 
 		countDown = new CountDown(Color.ORANGE, 480);
-
 	}
 
 	@Override
@@ -145,12 +144,12 @@ public class GameScreen implements Screen, Observer {
 		}
 
 		
-		//if (netSvc != null){
+		if (netSvc != null || game.bcConfig.gameMode == GameMode.BLUETOOTH){
 			if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall){
 				playerSimulation.update(player);
 				sendPosition();
 			}
-		//}
+		}
 	}
 
 	private void sendPosition() {

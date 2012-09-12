@@ -39,7 +39,9 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.draw(batch);
 		batch.end();
 		
-//		if(game.bcConfig.gameMode == GameMode.BLUETOOTH) && game.multiGame.isGameStarted())
+		if(game.bcConfig.gameMode == GameMode.BLUETOOTH)
+			game.setScreen(game.gameScreen);
+		else if (game.multiGame != null && game.multiGame.isGameStarted())
 			game.setScreen(game.gameScreen);
 	}
 
