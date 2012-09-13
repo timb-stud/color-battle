@@ -84,7 +84,8 @@ public class MultigameLogic implements Observer{
 			case 2: //unten rechts
 					// player.x = 
 					// player.y =
-				playerBuffer = new Player(Color.GREEN, 64 / 2); //TODO replace 64 with player width var
+				playerBuffer = new Player(Color.GREEN, 64 / 2); //‚TODO replace 64 with player width var
+//				playerBuffer = game.gameScreen.getOtherPlayer();
 				playerSim.setColorInt(Color.GREEN);
 				break;
 			case 3: //oben rechts
@@ -170,7 +171,7 @@ public class MultigameLogic implements Observer{
 	
 	private void updatePlayerMap(HashMap<Integer, Player> playerMap){
 		Player player = getOwnPlayer(playerMap);
-		game.gameScreen.setPlayer(player);
+		game.gameScreen.getPlayer().update(player);
 		game.gameScreen.getPlayerSimulation().update(player);
 		ownPlayer.id = player.id;
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");

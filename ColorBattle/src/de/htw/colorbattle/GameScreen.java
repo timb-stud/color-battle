@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
 		
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
-
+		
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		
@@ -265,6 +265,10 @@ public class GameScreen implements Screen {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	public Player getOtherPlayer() {
+		return otherPlayer;
 	}
 	
 	public void updateOtherPlayer(PlayerSimulation ps){
