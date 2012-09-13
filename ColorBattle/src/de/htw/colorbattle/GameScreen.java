@@ -39,6 +39,7 @@ public class GameScreen implements Screen, Observer {
 	private int height;
 	private float extrapolatingTimer = 0;
 	private boolean isServer;
+	private float powerUpTimer = 0;
 	
 	private CountDown countDown;
 	private long endTime;
@@ -60,7 +61,6 @@ public class GameScreen implements Screen, Observer {
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		powerUp = new PowerUp(0, 0, 64, 64);
-		powerUp.isVisible = true;
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		
 		gameBorder = new GameBorder(width, height);
@@ -94,8 +94,7 @@ public class GameScreen implements Screen, Observer {
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 		if(powerUp.isVisible && powerUp.isPickedUpBy(player)) {
 			batch.draw(powerUp.getBombTexture(player.color), powerUp.rect.x - powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-			powerUp.shufflePosition();
-			powerUp.shuffleType();
+			powerUp.isVisible = false;
 		}
 		batch.end();
 		colorFrameBuffer.end();
@@ -151,9 +150,16 @@ public class GameScreen implements Screen, Observer {
 		//	player.dispose();
 		//	colorFrameBuffer.dispose();
 		}
+		
+		powerUpTimer += Gdx.graphics.getDeltaTime();
+		if(powerUpTimer > 5){
+			powerUpTimer = 0;
+			powerUp.shufflePosition();
+			powerUp.shuffleType();
+			powerUp.isVisible = true;
+		}
 
 		extrapolatingTimer += Gdx.graphics.getDeltaTime() * 1000;
-		Gdx.app.log("ET",  extrapolatingTimer + " ms");
 		if(playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall || extrapolatingTimer > 100){
 			extrapolatingTimer = 0;
 			playerSimulation.update(player);
