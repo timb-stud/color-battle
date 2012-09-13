@@ -1,8 +1,8 @@
 package de.htw.colorbattle;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -25,15 +25,16 @@ import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
 
-public class GameScreen implements Screen, Observer {
+public class GameScreen implements Screen {
 	private ColorBattleGame game;
 	private SpriteBatch batch;
 	private Texture playerTexture;
 	private FrameBuffer colorFrameBuffer;
 	private TextureRegion flipper;
 	private Player player;
-	private PlayerSimulation playerSimulation;
 	private Player otherPlayer;
+	private PlayerSimulation playerSimulation;
+	private HashMap<Integer, Player> playerMap;
 	private GameBorder gameBorder;
 	private int width;
 	private int height;
@@ -62,22 +63,21 @@ public class GameScreen implements Screen, Observer {
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 		
-		player = new Player(Color.BLUE, playerWidth / 2);
+		player = new Player(Color.GREEN, playerWidth / 2);
+		player.setColorInt(Color.GREEN);
 		playerSimulation = new PlayerSimulation(player);
-		otherPlayer = new Player(Color.GREEN, playerWidth / 2);
-
-		playerList.add(player);
-		playerList.add(otherPlayer);
-		for (Player p : playerList){
-			p.x = width / 2 - playerWidth / 2;
-			p.y = height / 2 - playerHeight / 2;
-		}
+		
+		otherPlayer = new Player(Color.RED, playerWidth / 2);
+		otherPlayer.setColorInt(Color.RED);
+		
+		player.x = width / 2 - playerWidth / 2;
+		player.y = height / 2 - playerHeight / 2;
+		
+		playerMap = new HashMap<Integer, Player>();
 
 		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
-			netSvc.addObserver(this);
-		} 
-
+		}
 		countDown = new CountDown(Color.ORANGE, 480);
 	}
 
@@ -90,22 +90,26 @@ public class GameScreen implements Screen, Observer {
 		batch.setProjectionMatrix(game.camera.combined);
 
 		colorFrameBuffer.begin();
-		batch.begin();
-		batch.draw(player.colorTexture, player.x, player.y);
-		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		batch.end();
+			batch.begin();
+				batch.draw(player.colorTexture, player.x, player.y);
+//				for (Player p : playerMap.values()){
+//					batch.draw(p.colorTexture, p.x, p.y);
+//				}
+				batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
+			batch.end();
 		colorFrameBuffer.end();
 
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 
 		batch.begin();
-		batch.draw(flipper, 0, 0);
-		batch.draw(playerTexture, player.x, player.y);
-		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
-
-		batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
-
+			batch.draw(flipper, 0, 0);
+			batch.draw(playerTexture, player.x, player.y);
+//			for (Player p : playerMap.values()){
+//				batch.draw(playerTexture, p.x, p.y);
+//			}
+			batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
+			batch.draw(countDown.countDownTexture, countDown.x, countDown.y);
 		batch.end();
 
 		Accelerometer.updateDirection(player.direction);
@@ -119,12 +123,16 @@ public class GameScreen implements Screen, Observer {
 			player.x += player.speed * Gdx.graphics.getDeltaTime();
 
 		player.move();
-		playerSimulation.move();
-		otherPlayer.move();
-
 		gameBorder.handelCollision(player);
-		gameBorder.handelCollision(otherPlayer);
+		playerSimulation.move();
 		gameBorder.handelCollision(playerSimulation);
+//		for (Player p : playerMap.values()){
+//			p.move();
+//			gameBorder.handelCollision(p);
+//		}
+		otherPlayer.move();
+		gameBorder.handelCollision(otherPlayer);
+
 		
 		if (!gameEnd){
 			gameEnd = countDown.activateCountDown(endTime, game.bcConfig.gameTime);
@@ -203,23 +211,18 @@ public class GameScreen implements Screen, Observer {
 		// never called automatically!!!
 		playerTexture.dispose();
 		player.dispose();
+		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 	}
 
-	@Override
-	public void update(Observable obs, Object obj) {
-		if (obj instanceof PlayerSimulation) {
-			PlayerSimulation ps = (PlayerSimulation) obj;
-			// Gdx.app.debug("Player Info", pm.toString());
-			otherPlayer.update(ps);
-		}
-	}
 
 	public Texture computeScore() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		playerList.add(otherPlayer);
+		for (Player p : playerMap.values()){
+			playerList.add(p);
+		}
 
 		GameResult gr = new GameResult(playerList);
 		//System.out.println(gr.getScoredPlayerList().toString());
@@ -229,7 +232,9 @@ public class GameScreen implements Screen, Observer {
 	
 	private void enterPlayerList(){
 		this.playerList.add(player);
-		this.playerList.add(otherPlayer);
+		for(Player p : playerMap.values()){
+			this.playerList.add(p);
+		}
 	}
 	
 	public LinkedList<Player> getPlayerList(){		
@@ -243,5 +248,30 @@ public class GameScreen implements Screen, Observer {
 	public void setPlayerSimulation(PlayerSimulation playerSimulation) {
 		this.playerSimulation = playerSimulation;
 	}
+
+	public HashMap<Integer, Player> getPlayerMap() {
+		return playerMap;
+	}
+
+	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
+		Iterator<Player> i = playerMap.values().iterator();
+		this.otherPlayer.update(i.next()); //TODO only for playing with 2 players
+		this.playerMap = playerMap;
+	}
 	
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
+	public Player getOtherPlayer() {
+		return otherPlayer;
+	}
+	
+	public void updateOtherPlayer(PlayerSimulation ps){
+		otherPlayer.update(ps);
+	}
 }

@@ -65,7 +65,7 @@ public class MainMenuScreen implements Screen {
 			if (joinGameSprite.isTouched()) {
 				joinGameSprite.resetIsTouched();
 				 if(game.bcConfig.gameMode == GameMode.WIFI){
-					game.multiGame = new MultigameLogic(game.bcConfig, false, game.gameScreen.getPlayerSimulation());
+					 game.multiGame = new MultigameLogic(game, false);
 					game.multiGame.joinGame();
 				} else {
 					game.bluetoothActionResolver.connect();
