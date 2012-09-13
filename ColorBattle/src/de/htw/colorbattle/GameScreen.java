@@ -81,6 +81,13 @@ public class GameScreen implements Screen {
 		countDown = new CountDown(Color.ORANGE, 480);
 	}
 
+	public void swapPlayers(){
+		Player buffer = player;
+		player = otherPlayer;
+		otherPlayer = buffer;
+	}
+
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);

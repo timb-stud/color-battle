@@ -41,6 +41,9 @@ public class MultigameLogic implements Observer{
 			this.joinedPlayers = 1; //1 for own Player
 			this.ownPlayer = game.gameScreen.getPlayer();
 			
+			if(isServer)
+				game.gameScreen.swapPlayers();
+			
 			if (playerCount == 1){ //TODO only needed to test with one device. can be removed in final version
 				Player playerBuffer = new Player(Color.MAGENTA, 64 / 2);
 				playerBuffer.update(ownPlayer);
@@ -57,6 +60,8 @@ public class MultigameLogic implements Observer{
 	
 	public void startServer(){
 		ownPlayer.id = joinedPlayers;
+		ownPlayer.x = 50;
+		ownPlayer.y = 50;
 		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
 		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 	}
@@ -82,10 +87,9 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
-					// player.x = 
-					// player.y =
+				playerSim.x = 600;
+				playerSim.y = 200;
 				playerBuffer = new Player(Color.GREEN, 64 / 2); //‚TODO replace 64 with player width var
-//				playerBuffer = game.gameScreen.getOtherPlayer();
 				playerSim.setColorInt(Color.GREEN);
 				break;
 			case 3: //oben rechts
@@ -154,6 +158,7 @@ public class MultigameLogic implements Observer{
 		if(obj instanceof StartGameMsg) {
 			StartGameMsg startGameMsg = (StartGameMsg) obj;
 			updatePlayerMap(startGameMsg.getPlayerMap());
+			
 			isGameStarted = true;
 			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
 		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
