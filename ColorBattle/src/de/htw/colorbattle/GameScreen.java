@@ -56,6 +56,8 @@ public class GameScreen implements Screen, Observer {
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		powerUp = new PowerUp(0, 0, 64, 64);
+		powerUp.isVisible = true;
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		
 		gameBorder = new GameBorder(width, height);
@@ -83,17 +85,14 @@ public class GameScreen implements Screen, Observer {
 		game.camera.update();
 		batch.setProjectionMatrix(game.camera.combined);
 		
-		if(powerUp == null) {
-			powerUp = new PowerUp(64, 64);
-		}
-
 		colorFrameBuffer.begin();
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		if(powerUp.isPickedUpBy(player)) {
+		if(powerUp.isVisible && powerUp.isPickedUpBy(player)) {
 			batch.draw(powerUp.getBombTexture(player.color), powerUp.rect.x - powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-			powerUp = null;
+			powerUp.shufflePosition();
+			powerUp.shuffleType();
 		}
 		batch.end();
 		colorFrameBuffer.end();
@@ -105,7 +104,7 @@ public class GameScreen implements Screen, Observer {
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
-		if(powerUp != null) {
+		if(powerUp.isVisible) {
 			batch.draw(powerUpTexture, powerUp.rect.x, powerUp.rect.y);
 		}
 		batch.draw(countDown.countDownTexture, countDown.x, countDown.y);

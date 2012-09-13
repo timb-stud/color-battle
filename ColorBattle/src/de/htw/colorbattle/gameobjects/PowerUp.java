@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 
 public class PowerUp {
-	public boolean isTaken;
+	public boolean isVisible;
 	public Type type;
 	public Rectangle rect;
 	private Rectangle playerRect;
@@ -16,24 +16,12 @@ public class PowerUp {
 	public enum Type {BOMB, INVERT}
 	
 
-	public PowerUp(int width, int height) {
+	public PowerUp(int x, int y, int width, int height) {
 		super();
-		isTaken = false;
-		float x = (float)Math.random() * 800;
-		if(x + width > 800){
-			x = 800 - width;
-		}
-		float y = (float)Math.random() * 480;
-		if(y + height > 480){
-			y = 480 - height;
-		}
+		isVisible = false;
 		rect = new Rectangle(x, y, width, height);
 		playerRect = new Rectangle();
-		if(Math.random() < 0.5){
-			type = Type.BOMB;
-		}else {
-			type = Type.INVERT;
-		}
+		shuffleType();
 	}
 	
 	public boolean isPickedUpBy(Player player) {
@@ -54,6 +42,27 @@ public class PowerUp {
 		Texture texture = new Texture(pixmap);	
 		pixmap.dispose();
 		return texture;
+	}
+	
+	public void shufflePosition(){
+		float x = (float)Math.random() * 800;
+		if(x + rect.width > 800){
+			x = 800 - rect.width;
+		}
+		float y = (float)Math.random() * 480;
+		if(y + rect.height > 480){
+			y = 480 - rect.height;
+		}
+		rect.x = x;
+		rect.y = y;
+	}
+	
+	public void shuffleType(){
+		if(Math.random() < 0.5){
+			type = Type.BOMB;
+		}else {
+			type = Type.INVERT;
+		}
 	}
 	
 }
