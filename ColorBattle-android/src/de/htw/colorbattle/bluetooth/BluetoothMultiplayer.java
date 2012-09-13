@@ -65,6 +65,10 @@ public class BluetoothMultiplayer {
 		Log.d("BT", "receive: " + obj.toString());
 	}
 	
+	public boolean isServer(){
+		return isServer;
+	}
+	
     public final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

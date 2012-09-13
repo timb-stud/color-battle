@@ -38,6 +38,7 @@ public class GameScreen implements Screen, Observer {
 	private int width;
 	private int height;
 	private float extrapolatingTimer = 0;
+	private boolean isServer;
 	
 	private CountDown countDown;
 	private long endTime;
@@ -52,6 +53,8 @@ public class GameScreen implements Screen, Observer {
 		width = (int) this.game.camera.viewportWidth;
 		height = (int) this.game.camera.viewportHeight;
 		batch = new SpriteBatch();
+		
+		isServer = game.bluetoothActionResolver.isServer();
 
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height, false);
 		flipper = new TextureRegion();
