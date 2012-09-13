@@ -154,9 +154,7 @@ public class GameScreen implements Screen, Observer {
 		powerUpTimer += Gdx.graphics.getDeltaTime();
 		if(powerUpTimer > 5){
 			powerUpTimer = 0;
-			powerUp.shufflePosition();
-			powerUp.shuffleType();
-			powerUp.isVisible = true;
+			powerUp.spawn();
 		}
 
 		extrapolatingTimer += Gdx.graphics.getDeltaTime() * 1000;

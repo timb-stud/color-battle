@@ -65,4 +65,10 @@ public class PowerUp {
 		}
 	}
 	
+	public void spawn(){
+		shufflePosition();
+		shuffleType();
+		isVisible = true;
+	}
+	
 }
