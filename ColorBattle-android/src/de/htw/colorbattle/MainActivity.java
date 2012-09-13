@@ -34,6 +34,7 @@ public class MainActivity extends AndroidApplication {
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         bcConfig.width = 800;
         bcConfig.height = 480;
+        bcConfig.isSinglePlayer = false;
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();        
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);

@@ -7,6 +7,6 @@ public class BattleColorConfig {
 	public int gameTime = 60;
 	public int width = 800;
 	public int height = 480;
-
+	public boolean isSinglePlayer = false;
 }
 

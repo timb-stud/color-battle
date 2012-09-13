@@ -37,7 +37,11 @@ public class ColorBattleGame extends Game implements InputProcessor {
 		joiningScreen = new JoiningScreen(this);
 		gameEndScreen = new GameEndScreen(this);
 		
-		this.setScreen(mainMenuScreen);
+		if(bcConfig.isSinglePlayer){
+			this.setScreen(gameScreen);
+		} else {
+			this.setScreen(mainMenuScreen);
+		}
 	}
 	
 	public void playSound() {
