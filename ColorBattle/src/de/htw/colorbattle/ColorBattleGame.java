@@ -23,6 +23,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
 	public GameEndScreen gameEndScreen;
+	public SplashScreen splashScreen;
 	public BluetoothActionResolver bluetoothActionResolver;
 	
 	public ColorBattleGame(BattleColorConfig bcConfig, BluetoothActionResolver bluetoothActionResolver){
@@ -42,8 +43,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
+			splashScreen = new SplashScreen(this);
 			
-			this.setScreen(mainMenuScreen);
+//			this.setScreen(mainMenuScreen);
+			this.setScreen(splashScreen);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);
 			e.printStackTrace();
