@@ -63,9 +63,13 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	
 	@Override
 	public void dispose() {
+		super.dispose();
 		mainMenuScreen.dispose();
 		gameScreen.dispose();
-		super.dispose();
+		joiningScreen.dispose();
+		splashScreen.dispose();
+		gameEndScreen.dispose();
+		selectplayerScreen.dispose();
 	}
 
 	@Override
