@@ -1,6 +1,12 @@
 package de.htw.colorbattle;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -17,6 +23,9 @@ public class MainActivity extends AndroidApplication {
 	private ColorBattleGame colorBattleGame;
 	BluetoothMultiplayer bluetoothMultiplayer;
 	BluetoothActionResolverAndroid bluetoothActionResolverAndroid;
+	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+	
+	private static final int REQUEST_ENABLE_BT = 3;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,6 @@ public class MainActivity extends AndroidApplication {
     
     
     private boolean isBluetoothEnabled(){
-    	BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     	if(mBluetoothAdapter == null) //device doesn't support bluetooth
     		return false;
     	return mBluetoothAdapter.isEnabled();
@@ -54,6 +62,7 @@ public class MainActivity extends AndroidApplication {
     @Override
     protected void onStart() {
     	super.onStart();
+    	enableBluetoothQuestion();
     }
     
     @Override
@@ -61,4 +70,11 @@ public class MainActivity extends AndroidApplication {
     	super.onStop();
     }
     
+    private void enableBluetoothQuestion(){
+        // If BT is not on, request that it be enabled.
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        }
+    }
 }
