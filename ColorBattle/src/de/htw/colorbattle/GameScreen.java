@@ -39,7 +39,7 @@ public class GameScreen implements Screen {
 	private int width;
 	private int height;
 	private NetworkService netSvc;
-	
+	private Texture wallpaper;
 	private CountDown countDown;
 	private long endTime;
 	private boolean gameEnd = false;
@@ -110,6 +110,7 @@ public class GameScreen implements Screen {
 		flipper.flip(false, true);
 
 		batch.begin();
+			batch.draw(wallpaper, 0, 0);
 			batch.draw(flipper, 0, 0);
 			batch.draw(playerTexture, player.x, player.y);
 //			for (Player p : playerMap.values()){
@@ -196,7 +197,7 @@ public class GameScreen implements Screen {
 			game.playSound();
 		}
 		// called when this screen is set as the screen with game.setScreen();
-
+		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 	}
 
 	@Override
