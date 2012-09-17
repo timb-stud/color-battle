@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 	private Player player;
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client auf dem aktuellen Stand sein um Endscrren anzuzeigen
+	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client auf dem aktuellen Stand sein um Endscreen korrekt anzuzeigen
 	private NetworkService netSvc;
 	
 	// Game End Elements
