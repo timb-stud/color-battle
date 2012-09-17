@@ -28,6 +28,10 @@ public class GameResult {
 	private static final int WINDOW_WIDTH = 600;
 	
 
+	/**
+	 * generiert aus der aktuellen Ansicht ein Spielergebnis
+	 * @param playersList
+	 */
 	public GameResult(LinkedList<Player> playersList) {
 		this.playerList = playersList;
 		computeScore();
