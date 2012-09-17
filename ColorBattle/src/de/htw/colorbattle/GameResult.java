@@ -25,7 +25,7 @@ public class GameResult {
 	private static final int BAR_MAX_WIDTH = 1100;
 
 	private static final int WINDOW_HEIGHT = 350;
-	private static final int WINDOW_WIDTH = 600;
+	private static final int WINDOW_WIDTH = 550;
 	
 
 	/**

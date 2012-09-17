@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+
+import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
@@ -21,6 +23,8 @@ import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
+import de.htw.colorbattle.menuscreens.GameEndScreenNew;
+import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.network.NetworkService;
 
 public class GameScreen implements Screen {
@@ -138,9 +142,16 @@ public class GameScreen implements Screen {
 			gameEnd = countDown.activateCountDown(endTime,
 					game.bcConfig.gameTime);
 		} else {
-			game.gameEndScreen.setGameresult(this.getGameResult());
-			game.setScreen(game.gameEndScreen);
-			// TODO von andy: ich kanns net testen wegen TaskManager / Neustart bug...
+			if (!BattleColorConfig.ueberarbeitetesMenu) {// TODO irgendwann komplett umstellen
+				game.gameEndScreen.setGameresult(this.getGameResult());
+				game.setScreen(game.gameEndScreen);
+			} else {
+				GameEndScreenNew gen = new GameEndScreenNew(game);
+				gen.setGameresult(this.getGameResult());
+				game.setScreen(gen);
+			}
+			
+			// TODO von andy: dispose hier! ich kanns net testen wegen TaskManager / Neustart bug...
 		}
 	}
 	
