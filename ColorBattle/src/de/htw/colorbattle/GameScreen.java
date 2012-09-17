@@ -26,26 +26,29 @@ import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.network.NetworkService;
 
 public class GameScreen implements Screen {
+	
 	private ColorBattleGame game;
+	// zeichnen und Screen
 	private SpriteBatch batch;
 	private Texture playerTexture;
 	private FrameBuffer colorFrameBuffer;
+	private GameBorder gameBorder;
+	private int width;
+	private int height;
+	private Texture wallpaper;
+	
+	//Players & Network
 	private TextureRegion flipper;
 	private Player player;
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, Player> playerMap;
-	private GameBorder gameBorder;
-	private int width;
-	private int height;
+	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client auf dem aktuellen Stand sein um Endscrren anzuzeigen
 	private NetworkService netSvc;
-	private Texture wallpaper;
+	
+	// Game End Elements
 	private CountDown countDown;
 	private long endTime;
 	private boolean gameEnd = false;
-	private boolean scoreComputed = false;
-	public Texture endTexture;
-	private LinkedList<Player> playerList = new LinkedList<Player>();
 
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
@@ -142,8 +145,7 @@ public class GameScreen implements Screen {
 			gameEnd = countDown.activateCountDown(endTime,
 					game.bcConfig.gameTime);
 		} else {
-			enterPlayerList();
-			game.gameEndScreen.setGameresult(getGameResult());
+			game.gameEndScreen.setGameresult(this.getGameResult());
 			game.setScreen(game.gameEndScreen);
 			// TODO ab hier kann man alles disposen
 		}
@@ -161,33 +163,23 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * liest die Player aus der playerMap und erzeug das Spielergebnis für den
+	 * aktuellen Screen
+	 * 
+	 * @return
+	 */
 	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		for (Player p : playerMap.values()) {
 			playerList.add(p);
 		}
-
 		return new GameResult(playerList);
-	}
-
-	private void enterPlayerList() {
-		this.playerList.add(player);
-		for (Player p : playerMap.values()) {
-			this.playerList.add(p);
-		}
-	}
-
-	public LinkedList<Player> getPlayerList() {
-		return playerList;
 	}
 
 	public PlayerSimulation getPlayerSimulation() {
 		return playerSimulation;
-	}
-
-	public void setPlayerSimulation(PlayerSimulation playerSimulation) {
-		this.playerSimulation = playerSimulation;
 	}
 
 	public HashMap<Integer, Player> getPlayerMap() {
@@ -203,14 +195,6 @@ public class GameScreen implements Screen {
 
 	public Player getPlayer() {
 		return player;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	public Player getOtherPlayer() {
-		return otherPlayer;
 	}
 
 	public void updateOtherPlayer(PlayerSimulation ps) {
