@@ -129,35 +129,23 @@ public class GameScreen implements Screen {
 		otherPlayer.move();
 		gameBorder.handelCollision(otherPlayer);
 
-		
-		// Game End
-		if (!gameEnd) {
-			gameEnd = countDown.activateCountDown(endTime,
-					game.bcConfig.gameTime);
-		}else{
-			enterPlayerList();
-			game.setScreen(game.gameEndScreen);
-			if (scoreComputed) {
-				if (endTexture != null) {
-					batch.begin();
-					// batch.draw(endTexture, 100, 50);
-					batch.end();
-				}
-			} else {
-				this.endTexture = computeScore();
-				scoreComputed = true;
-			}
-			// playerTexture.dispose();
-			// player.dispose();
-			// colorFrameBuffer.dispose();
-		}
-
 		// NetworkCommunication
 		if (netSvc != null || game.bcConfig.gameMode == GameMode.BLUETOOTH) {
 			if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
 				playerSimulation.update(player);
 				sendPosition();
 			}
+		}
+
+		// Game End
+		if (!gameEnd) {
+			gameEnd = countDown.activateCountDown(endTime,
+					game.bcConfig.gameTime);
+		} else {
+			enterPlayerList();
+			game.gameEndScreen.setGameresult(getGameResult());
+			game.setScreen(game.gameEndScreen);
+			// TODO ab hier kann man alles disposen
 		}
 	}
 
@@ -173,17 +161,14 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public Texture computeScore() {
+	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		for (Player p : playerMap.values()) {
 			playerList.add(p);
 		}
 
-		GameResult gr = new GameResult(playerList);
-		// System.out.println(gr.getScoredPlayerList().toString());
-		// Gdx.app.debug("Player scores", gr.getScoredPlayerList().toString());
-		return gr.getScoreScreen(batch);
+		return new GameResult(playerList);
 	}
 
 	private void enterPlayerList() {
@@ -247,22 +232,23 @@ public class GameScreen implements Screen {
 	}
 
 	// ---------------------- down libgdx Elements ----------------------
-	
+
 	/**
-	 * Called when this screen becomes the current screen for a Game.
-	 * also einmal beim Spielstart!
+	 * Called when this screen becomes the current screen for a Game. also
+	 * einmal beim Spielstart!
 	 */
 	@Override
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
 		endTime = System.currentTimeMillis() / 1000 + game.bcConfig.gameTime;
-		
+
 		if (game.bcConfig.playSound) {
 			game.playSound();
 		}
 		// called when this screen is set as the screen with game.setScreen();
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
-		// TODO vllt kann man den Wallpaper direkt zeichnen auf das Element das nicht gelöscht wird , und nicht extra nochmal im render
+		// TODO vllt kann man den Wallpaper direkt zeichnen auf das Element das
+		// nicht gelöscht wird , und nicht extra nochmal im render
 	}
 
 	@Override

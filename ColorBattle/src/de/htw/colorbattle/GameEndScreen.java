@@ -20,7 +20,7 @@ public class GameEndScreen implements Screen {
     private Texture scoreTexture;
     private float width;
     private boolean scoreComputed = false;
-    
+    private GameResult gameresult;
    
 	public GameEndScreen(ColorBattleGame game) {
 		this.game = game;
@@ -57,7 +57,7 @@ public class GameEndScreen implements Screen {
 				batch.end();
 			}
 		}else {
-			this.scoreTexture = computeScore();
+			this.scoreTexture = gameresult.getScoreScreen(batch);
 			scoreComputed = true;
 		}
 		
@@ -67,6 +67,12 @@ public class GameEndScreen implements Screen {
 		}
 		
 	}
+	
+	public void setGameresult(GameResult gameresult) {
+		this.gameresult = gameresult;
+	}
+	
+	// ---------------------- down libgdx Elements ----------------------
 
 	@Override
 	public void resize(int width, int height) {
@@ -103,10 +109,4 @@ public class GameEndScreen implements Screen {
 		// TODO Auto-generated method stub
 		game.inputMultiplexer.removeProcessor(backSprite);
 	}
-	
-	private Texture computeScore(){
-		GameResult gr = new GameResult(game.gameScreen.getPlayerList());
-		return gr.getScoreScreen(batch);
-	}
-
 }
