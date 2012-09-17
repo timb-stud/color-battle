@@ -23,7 +23,7 @@ public class MainMenu implements Screen {
 	private TouchSprite btGameSprite;
 	private TouchSprite exitGameSprite;
 	private InputMultiplexer inputMulti;
-	
+
 	private Texture wallpaper;
 
 	public MainMenu(ColorBattleGame game) {
@@ -36,10 +36,10 @@ public class MainMenu implements Screen {
 		float width = BattleColorConfig.WIDTH;
 		float height = BattleColorConfig.HEIGHT;
 
-		//Grafikelemente anlegen
-		
+		// Grafikelemente anlegen
+
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
-		
+
 		wlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Button_WLAN.png"), ownCamera);
 		wlanGameSprite.setPosition((width - wlanGameSprite.getWidth()) / 2.0f,
@@ -72,16 +72,16 @@ public class MainMenu implements Screen {
 		ownBatch.begin();
 		ownBatch.draw(wallpaper, 0, 0);
 		btGameSprite.draw(ownBatch);
-		wlanGameSprite.draw(ownBatch);	
+		wlanGameSprite.draw(ownBatch);
 		exitGameSprite.draw(ownBatch);
 		ownBatch.end();
 
 		if (wlanGameSprite.isTouched()) {
-		//	wlanGameSprite.resetIsTouched(); // keine Ahnung für was man das brauchen soll
+			wlanGameSprite.resetIsTouched();
 			gameRef.setScreen(new WlanMenu(gameRef));
 			this.dispose();
 		} else if (btGameSprite.isTouched()) {
-		//	btGameSprite.resetIsTouched(); // keine Ahnung für was man das brauchen soll
+			btGameSprite.resetIsTouched();
 			gameRef.setScreen(new BluetoothMenu(gameRef));
 			this.dispose(); // wird noch ausgeführt
 		} else if (exitGameSprite.isTouched()) {
@@ -123,6 +123,6 @@ public class MainMenu implements Screen {
 		exitGameSprite = null;
 		inputMulti = null;
 		wallpaper.dispose();
-		//gameRef = null; // könnt ein Problem sein ...
+		// gameRef = null; // könnt ein Problem sein ...
 	}
 }

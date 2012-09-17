@@ -19,9 +19,11 @@ public class WlanMenu implements Screen {
 	private OrthographicCamera ownCamera;
 
 	// Buttons
-	private TouchSprite wlanGameSprite;
-	private TouchSprite btGameSprite;
-	private TouchSprite exitGameSprite;
+	private TouchSprite joinWlanGameSprite;
+	private TouchSprite open2PlWlanGameSprite;
+	private TouchSprite open3PlWlanGameSprite;
+	private TouchSprite open4PlWlanGameSprite;
+	private TouchSprite backSprite;
 	private InputMultiplexer inputMulti;
 
 	private Texture wallpaper;
@@ -40,26 +42,37 @@ public class WlanMenu implements Screen {
 
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 
-		wlanGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/Button_WLAN.png"), ownCamera);
-		wlanGameSprite.setPosition((width - wlanGameSprite.getWidth()) / 2.0f,
-				height - wlanGameSprite.getHeight());
+		joinWlanGameSprite = new TouchSprite(
+				Gdx.files.internal("menu/join_WLAN.png"), ownCamera);
+		joinWlanGameSprite.setPosition(
+				(width - joinWlanGameSprite.getWidth()) / 2.0f, 400.0f);
 
-		btGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/Button_BT.png"), ownCamera);
-		btGameSprite.setPosition((width - btGameSprite.getWidth()) / 2.0f,
-				(height - btGameSprite.getHeight()) / 2.0f);
+		open2PlWlanGameSprite = new TouchSprite(
+				Gdx.files.internal("menu/2P_WLAN.png"), ownCamera);
+		open2PlWlanGameSprite.setPosition(
+				(width - open2PlWlanGameSprite.getWidth()) / 2.0f, 300.0f);
 
-		exitGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/ExitGame.png"), ownCamera);
-		exitGameSprite.setPosition((width - exitGameSprite.getWidth()) / 2.0f,
-				0);
+		open3PlWlanGameSprite = new TouchSprite(
+				Gdx.files.internal("menu/3P_WLAN.png"), ownCamera);
+		open3PlWlanGameSprite.setPosition(
+				(width - open3PlWlanGameSprite.getWidth()) / 2.0f, 200.0f);
+
+		open4PlWlanGameSprite = new TouchSprite(
+				Gdx.files.internal("menu/4P_WLAN.png"), ownCamera);
+		open4PlWlanGameSprite.setPosition(
+				(width - open4PlWlanGameSprite.getWidth()) / 2.0f, 100.0f);
+
+		backSprite = new TouchSprite(Gdx.files.internal("menu/back_WLAN.png"),
+				ownCamera);
+		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, 0);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
-		inputMulti.addProcessor(wlanGameSprite);
-		inputMulti.addProcessor(btGameSprite);
-		inputMulti.addProcessor(exitGameSprite);
+		inputMulti.addProcessor(joinWlanGameSprite);
+		inputMulti.addProcessor(open2PlWlanGameSprite);
+		inputMulti.addProcessor(open3PlWlanGameSprite);
+		inputMulti.addProcessor(open4PlWlanGameSprite);
+		inputMulti.addProcessor(backSprite);
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
@@ -71,23 +84,37 @@ public class WlanMenu implements Screen {
 
 		ownBatch.begin();
 		ownBatch.draw(wallpaper, 0, 0);
-		// btGameSprite.draw(ownBatch);
-		wlanGameSprite.draw(ownBatch);
-		exitGameSprite.draw(ownBatch);
+		joinWlanGameSprite.draw(ownBatch);
+		open2PlWlanGameSprite.draw(ownBatch);
+		open3PlWlanGameSprite.draw(ownBatch);
+		open4PlWlanGameSprite.draw(ownBatch);
+		backSprite.draw(ownBatch);
 		ownBatch.end();
 
-		if (wlanGameSprite.isTouched()) {
-			// wlanGameSprite.resetIsTouched(); // keine Ahnung für was man das
-			// brauchen soll
-			gameRef.setScreen(new WlanMenu(gameRef));
+		if (joinWlanGameSprite.isTouched()) {
+			joinWlanGameSprite.resetIsTouched(); 
+
+			// TODO action,dispose
+
+		} else if (open2PlWlanGameSprite.isTouched()) {
+			open2PlWlanGameSprite.resetIsTouched(); 
+
+			// TODO action,dispose
+
+		} else if (open3PlWlanGameSprite.isTouched()) {
+			open3PlWlanGameSprite.resetIsTouched(); 
+			
+			// TODO action,dispose
+			
+		} else if (open4PlWlanGameSprite.isTouched()) {
+			open4PlWlanGameSprite.resetIsTouched(); 
+			
+			// TODO action,dispose
+			
+		} else if (backSprite.isTouched()) {
+			backSprite.resetIsTouched(); 
+			gameRef.setScreen(new MainMenu(gameRef));
 			this.dispose();
-		} else if (btGameSprite.isTouched()) {
-			// btGameSprite.resetIsTouched(); // keine Ahnung für was man das
-			// brauchen soll
-			gameRef.setScreen(new BluetoothMenu(gameRef));
-			this.dispose(); // wird noch ausgeführt
-		} else if (exitGameSprite.isTouched()) {
-			Gdx.app.exit();
 		}
 
 	}
@@ -117,12 +144,12 @@ public class WlanMenu implements Screen {
 	public void dispose() {
 		ownBatch.dispose();
 		ownCamera = null;
-		inputMulti.removeProcessor(wlanGameSprite);
-		inputMulti.removeProcessor(btGameSprite);
-		inputMulti.removeProcessor(exitGameSprite);
-		wlanGameSprite = null;
-		btGameSprite = null;
-		exitGameSprite = null;
+		inputMulti.removeProcessor(joinWlanGameSprite);
+		inputMulti.removeProcessor(open2PlWlanGameSprite);
+		inputMulti.removeProcessor(open3PlWlanGameSprite);
+		joinWlanGameSprite = null;
+		open2PlWlanGameSprite = null;
+		open3PlWlanGameSprite = null;
 		inputMulti = null;
 		wallpaper.dispose();
 	}
