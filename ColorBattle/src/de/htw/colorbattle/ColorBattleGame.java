@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
 
@@ -44,9 +45,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
 			splashScreen = new SplashScreen(this);
-			
+			MainMenu newmenu = new MainMenu(this);
 //			this.setScreen(mainMenuScreen);
 			this.setScreen(splashScreen);
+	//		this.setScreen(newmenu);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);
 			e.printStackTrace();
