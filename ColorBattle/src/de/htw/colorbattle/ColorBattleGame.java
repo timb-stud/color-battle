@@ -26,15 +26,16 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public GameEndScreen gameEndScreen;
 	public SplashScreen splashScreen;
 	public BluetoothActionResolver bluetoothActionResolver;
-	
-	public ColorBattleGame(BattleColorConfig bcConfig, BluetoothActionResolver bluetoothActionResolver){
+
+	public ColorBattleGame(BattleColorConfig bcConfig,
+			BluetoothActionResolver bluetoothActionResolver) {
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
 		this.bluetoothActionResolver = bluetoothActionResolver;
 	}
-	
+
 	@Override
 	public void create() {
 		try {
@@ -45,24 +46,26 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
 			splashScreen = new SplashScreen(this);
-			MainMenu newmenu = new MainMenu(this);
-//			this.setScreen(mainMenuScreen);
+
+			// this.setScreen(mainMenuScreen);
 			this.setScreen(splashScreen);
-	//		this.setScreen(newmenu);
+			// MainMenu newmenu = new MainMenu(this);
+			// this.setScreen(newmenu);
 		} catch (NetworkException e) {
-			Gdx.app.error("NetworkException", "ColorBattleGame: Can't create network connection.", e);
+			Gdx.app.error("NetworkException",
+					"ColorBattleGame: Can't create network connection.", e);
 			e.printStackTrace();
-			//TODO: handle exception
+			// TODO: handle exception
 		}
 	}
-	
+
 	public void playSound() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("background-music.mp3"));
 		music.setLooping(true);
 		music.setVolume(0.5f);
 		music.play();
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();

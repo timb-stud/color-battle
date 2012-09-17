@@ -29,12 +29,12 @@ public class BluetoothMenu implements Screen {
 	public BluetoothMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
-		this.ownCamera.setToOrtho(false, BattleColorConfig.width,
-				BattleColorConfig.height);
+		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
+				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		float width = BattleColorConfig.width;
-		float height = BattleColorConfig.height;
+		float width = BattleColorConfig.WIDTH;
+		float height = BattleColorConfig.HEIGHT;
 
 		// Grafikelemente anlegen
 
