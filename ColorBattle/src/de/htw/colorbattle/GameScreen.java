@@ -50,35 +50,38 @@ public class GameScreen implements Screen {
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		
+		//Spielfeld
 		width = (int) this.game.camera.viewportWidth;
 		height = (int) this.game.camera.viewportHeight;
 		batch = new SpriteBatch();
-
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height,
 				false);
+		gameBorder = new GameBorder(width, height);
+		countDown = new CountDown(Color.ORANGE, 480);		
+		
+		//Player Allgemein
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
-
-		gameBorder = new GameBorder(width, height);
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
+		playerMap = new HashMap<Integer, Player>();
 		
+		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-		playerSimulation = new PlayerSimulation(player);
-		
-		otherPlayer = new Player(Color.RED, playerWidth / 2);
-		otherPlayer.setColorInt(Color.RED);
-		
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 		
-		playerMap = new HashMap<Integer, Player>();
+		playerSimulation = new PlayerSimulation(player);
+		
+		otherPlayer = new Player(Color.RED, playerWidth / 2);
+		otherPlayer.setColorInt(Color.RED);			
 
 		if (game.bcConfig.gameMode == GameMode.WIFI && game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService.getInstance(game.bcConfig.multicastAddress, game.bcConfig.multicastPort);
 		}
-		countDown = new CountDown(Color.ORANGE, 480);
+		
 	}
 
 	public void swapPlayers(){
