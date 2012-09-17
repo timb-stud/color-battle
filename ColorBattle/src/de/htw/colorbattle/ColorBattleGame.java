@@ -3,17 +3,18 @@ package de.htw.colorbattle;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
+import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.SendInterface;
 
 public class ColorBattleGame extends Game implements InputProcessor, ApplicationListener {
 	public MainMenuScreen mainMenuScreen;
@@ -28,6 +29,7 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 	public GameEndScreen gameEndScreen;
 	public SplashScreen splashScreen;
 	public BluetoothActionResolver bluetoothActionResolver;
+	public SendInterface netSvc;
 
 	public ColorBattleGame(BattleColorConfig bcConfig,
 			BluetoothActionResolver bluetoothActionResolver) {
@@ -51,6 +53,10 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
 			splashScreen = new SplashScreen(this);
+
+			//create network connection
+			if (bcConfig.isWifiConnected)
+				this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
 
 			// this.setScreen(mainMenuScreen);
 			this.setScreen(splashScreen);

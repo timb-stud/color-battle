@@ -41,7 +41,6 @@ public class GameScreen implements Screen {
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
 	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client auf dem aktuellen Stand sein um Endscreen korrekt anzuzeigen
-	private NetworkService netSvc;
 	
 	// Game End Elements
 	private CountDown countDown;
@@ -78,15 +77,6 @@ public class GameScreen implements Screen {
 
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
-
-		//Network
-		if (game.bcConfig.gameMode == GameMode.WIFI
-				&& game.bcConfig.isWifiConnected) {
-			this.netSvc = NetworkService
-					.getInstance(game.bcConfig.multicastAddress,
-							game.bcConfig.multicastPort);
-		}
-
 	}
 
 	@Override
@@ -126,11 +116,9 @@ public class GameScreen implements Screen {
 		gameBorder.handelCollision(otherPlayer);
 
 		// NetworkCommunication
-		if (netSvc != null || game.bcConfig.gameMode == GameMode.BLUETOOTH) {
-			if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
-				playerSimulation.update(player);
-				sendPosition();
-			}
+		if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
+			playerSimulation.update(player);
+			sendPosition();
 		}
 
 		// Game End
@@ -153,7 +141,7 @@ public class GameScreen implements Screen {
 	private void sendPosition() {
 		try {
 			if (game.bcConfig.gameMode == GameMode.WIFI)
-				netSvc.send(playerSimulation);
+				game.netSvc.send(playerSimulation);
 			else
 				game.bluetoothActionResolver.send(playerSimulation);
 		} catch (NetworkException e) {
@@ -274,4 +262,5 @@ public class GameScreen implements Screen {
 		height = 0;
 		wallpaper.dispose(); */
 	}
+	
 }

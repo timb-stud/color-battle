@@ -20,7 +20,6 @@ public class MultigameLogic implements Observer{
 	int playerCount;
 	int joinedPlayers;
 	BattleColorConfig bcConfig;
-	NetworkService netSvc;
 	boolean isGameStarted;
 	boolean isServer;
 	Player ownPlayer;
@@ -31,8 +30,7 @@ public class MultigameLogic implements Observer{
 		this.game = game;
 		this.bcConfig = game.bcConfig;
 		if (bcConfig.isWifiConnected) {
-			this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
-			this.netSvc.addObserver(this);
+			game.netSvc.addObserver(this);
 			
 			this.isServer = isServer;
 			this.isGameStarted = false;
@@ -124,7 +122,7 @@ public class MultigameLogic implements Observer{
 					try{
 //						if(!toggleTask.toggleState()){
 //							toggleTask.setToggleState(true);
-							netSvc.send(ownPlayerSim);
+							game.netSvc.send(ownPlayerSim);
 							Gdx.app.debug("Multiplayer Game", "sent join msg");
 //						}
 					} catch (NetworkException e) {
@@ -146,7 +144,7 @@ public class MultigameLogic implements Observer{
 		
 		try
 		{
-			netSvc.send(start);
+			game.netSvc.send(start);
 			isGameStarted = true;
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send start message.", e);
