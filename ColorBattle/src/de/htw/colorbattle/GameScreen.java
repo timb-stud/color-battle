@@ -3,7 +3,6 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
@@ -81,6 +79,7 @@ public class GameScreen implements Screen {
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
 
+		//Network
 		if (game.bcConfig.gameMode == GameMode.WIFI
 				&& game.bcConfig.isWifiConnected) {
 			this.netSvc = NetworkService
@@ -88,12 +87,6 @@ public class GameScreen implements Screen {
 							game.bcConfig.multicastPort);
 		}
 
-	}
-
-	public void swapPlayers() {
-		Player buffer = player;
-		player = otherPlayer;
-		otherPlayer = buffer;
 	}
 
 	@Override
@@ -147,8 +140,14 @@ public class GameScreen implements Screen {
 		} else {
 			game.gameEndScreen.setGameresult(this.getGameResult());
 			game.setScreen(game.gameEndScreen);
-			// TODO ab hier kann man alles disposen
+			// TODO von andy: ich kanns net testen wegen TaskManager / Neustart bug...
 		}
+	}
+	
+	public void swapPlayers() {
+		Player buffer = player;
+		player = otherPlayer;
+		otherPlayer = buffer;
 	}
 
 	private void sendPosition() {
@@ -188,8 +187,7 @@ public class GameScreen implements Screen {
 
 	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
 		Iterator<Player> i = playerMap.values().iterator();
-		this.otherPlayer.update(i.next()); // TODO only for playing with 2
-											// players
+		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
 		this.playerMap = playerMap;
 	}
 
@@ -260,5 +258,20 @@ public class GameScreen implements Screen {
 		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
+		
+		// TODO von andy: ich kanns net testen wegen TaskManager / Neustart bug...
+		/*wallpaper.dispose();
+		countDown.dispose();
+		endTime = 0;
+		gameEnd = false; //das hier könnte ein Problem sein ev. wieder entfernen
+		playerSimulation = null;
+		playerMap = null;
+		flipper = null;
+		gameBorder = null;
+		game = null; //das hier könnte ein Problem sein ev. wieder entfernen
+		netSvc = null; //das hier könnte ein Problem sein ev. wieder entfernen
+		width = 0 ;
+		height = 0;
+		wallpaper.dispose(); */
 	}
 }
