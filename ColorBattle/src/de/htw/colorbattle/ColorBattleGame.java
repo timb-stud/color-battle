@@ -1,7 +1,9 @@
 package de.htw.colorbattle;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
@@ -13,8 +15,10 @@ import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
+import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.SendInterface;
 
-public class ColorBattleGame extends Game implements InputProcessor {
+public class ColorBattleGame extends Game implements InputProcessor, ApplicationListener {
 	public MainMenuScreen mainMenuScreen;
 	public SelectPlayerScreen selectplayerScreen;
 	public JoiningScreen joiningScreen;
@@ -27,6 +31,7 @@ public class ColorBattleGame extends Game implements InputProcessor {
 	public GameEndScreen gameEndScreen;
 	public SplashScreen splashScreen;
 	public BluetoothActionResolver bluetoothActionResolver;
+	public SendInterface netSvc;
 
 	public ColorBattleGame(BattleColorConfig bcConfig,
 			BluetoothActionResolver bluetoothActionResolver) {
@@ -39,6 +44,9 @@ public class ColorBattleGame extends Game implements InputProcessor {
 
 	@Override
 	public void create() {
+		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
+		
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			mainMenuScreen = new MainMenuScreen(this);
@@ -47,6 +55,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 			joiningScreen = new JoiningScreen(this);
 			gameEndScreen = new GameEndScreen(this);
 			splashScreen = new SplashScreen(this);
+
+			//create network connection
+			if (bcConfig.isWifiConnected)
+				this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
 
 			// this.setScreen(mainMenuScreen);
 
@@ -86,6 +98,10 @@ public class ColorBattleGame extends Game implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+	       if(keycode == Keys.BACK){
+//	    	  this.setScreen(mainMenuScreen); 
+	    	  Gdx.app.exit();
+	       }
 		return false;
 	}
 
