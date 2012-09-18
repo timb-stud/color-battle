@@ -59,9 +59,14 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 				this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
 
 			// this.setScreen(mainMenuScreen);
-			this.setScreen(splashScreen);
-			// MainMenu newmenu = new MainMenu(this);
-			// this.setScreen(newmenu);
+
+			if (!BattleColorConfig.ueberarbeitetesMenu) {// TODO irgendwann komplett umstellen
+				this.setScreen(splashScreen);
+			} else {
+				MainMenu newmenu = new MainMenu(this);
+				this.setScreen(newmenu);
+			}
+
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException",
 					"ColorBattleGame: Can't create network connection.", e);

@@ -1,7 +1,7 @@
 package de.htw.colorbattle.config;
 
 
-// TODO why Objekts .... make static
+// TODO why Objekts .... make static ... oder will da einer was zur laufzeit ändern
 public class BattleColorConfig {
 	public boolean isWifiConnected;
 	public String multicastAddress;
@@ -17,6 +17,7 @@ public class BattleColorConfig {
 	public  int height = 480;
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
+	public static boolean ueberarbeitetesMenu = false; // wollte keinen eigenen Branch, aber auch nichts kaputt machen habs auf die schnelle so gelöst
 
 }
 

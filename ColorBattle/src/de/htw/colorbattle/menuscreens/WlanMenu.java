@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.TouchSprite;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class WlanMenu implements Screen {
 
@@ -94,22 +96,30 @@ public class WlanMenu implements Screen {
 		if (joinWlanGameSprite.isTouched()) {
 			joinWlanGameSprite.resetIsTouched(); 
 
-			// TODO action,dispose
+			try {
+				gameRef.multiGame = new MultigameLogic(gameRef, false);
+				gameRef.multiGame.joinGame();
+				gameRef.setScreen(gameRef.joiningScreen); //TODO bessere Lösung
+				this.dispose();
+			} catch (NetworkException e) {
+				Gdx.app.error("Network Service", "WLANmenu sending problem on joining game");
+			}
+			
 
 		} else if (open2PlWlanGameSprite.isTouched()) {
 			open2PlWlanGameSprite.resetIsTouched(); 
-
-			// TODO action,dispose
+			this.startServer(2);
+			this.dispose();
 
 		} else if (open3PlWlanGameSprite.isTouched()) {
 			open3PlWlanGameSprite.resetIsTouched(); 
-			
-			// TODO action,dispose
+			this.startServer(3);
+			this.dispose();
 			
 		} else if (open4PlWlanGameSprite.isTouched()) {
 			open4PlWlanGameSprite.resetIsTouched(); 
-			
-			// TODO action,dispose
+			this.startServer(4);
+			this.dispose();
 			
 		} else if (backSprite.isTouched()) {
 			backSprite.resetIsTouched(); 
@@ -118,6 +128,20 @@ public class WlanMenu implements Screen {
 		}
 
 	}
+	
+	private void startServer(int players){
+		gameRef.bcConfig.multigamePlayerCount = players; // TODO gefällt mir gar nicht die config dafür zu nutzen .... ist ja keine laufzeit config
+		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
+		try {
+			gameRef.multiGame = new MultigameLogic(gameRef, true);
+			gameRef.multiGame.startServer();
+			gameRef.setScreen(gameRef.joiningScreen);
+		} catch (NetworkException e) {
+			Gdx.app.error("Network Service", "Mainmenu sending problem");
+		}
+		
+	}
+	
 
 	@Override
 	public void resize(int width, int height) {
