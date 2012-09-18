@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.htw.colorbattle.toast.Toast;
+
 public class SplashScreen implements Screen{
 	
     private SpriteBatch spriteBatch;
     private Texture splash;
     private ColorBattleGame game;
+    private Toast render_toast = new Toast(7, 6);
     
     /**
      * Constructor for the splash screen
@@ -33,6 +36,8 @@ public class SplashScreen implements Screen{
             spriteBatch.draw(splash, 0, 0);
             spriteBatch.end();
             
+            render_toast.toaster();
+            
             if(Gdx.input.justTouched())
                     game.setScreen(game.mainMenuScreen);
     }
@@ -42,6 +47,9 @@ public class SplashScreen implements Screen{
     {
             spriteBatch = new SpriteBatch();
             splash = new Texture(Gdx.files.internal("splash.png"));
+            
+    		render_toast.makeText("Welcome to Game", "font", 
+					Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.MED);
     }
 
 	@Override
