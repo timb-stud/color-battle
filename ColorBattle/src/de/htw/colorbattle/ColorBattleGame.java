@@ -8,10 +8,8 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;

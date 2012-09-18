@@ -37,7 +37,7 @@ public class WlanMenu implements Screen {
 		ownBatch = new SpriteBatch();
 
 		float width = BattleColorConfig.WIDTH;
-		float height = BattleColorConfig.HEIGHT;
+		//float height = BattleColorConfig.HEIGHT;
 
 		// Grafikelemente anlegen
 

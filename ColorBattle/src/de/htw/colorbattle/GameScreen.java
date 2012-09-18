@@ -24,8 +24,7 @@ import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.menuscreens.GameEndMenu;
-import de.htw.colorbattle.menuscreens.MainMenu;
-import de.htw.colorbattle.network.NetworkService;
+
 
 public class GameScreen implements Screen {
 	
@@ -201,6 +200,7 @@ public class GameScreen implements Screen {
 	/**
 	 * checks Input-Keys for Desktop Version
 	 */
+	@SuppressWarnings("unused")
 	private void checkDesktopControl() {
 		if (Gdx.input.isKeyPressed(Keys.UP))
 			player.y += player.speed * Gdx.graphics.getDeltaTime();

@@ -5,11 +5,11 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.toast.Toast;
 
 public class SplashMenu implements Screen {
 
@@ -19,6 +19,7 @@ public class SplashMenu implements Screen {
 
 	private TouchSprite splash;
 	private InputMultiplexer inputMulti;
+	private Toast render_toast;
 
 	/**
 	 * Constructor for the splash screen
@@ -28,6 +29,7 @@ public class SplashMenu implements Screen {
 	 */
 	public SplashMenu(ColorBattleGame game) {
 		this.gameRef = game;
+		this.render_toast  = new Toast(7, 6);
 	}
 
 	@Override
@@ -38,6 +40,8 @@ public class SplashMenu implements Screen {
 		ownBatch.begin();
 		splash.draw(ownBatch);
 		ownBatch.end();
+		
+		render_toast.toaster();
 
 		if (splash.isTouched()) {
 			splash.resetIsTouched();
@@ -59,6 +63,9 @@ public class SplashMenu implements Screen {
 		inputMulti = new InputMultiplexer();
 		inputMulti.addProcessor(splash);
 		Gdx.input.setInputProcessor(inputMulti);
+		
+		render_toast.makeText("Welcome to Game", "font", 
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.MED);
 	}
 
 	@Override
