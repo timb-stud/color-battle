@@ -1,4 +1,4 @@
-package de.htw.colorbattle;
+package de.htw.colorbattle.menuscreens;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
