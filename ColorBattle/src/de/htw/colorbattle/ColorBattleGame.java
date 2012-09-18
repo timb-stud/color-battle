@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
 import de.htw.colorbattle.network.NetworkService;
