@@ -3,6 +3,7 @@ package de.htw.colorbattle.gameobjects;
 import java.io.Serializable;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerSimulation implements Serializable{
@@ -14,9 +15,12 @@ public class PlayerSimulation implements Serializable{
 	public float speed;
 	public float maxSpeed;
 	public Vector2 direction;
+	public String networkIdentifier;
+	public int colorInt;
 	
 	public PlayerSimulation(float radius){
-		id = (int) System.currentTimeMillis(); //TODO create method to set individual id
+		id = 0;
+		networkIdentifier = Long.toString( System.currentTimeMillis() ); //TODO should be changed to network ip
 		x = 0;
 		y = 0;
 		this.radius = radius;
@@ -39,6 +43,9 @@ public class PlayerSimulation implements Serializable{
 		this.maxSpeed = p.maxSpeed;
 		this.direction.x = p.direction.x;
 		this.direction.y = p.direction.y;
+		this.networkIdentifier = p.networkIdentifier;
+		this.colorInt = p.colorInt;
+//		Gdx.app.debug("PS", "update PlayerSim playerid: " + this.id + " colorInt " + this.colorInt);
 	}
 	
 	public float distance(Player player){
@@ -62,4 +69,26 @@ public class PlayerSimulation implements Serializable{
 		
 		return sb.toString();
 	}
+
+	/**
+	 * liefert ColorObjekt aus int rgba8888
+	 * @return
+	 */
+	public Color getColorInt() {
+		Color colorObj = new Color();
+		Color.rgba8888ToColor(colorObj, this.colorInt);
+		return colorObj;
+	}
+
+	/**
+	 * speichert ColorObjekt als int rgba8888
+	 * @param colorObj
+	 */
+	public void setColorInt(Color colorObj) {
+		this.colorInt = Color.rgba8888(colorObj);	
+	}
+	
+	
+	
+	
 }

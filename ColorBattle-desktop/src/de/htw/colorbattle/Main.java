@@ -21,6 +21,7 @@ public class Main {
         bcConfig.width = 800;
         bcConfig.height = 480;
 		
-		new LwjglApplication(new ColorBattleGame(bcConfig), cfg);
+        // TODO Error auskommentiert
+		//new LwjglApplication(new ColorBattleGame(bcConfig), cfg);
 	}
 }

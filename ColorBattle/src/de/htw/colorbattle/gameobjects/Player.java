@@ -24,12 +24,9 @@ public class Player extends PlayerSimulation {
 		colorTexture = new Texture(colorPixmap);
 		colorPixmap.dispose();
 		this.color = color;
+		this.setColorInt(this.color);
 	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
+	
 	public void dispose() {
 		colorTexture.dispose();
 	}

@@ -4,19 +4,15 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.Formatter;
 import java.util.Observable;
+import java.util.Observer;
 
 import com.badlogic.gdx.Gdx;
 
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.utils.SerializeUtils;
 
-public class NetworkService extends Observable {
+public class NetworkService extends Observable implements SendInterface {
 	
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
@@ -85,4 +81,8 @@ public class NetworkService extends Observable {
 		}
 	}
 
+	@Override
+	public synchronized void addObserver(Observer observer) {
+		super.addObserver(observer);
+	}
 }
