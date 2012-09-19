@@ -85,8 +85,8 @@ public class GameScreen implements Screen {
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-		player.x = width / 2 - playerWidth / 2;
-		player.y = height / 2 - playerHeight / 2;
+//		player.x = width / 2 - playerWidth / 2;
+//		player.y = height / 2 - playerHeight / 2;
 
 		playerSimulation = new PlayerSimulation(player);
 
