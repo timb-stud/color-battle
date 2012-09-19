@@ -170,6 +170,9 @@ public class MultigameLogic implements Observer{
 		} else if (obj instanceof BombExplodeMsg) {
 			BombExplodeMsg bombExplodeMsg = (BombExplodeMsg)obj;
 			game.gameScreen.explodeBomb(bombExplodeMsg);
+		} else if(obj instanceof InvertControlMsg) {
+			InvertControlMsg invertControlMsg = (InvertControlMsg)obj;
+			game.gameScreen.invertControl(invertControlMsg);
 		}
 	}
 	
