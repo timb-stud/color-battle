@@ -12,7 +12,6 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
-import de.htw.colorbattle.network.NetworkService;
 
 public class MultigameLogic implements Observer{
 
@@ -169,6 +168,12 @@ public class MultigameLogic implements Observer{
 			game.gameScreen.updateOtherPlayer(playerSim); //only for two player mode
 			
 //			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
+		} else if (obj instanceof PowerUpSpawnMsg){
+			PowerUpSpawnMsg powerUpSpawnMsg = (PowerUpSpawnMsg)obj;
+			game.gameScreen.spawnPowerUp(powerUpSpawnMsg);
+		} else if (obj instanceof BombExplodeMsg) {
+			BombExplodeMsg bombExplodeMsg = (BombExplodeMsg)obj;
+			game.gameScreen.explodeBomb(bombExplodeMsg);
 		}
 	}
 	
@@ -194,6 +199,10 @@ public class MultigameLogic implements Observer{
 
 	public boolean isGameStarted() {
 		return isGameStarted;
+	}
+	
+	public boolean isServer() {
+		return isServer;
 	}
 
 }
