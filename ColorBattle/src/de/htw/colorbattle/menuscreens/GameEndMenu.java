@@ -79,7 +79,7 @@ public class GameEndMenu implements Screen {
 
 	@Override
 	public void dispose() {
-		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO ???
+		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO was macht der input multiplexer vom game überhaupt mit dem backsprite ??? ???
 		inputMulti.removeProcessor(backSprite);
 		inputMulti = null;
 		ownBatch.dispose();
