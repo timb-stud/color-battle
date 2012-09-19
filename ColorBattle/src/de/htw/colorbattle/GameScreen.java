@@ -25,9 +25,8 @@ import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.menuscreens.GameEndMenu;
 
-
 public class GameScreen implements Screen {
-	
+
 	private ColorBattleGame game;
 	// zeichnen und Screen
 	private SpriteBatch batch;
@@ -37,14 +36,17 @@ public class GameScreen implements Screen {
 	private int width;
 	private int height;
 	private Texture wallpaper;
-	
-	//Players & Network
+
+	// Players & Network
 	private TextureRegion flipper;
 	private Player player;
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client auf dem aktuellen Stand sein um Endscreen korrekt anzuzeigen
-	
+	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client
+												// auf dem aktuellen Stand sein
+												// um Endscreen korrekt
+												// anzuzeigen
+
 	// Game End Elements
 	private CountDown countDown;
 	private long endTime;
@@ -108,7 +110,7 @@ public class GameScreen implements Screen {
 		batch.draw(countDown.countDownTexture, countDown.x, countDown.y); // Zeit
 		batch.end();
 
-		// Player movement // TODO 3 Bewegungen ?
+		// Player movement
 		Accelerometer.updateDirection(player.direction);
 		// checkDesktopControl(); // not supported atm
 		player.move();
@@ -129,19 +131,14 @@ public class GameScreen implements Screen {
 			gameEnd = countDown.activateCountDown(endTime,
 					game.bcConfig.gameTime);
 		} else {
-			if (!BattleColorConfig.ueberarbeitetesMenu) {// TODO irgendwann komplett umstellen
-				game.gameEndScreen.setGameresult(this.getGameResult());
-				game.setScreen(game.gameEndScreen);
-			} else {
-				GameEndMenu gen = new GameEndMenu(game);
-				gen.setGameresult(this.getGameResult());
-				game.setScreen(gen);
-			}
-			
-			// TODO von andy: dispose hier! ich kanns net testen wegen TaskManager / Neustart bug...
+			GameEndMenu gen = new GameEndMenu(game);
+			gen.setGameresult(this.getGameResult());
+			game.setScreen(gen);
+			// TODO von andy: dispose hier! ich kanns net gut testen wegen
+			// TaskManager / Neustart bug...
 		}
 	}
-	
+
 	public void swapPlayers() {
 		Player buffer = player;
 		player = otherPlayer;
@@ -185,7 +182,8 @@ public class GameScreen implements Screen {
 
 	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
 		Iterator<Player> i = playerMap.values().iterator();
-		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
+		this.otherPlayer.update(i.next()); // TODO only for playing with 2
+											// players
 		this.playerMap = playerMap;
 	}
 
@@ -257,21 +255,17 @@ public class GameScreen implements Screen {
 		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
-		
-		// TODO von andy: ich kanns net testen wegen TaskManager / Neustart bug...
-		/*wallpaper.dispose();
-		countDown.dispose();
-		endTime = 0;
-		gameEnd = false; //das hier könnte ein Problem sein ev. wieder entfernen
-		playerSimulation = null;
-		playerMap = null;
-		flipper = null;
-		gameBorder = null;
-		game = null; //das hier könnte ein Problem sein ev. wieder entfernen
-		netSvc = null; //das hier könnte ein Problem sein ev. wieder entfernen
-		width = 0 ;
-		height = 0;
-		wallpaper.dispose(); */
+
+		// TODO von andy: ich kanns net testen wegen TaskManager / Neustart
+		// bug...
+		/*
+		 * wallpaper.dispose(); countDown.dispose(); endTime = 0; gameEnd =
+		 * false; //das hier könnte ein Problem sein ev. wieder entfernen
+		 * playerSimulation = null; playerMap = null; flipper = null; gameBorder
+		 * = null; game = null; //das hier könnte ein Problem sein ev. wieder
+		 * entfernen netSvc = null; //das hier könnte ein Problem sein ev.
+		 * wieder entfernen width = 0 ; height = 0; wallpaper.dispose();
+		 */
 	}
-	
+
 }

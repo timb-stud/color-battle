@@ -16,9 +16,9 @@ import de.htw.colorbattle.network.BluetoothActionResolver;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.network.SendInterface;
 
-public class ColorBattleGame extends Game implements InputProcessor, ApplicationListener {
-	public MainMenuScreen mainMenuScreen;
-	public SelectPlayerScreen selectplayerScreen;
+public class ColorBattleGame extends Game implements InputProcessor,
+		ApplicationListener {
+
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
 	public MultigameLogic multiGame;
@@ -26,8 +26,6 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
-	public GameEndScreen gameEndScreen;
-	public SplashScreen splashScreen;
 	public BluetoothActionResolver bluetoothActionResolver;
 	public SendInterface netSvc;
 
@@ -44,29 +42,19 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 	public void create() {
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
-		
+
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
-			mainMenuScreen = new MainMenuScreen(this);
-			selectplayerScreen = new SelectPlayerScreen(this);
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
-			gameEndScreen = new GameEndScreen(this);
-			splashScreen = new SplashScreen(this);
 
-			//create network connection
+			// create network connection
 			if (bcConfig.isWifiConnected)
-				this.netSvc = NetworkService.getInstance(bcConfig.multicastAddress, bcConfig.multicastPort);
+				this.netSvc = NetworkService.getInstance(
+						bcConfig.multicastAddress, bcConfig.multicastPort);
 
-			// this.setScreen(mainMenuScreen);
-
-			if (!BattleColorConfig.ueberarbeitetesMenu) {// TODO irgendwann komplett umstellen
-				this.setScreen(splashScreen);
-			} else {
-				//MainMenu newmenu = new MainMenu(this);
-				SplashMenu newmenu = new SplashMenu(this);
-				this.setScreen(newmenu);
-			}
+			SplashMenu newmenu = new SplashMenu(this);
+			this.setScreen(newmenu);
 
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException",
@@ -86,20 +74,16 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 	@Override
 	public void dispose() {
 		super.dispose();
-		mainMenuScreen.dispose();
 		gameScreen.dispose();
 		joiningScreen.dispose();
-		splashScreen.dispose();
-		gameEndScreen.dispose();
-		selectplayerScreen.dispose();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-	       if(keycode == Keys.BACK){
-//	    	  this.setScreen(mainMenuScreen); 
-	    	  Gdx.app.exit();
-	       }
+		if (keycode == Keys.BACK) {
+			// this.setScreen(mainMenuScreen);
+			Gdx.app.exit();
+		}
 		return false;
 	}
 
