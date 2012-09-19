@@ -13,6 +13,7 @@ import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
 public class PowerUp {
 	public boolean isVisible;
 	public boolean isBombExploded = false;
+	public boolean invertControl = false;
 	public boolean wasPickedUpByServer = false;
 	public Type type;
 	public Rectangle rect;
