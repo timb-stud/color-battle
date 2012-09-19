@@ -147,10 +147,7 @@ public class GameScreen implements Screen {
 
 	private void sendPosition() {
 		try {
-			if (game.bcConfig.gameMode == GameMode.WIFI)
-				game.netSvc.send(playerSimulation);
-			else
-				game.bluetoothActionResolver.send(playerSimulation);
+			game.netSvc.send(playerSimulation);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception
