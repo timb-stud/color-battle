@@ -36,36 +36,35 @@ public class WlanMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		float width = BattleColorConfig.WIDTH;
+		//float width = BattleColorConfig.WIDTH;
 		//float height = BattleColorConfig.HEIGHT;
 
 		// Grafikelemente anlegen
 
-		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
+		wallpaper = new Texture(Gdx.files.internal("menu/WLANMenuScreenWallpaper.png"));
 
 		joinWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/join_WLAN.png"), ownCamera);
-		joinWlanGameSprite.setPosition(
-				(width - joinWlanGameSprite.getWidth()) / 2.0f, 400.0f);
+		joinWlanGameSprite.setPosition(10.0f, 320.0f);
 
 		open2PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/2P_WLAN.png"), ownCamera);
 		open2PlWlanGameSprite.setPosition(
-				(width - open2PlWlanGameSprite.getWidth()) / 2.0f, 300.0f);
+				440.0f, 320.0f);
 
 		open3PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/3P_WLAN.png"), ownCamera);
 		open3PlWlanGameSprite.setPosition(
-				(width - open3PlWlanGameSprite.getWidth()) / 2.0f, 200.0f);
+				440.0f, 175.0f);
 
 		open4PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/4P_WLAN.png"), ownCamera);
 		open4PlWlanGameSprite.setPosition(
-				(width - open4PlWlanGameSprite.getWidth()) / 2.0f, 100.0f);
+				440.0f, 30.0f);
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back_WLAN.png"),
 				ownCamera);
-		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, 0);
+		backSprite.setPosition(10, 30.0f);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();

@@ -37,13 +37,13 @@ public class BluetoothMenu implements Screen {
 
 		// Grafikelemente anlegen
 
-		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
+		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		joinBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Join_BT_Button.png"), ownCamera);
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
-						- joinBtGameSprite.getHeight());
+						- joinBtGameSprite.getHeight()-15.0f);
 
 		openBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Open_BT_Button.png"), ownCamera);
@@ -53,7 +53,7 @@ public class BluetoothMenu implements Screen {
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
-		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, 0);
+		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, +15.0f);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
