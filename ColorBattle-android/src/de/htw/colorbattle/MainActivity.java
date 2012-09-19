@@ -10,14 +10,11 @@ import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
 import de.htw.colorbattle.config.BattleColorConfig;
-import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.network.MainActivityInterface;
 
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
