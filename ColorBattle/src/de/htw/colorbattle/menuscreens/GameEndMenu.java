@@ -32,11 +32,11 @@ public class GameEndMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		//float width = BattleColorConfig.WIDTH;
+		wallpaper = new Texture(
+				Gdx.files.internal("menu/GameFinishWallpaper.png"));
 
-		wallpaper = new Texture(Gdx.files.internal("menu/GameFinishWallpaper.png"));
-
-		backSprite = new TouchSprite(Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
+		backSprite = new TouchSprite(
+				Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
 		backSprite.setPosition(5, 5);
 
 		// for Touch-Events
@@ -69,49 +69,46 @@ public class GameEndMenu implements Screen {
 		if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
 			gameRef.create(); // TODO könnte man auch anderst lösen...
+			this.dispose();
 		}
-
 	}
 
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
 	}
 
-	// ---------------------- down libgdx Elements ----------------------
+	@Override
+	public void dispose() {
+		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO ???
+		inputMulti.removeProcessor(backSprite);
+		inputMulti = null;
+		ownBatch.dispose();
+		ownCamera = null;
+		wallpaper.dispose();
+		scoreTexture.dispose();
+		backSprite = null;
+		gameresult = null;
+	}
 
+	// other methods not need here
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		gameRef.inputMultiplexer.removeProcessor(backSprite);
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		gameRef.inputMultiplexer.removeProcessor(backSprite);
-	}
 }

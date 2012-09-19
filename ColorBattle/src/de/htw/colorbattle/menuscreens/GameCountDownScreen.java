@@ -50,7 +50,8 @@ public class GameCountDownScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		if (countdown == 0) {
-			gameRef.setScreen(gameRef.gameScreen);
+			gameRef.setScreen(gameRef.gameScreen); //TODO schöner
+			this.dispose();
 		} else if(System.currentTimeMillis() - oldTime > 1000) {
 			oldTime = System.currentTimeMillis();
 			setTexture();
@@ -70,39 +71,33 @@ public class GameCountDownScreen implements Screen {
 	}
 
 	@Override
+	public void dispose() {
+		ownCamera= null;
+		texture.dispose();
+		batch.dispose();
+		oldTime = 0;
+		toast = null;
+	}
+	
+	// other methods not need here
+	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -69,7 +69,6 @@ public class MainMenu implements Screen {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		// camera.update();
 		ownBatch.setProjectionMatrix(ownCamera.combined);
 
 		ownBatch.begin();
@@ -94,13 +93,28 @@ public class MainMenu implements Screen {
 			gameRef.mainActivity.enableBluetoothQuestion();
 			gameRef.netSvc = gameRef.bluetoothActionResolver;
 			gameRef.setScreen(new BluetoothMenu(gameRef));
-			this.dispose(); // wird noch ausgeführt
+			this.dispose();
 		} else if (exitGameSprite.isTouched()) {
+			this.dispose();
 			Gdx.app.exit();
 		}
-
 	}
 
+	@Override
+	public void dispose() {
+		ownBatch.dispose();
+		ownCamera = null;
+		inputMulti.removeProcessor(wlanGameSprite);
+		inputMulti.removeProcessor(btGameSprite);
+		inputMulti.removeProcessor(exitGameSprite);
+		wlanGameSprite = null;
+		btGameSprite = null;
+		exitGameSprite = null;
+		inputMulti = null;
+		wallpaper.dispose();
+	}
+	
+	// other methods not need here
 	@Override
 	public void resize(int width, int height) {
 	}
@@ -120,20 +134,5 @@ public class MainMenu implements Screen {
 
 	@Override
 	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-		ownBatch.dispose();
-		ownCamera = null;
-		inputMulti.removeProcessor(wlanGameSprite);
-		inputMulti.removeProcessor(btGameSprite);
-		inputMulti.removeProcessor(exitGameSprite);
-		wlanGameSprite = null;
-		btGameSprite = null;
-		exitGameSprite = null;
-		inputMulti = null;
-		wallpaper.dispose();
-		// gameRef = null; // könnt ein Problem sein ...
 	}
 }

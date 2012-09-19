@@ -127,11 +127,24 @@ public class WlanMenu implements Screen {
 		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
 		gameRef.multiGame = new MultigameLogic(gameRef, true);
 		gameRef.multiGame.startServer();
-		gameRef.setScreen(gameRef.joiningScreen);
-		
+		gameRef.setScreen(gameRef.joiningScreen);		
 	}
 	
-
+	@Override
+	public void dispose() {
+		ownBatch.dispose();
+		ownCamera = null;
+		inputMulti.removeProcessor(joinWlanGameSprite);
+		inputMulti.removeProcessor(open2PlWlanGameSprite);
+		inputMulti.removeProcessor(open3PlWlanGameSprite);
+		joinWlanGameSprite = null;
+		open2PlWlanGameSprite = null;
+		open3PlWlanGameSprite = null;
+		inputMulti = null;
+		wallpaper.dispose();
+	}
+	
+	// other methods not need here
 	@Override
 	public void resize(int width, int height) {
 	}
@@ -151,19 +164,5 @@ public class WlanMenu implements Screen {
 
 	@Override
 	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-		ownBatch.dispose();
-		ownCamera = null;
-		inputMulti.removeProcessor(joinWlanGameSprite);
-		inputMulti.removeProcessor(open2PlWlanGameSprite);
-		inputMulti.removeProcessor(open3PlWlanGameSprite);
-		joinWlanGameSprite = null;
-		open2PlWlanGameSprite = null;
-		open3PlWlanGameSprite = null;
-		inputMulti = null;
-		wallpaper.dispose();
 	}
 }

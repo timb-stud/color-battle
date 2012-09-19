@@ -104,6 +104,22 @@ public class BluetoothMenu implements Screen {
 	}
 
 	@Override
+	public void dispose() {
+		ownBatch.dispose();
+		ownCamera = null;
+		inputMulti.removeProcessor(joinBtGameSprite);
+		inputMulti.removeProcessor(openBtGameSprite);
+		inputMulti.removeProcessor(backSprite);
+		joinBtGameSprite = null;
+		openBtGameSprite = null;
+		backSprite = null;
+		inputMulti = null;
+		wallpaper.dispose();
+	}
+	
+	// other methods not need here
+	
+	@Override
 	public void resize(int width, int height) {
 	}
 
@@ -122,19 +138,5 @@ public class BluetoothMenu implements Screen {
 
 	@Override
 	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-		ownBatch.dispose();
-		ownCamera = null;
-		inputMulti.removeProcessor(joinBtGameSprite);
-		inputMulti.removeProcessor(openBtGameSprite);
-		inputMulti.removeProcessor(backSprite);
-		joinBtGameSprite = null;
-		openBtGameSprite = null;
-		backSprite = null;
-		inputMulti = null;
-		wallpaper.dispose();
 	}
 }

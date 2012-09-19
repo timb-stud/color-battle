@@ -30,6 +30,20 @@ public class SplashMenu implements Screen {
 	public SplashMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.render_toast  = new Toast(7, 6);
+		this.ownCamera = new OrthographicCamera();
+		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
+				BattleColorConfig.HEIGHT);
+		ownBatch = new SpriteBatch();
+
+		splash = new TouchSprite(Gdx.files.internal("splash.png"), ownCamera);
+		splash.setPosition(0, 0);
+
+		inputMulti = new InputMultiplexer();
+		inputMulti.addProcessor(splash);
+		Gdx.input.setInputProcessor(inputMulti);
+		
+		render_toast.makeText("Welcome to Game", "font", 
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.MED);
 	}
 
 	@Override
@@ -51,53 +65,34 @@ public class SplashMenu implements Screen {
 	}
 
 	@Override
-	public void show() {
-		this.ownCamera = new OrthographicCamera();
-		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
-				BattleColorConfig.HEIGHT);
-		ownBatch = new SpriteBatch();
-
-		splash = new TouchSprite(Gdx.files.internal("splash.png"), ownCamera);
-		splash.setPosition(0, 0);
-
-		inputMulti = new InputMultiplexer();
-		inputMulti.addProcessor(splash);
-		Gdx.input.setInputProcessor(inputMulti);
-		
-		render_toast.makeText("Welcome to Game", "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.MED);
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void dispose() {
 		ownBatch.dispose();
 		ownCamera = null;
 		inputMulti.removeProcessor(splash);
+		splash = null;
+		render_toast = null;
 		inputMulti = null;
+	}
+
+	// other methods not need here
+	@Override
+	public void show() {
+	}
+
+	@Override
+	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void hide() {
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
 	}
 
 }
