@@ -15,6 +15,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.network.MainActivityInterface;
 
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
@@ -47,7 +48,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         bcConfig.width = 800;
         bcConfig.height = 480;
-//        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
+        bcConfig.gameMode = GameMode.OFF;
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);

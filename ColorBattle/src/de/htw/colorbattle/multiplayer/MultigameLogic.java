@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
@@ -36,9 +37,6 @@ public class MultigameLogic implements Observer{
 			this.game = game;
 			this.bcConfig = game.bcConfig;
 			
-			if (game.netSvc instanceof NetworkService)
-				game.netSvc.addObserver(this);
-				
 			this.isGameStarted = false;
 			this.joinedPlayers = 1; //1 for own Player
 			this.gameTime = bcConfig.gameTime;
@@ -53,11 +51,12 @@ public class MultigameLogic implements Observer{
 				Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 			}
 			
-			if (playerCount == 1){ //TODO only needed to test with one device. can be removed in final version
-				Player playerBuffer = new Player(Color.MAGENTA, 64 / 2);
-				playerBuffer.update(ownPlayer);
-				playerBuffer.setColorInt(Color.MAGENTA);
-				game.gameScreen.getPlayerMap().put(1, playerBuffer);
+			if (game.netSvc instanceof NetworkService)
+				game.netSvc.addObserver(this);
+			
+			if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
+				playerCount = 1;
+				game.gameScreen.getPlayerMap().put(1, ownPlayer);
 			}
 		checkIfGameCanStart();
 	}

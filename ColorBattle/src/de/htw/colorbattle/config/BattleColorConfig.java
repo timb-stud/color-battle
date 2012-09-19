@@ -16,6 +16,5 @@ public class BattleColorConfig {
 	public  int height = 480;
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
-	
 }
 
