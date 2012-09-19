@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
-import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -189,10 +188,7 @@ public class GameScreen implements Screen {
 
 	private void send(Object obj) {
 		try {
-			if (game.bcConfig.gameMode == GameMode.WIFI)
-				game.netSvc.send(obj);
-			else
-				game.bluetoothActionResolver.send(obj);
+			game.netSvc.send(obj);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception

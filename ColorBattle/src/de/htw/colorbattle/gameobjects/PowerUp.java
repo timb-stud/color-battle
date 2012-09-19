@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
 
 
+
 public class PowerUp {
 	public boolean isVisible;
 	public boolean isBombExploded = false;

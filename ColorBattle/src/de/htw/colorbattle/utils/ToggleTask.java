@@ -15,6 +15,6 @@ public class ToggleTask extends TimerTask{
 
 	@Override
 	public void run() {
-		toggle = toggle ? false : true;
+		toggle = !toggle;
 	}
 }
