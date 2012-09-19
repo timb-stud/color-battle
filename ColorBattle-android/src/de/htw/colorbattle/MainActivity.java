@@ -18,8 +18,9 @@ import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.config.GameMode;
+import de.htw.colorbattle.network.MainActivityInterface;
 
-public class MainActivity extends AndroidApplication {
+public class MainActivity extends AndroidApplication implements MainActivityInterface{
 	
 	private  WifiManager wifiManager;
 	private MulticastLock multicastLock; 
@@ -50,11 +51,11 @@ public class MainActivity extends AndroidApplication {
         bcConfig.width = 800;
         bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2; //TODO set later
-        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
+//        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
-        this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid);
+        this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid, this);
         initialize(colorBattleGame, cfg);
         this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
     }
@@ -71,7 +72,7 @@ public class MainActivity extends AndroidApplication {
     	return mBluetoothAdapter.isEnabled();
     }
     
-    private void enableBluetoothQuestion(){
+    public void enableBluetoothQuestion(){
         // If BT is not on, request that it be enabled.
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

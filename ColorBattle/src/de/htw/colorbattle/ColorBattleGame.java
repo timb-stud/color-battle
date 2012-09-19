@@ -12,6 +12,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
+import de.htw.colorbattle.network.MainActivityInterface;
 import de.htw.colorbattle.network.NetworkActionResolver;
 import de.htw.colorbattle.network.NetworkService;
 
@@ -27,14 +28,16 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public OrthographicCamera camera;
 	public NetworkActionResolver netSvc;
 	public NetworkActionResolver bluetoothActionResolver;
+	public MainActivityInterface mainActivity;
 
 	public ColorBattleGame(BattleColorConfig bcConfig,
-			NetworkActionResolver bluetoothActionResolver) {
+			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
 		this.bluetoothActionResolver = bluetoothActionResolver;
+		this.mainActivity = mainActivity;
 	}
 
 	@Override
