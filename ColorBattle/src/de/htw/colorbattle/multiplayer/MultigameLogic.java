@@ -25,13 +25,13 @@ public class MultigameLogic implements Observer{
 	Player ownPlayer;
 	ColorBattleGame game;
 	
-	public MultigameLogic(ColorBattleGame game,boolean isServer) throws NetworkException{
+	public MultigameLogic(ColorBattleGame game,boolean isServer) {
 		
-		this.game = game;
-		this.bcConfig = game.bcConfig;
-		if (bcConfig.isWifiConnected) {
-			game.netSvc.addObserver(this);
-			
+			this.game = game;
+			this.bcConfig = game.bcConfig;
+			if (game.netSvc instanceof NetworkService)
+				game.netSvc.addObserver(this);
+				
 			this.isServer = isServer;
 			this.isGameStarted = false;
 			this.gameTime = bcConfig.gameTime;
@@ -48,11 +48,6 @@ public class MultigameLogic implements Observer{
 				playerBuffer.setColorInt(Color.MAGENTA);
 				game.gameScreen.getPlayerMap().put(1, playerBuffer);
 			}
-		} else {
-			//TODO could throw exception ?
-			Gdx.app.error("Multiplayer Game", "Can't create MultiGame, set PlayerCount to 1");
-			this.playerCount = 1;
-		}
 		checkIfGameCanStart();
 	}
 	
@@ -196,4 +191,7 @@ public class MultigameLogic implements Observer{
 		return isGameStarted;
 	}
 
+	public void setGameStarted(boolean isGameStarted) {
+		this.isGameStarted = isGameStarted;
+	}
 }
