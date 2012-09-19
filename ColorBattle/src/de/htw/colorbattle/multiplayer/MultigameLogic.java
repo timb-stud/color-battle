@@ -25,13 +25,13 @@ public class MultigameLogic implements Observer{
 	Player ownPlayer;
 	ColorBattleGame game;
 	
-	public MultigameLogic(ColorBattleGame game,boolean isServer) throws NetworkException{
+	public MultigameLogic(ColorBattleGame game,boolean isServer) {
 		
-		this.game = game;
-		this.bcConfig = game.bcConfig;
-		if (bcConfig.isWifiConnected) {
-			game.netSvc.addObserver(this);
-			
+			this.game = game;
+			this.bcConfig = game.bcConfig;
+			if (game.netSvc instanceof NetworkService)
+				game.netSvc.addObserver(this);
+				
 			this.isServer = isServer;
 			this.isGameStarted = false;
 			this.gameTime = bcConfig.gameTime;
@@ -48,11 +48,6 @@ public class MultigameLogic implements Observer{
 				playerBuffer.setColorInt(Color.MAGENTA);
 				game.gameScreen.getPlayerMap().put(1, playerBuffer);
 			}
-		} else {
-			//TODO could throw exception ?
-			Gdx.app.error("Multiplayer Game", "Can't create MultiGame, set PlayerCount to 1");
-			this.playerCount = 1;
-		}
 		checkIfGameCanStart();
 	}
 	
@@ -169,6 +164,12 @@ public class MultigameLogic implements Observer{
 			game.gameScreen.updateOtherPlayer(playerSim); //only for two player mode
 			
 //			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
+		} else if (obj instanceof PowerUpSpawnMsg){
+			PowerUpSpawnMsg powerUpSpawnMsg = (PowerUpSpawnMsg)obj;
+			game.gameScreen.spawnPowerUp(powerUpSpawnMsg);
+		} else if (obj instanceof BombExplodeMsg) {
+			BombExplodeMsg bombExplodeMsg = (BombExplodeMsg)obj;
+			game.gameScreen.explodeBomb(bombExplodeMsg);
 		}
 	}
 	
@@ -195,5 +196,12 @@ public class MultigameLogic implements Observer{
 	public boolean isGameStarted() {
 		return isGameStarted;
 	}
+	
+	public boolean isServer() {
+		return isServer;
+	}
 
+	public void setGameStarted(boolean isGameStarted) {
+		this.isGameStarted = isGameStarted;
+	}
 }

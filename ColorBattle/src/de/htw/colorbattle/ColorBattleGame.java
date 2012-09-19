@@ -12,9 +12,9 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
-import de.htw.colorbattle.network.BluetoothActionResolver;
+import de.htw.colorbattle.network.MainActivityInterface;
+import de.htw.colorbattle.network.NetworkActionResolver;
 import de.htw.colorbattle.network.NetworkService;
-import de.htw.colorbattle.network.SendInterface;
 
 public class ColorBattleGame extends Game implements InputProcessor,
 		ApplicationListener {
@@ -26,16 +26,18 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
-	public BluetoothActionResolver bluetoothActionResolver;
-	public SendInterface netSvc;
+	public NetworkActionResolver netSvc;
+	public NetworkActionResolver bluetoothActionResolver;
+	public MainActivityInterface mainActivity;
 
 	public ColorBattleGame(BattleColorConfig bcConfig,
-			BluetoothActionResolver bluetoothActionResolver) {
+			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
 		this.bluetoothActionResolver = bluetoothActionResolver;
+		this.mainActivity = mainActivity;
 	}
 
 	@Override
@@ -47,11 +49,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 			inputMultiplexer = new InputMultiplexer(this);
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
-
-			// create network connection
-			if (bcConfig.isWifiConnected)
-				this.netSvc = NetworkService.getInstance(
-						bcConfig.multicastAddress, bcConfig.multicastPort);
 
 			SplashMenu newmenu = new SplashMenu(this);
 			this.setScreen(newmenu);
