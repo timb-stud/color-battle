@@ -23,16 +23,11 @@ public class BluetoothMultiplayer {
 	public BluetoothMultiplayer() {
 	}
 	
-	
 	public void manageConnectedSocket(BluetoothSocket socket) {
     	connectionThread = new ConnectionThread(socket, mHandler);
     	connectionThread.start();
-    	
-//    	if(this.isServer){
-//    		colorBattleGame.gameScreen.swapPlayers();
-//    	}
  
-//    	if(!isServer)
+    	if(!isServer)
     		colorBattleGame.multiGame.joinGame();
 	}
 	

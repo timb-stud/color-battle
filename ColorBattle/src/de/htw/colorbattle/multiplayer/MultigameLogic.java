@@ -12,6 +12,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
+import de.htw.colorbattle.network.NetworkService;
 
 public class MultigameLogic implements Observer{
 
@@ -28,7 +29,7 @@ public class MultigameLogic implements Observer{
 		
 			this.game = game;
 			this.bcConfig = game.bcConfig;
-			if (bcConfig.isWifiConnected) //TODO change
+			if (game.netSvc instanceof NetworkService)
 				game.netSvc.addObserver(this);
 				
 			this.isServer = isServer;
