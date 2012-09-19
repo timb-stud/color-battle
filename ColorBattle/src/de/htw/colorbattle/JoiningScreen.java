@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.menuscreens.GameCountDownScreen;
+import de.htw.colorbattle.menuscreens.GameCountDown;
 import de.htw.colorbattle.menuscreens.TouchSprite;
 
 public class JoiningScreen implements Screen {
@@ -43,7 +43,7 @@ public class JoiningScreen implements Screen {
 		
 		if (game.multiGame.isGameStarted())
 			//game.setScreen(game.gameScreen);
-			game.setScreen(new GameCountDownScreen(game));
+			game.setScreen(new GameCountDown(game));
 	}
 
 	@Override
