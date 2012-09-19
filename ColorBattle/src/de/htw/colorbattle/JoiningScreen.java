@@ -41,7 +41,8 @@ public class JoiningScreen implements Screen {
 		batch.end();
 		
 		if (game.multiGame.isGameStarted())
-			game.setScreen(game.gameScreen);
+			//game.setScreen(game.gameScreen);
+			game.setScreen(new GameCountDownScreen(game));
 	}
 
 	@Override
