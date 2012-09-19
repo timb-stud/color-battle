@@ -21,15 +21,19 @@ public class ColorBattleGame extends Game implements InputProcessor,
 
 	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
-	public MultigameLogic multiGame;
-	public BattleColorConfig bcConfig;
-	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
+	
+	public BattleColorConfig bcConfig;
+	public Music music;
+	
+	//Networks
+	public MultigameLogic multiGame;
 	public NetworkActionResolver netSvc;
 	public NetworkActionResolver bluetoothActionResolver;
 	public MainActivityInterface mainActivity;
 
+	
 	public ColorBattleGame(BattleColorConfig bcConfig,
 			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
 		super();
