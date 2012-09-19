@@ -48,11 +48,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 			gameScreen = new GameScreen(this);
 			joiningScreen = new JoiningScreen(this);
 
-			// create network connection
-			if (bcConfig.isWifiConnected)
-				this.netSvc = NetworkService.getInstance(
-						bcConfig.multicastAddress, bcConfig.multicastPort);
-
 			SplashMenu newmenu = new SplashMenu(this);
 			this.setScreen(newmenu);
 

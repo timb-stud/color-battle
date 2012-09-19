@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.network.NetworkService;
 
 public class MainMenu implements Screen {
 
@@ -78,6 +80,12 @@ public class MainMenu implements Screen {
 		if (wlanGameSprite.isTouched()) {
 			wlanGameSprite.resetIsTouched();
 			gameRef.setScreen(new WlanMenu(gameRef));
+			try {
+				gameRef.netSvc = NetworkService.getInstance(
+						gameRef.bcConfig.multicastAddress, gameRef.bcConfig.multicastPort);
+			} catch (NetworkException e) {
+				Gdx.app.error("Network", "Can't create Wifi network service");
+			}
 			this.dispose();
 		} else if (btGameSprite.isTouched()) {
 			btGameSprite.resetIsTouched();
