@@ -49,6 +49,13 @@ public class GameCountDownScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
+		
+		batch.setProjectionMatrix(ownCamera.combined);
+		batch.begin();
+		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
+		batch.end();
+		toast.toaster();
+		
 		if (countdown == 0) {
 			gameRef.setScreen(gameRef.gameScreen); //TODO schöner
 			this.dispose();
@@ -57,13 +64,6 @@ public class GameCountDownScreen implements Screen {
 			setTexture();
 			countdown--;
 		}
-		
-		batch.setProjectionMatrix(ownCamera.combined);
-		batch.begin();
-		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
-		batch.end();
-		
-		toast.toaster();
 	}
 
 	private void setTexture() {
