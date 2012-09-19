@@ -51,7 +51,7 @@ public class MainActivity extends AndroidApplication {
         bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2; //TODO set later
         bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
-          
+        
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid);

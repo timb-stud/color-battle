@@ -1,8 +1,10 @@
 package de.htw.colorbattle.bluetooth;
 
-import de.htw.colorbattle.network.BluetoothActionResolver;
+import java.util.Observer;
 
-public class BluetoothActionResolverAndroid implements BluetoothActionResolver{
+import de.htw.colorbattle.network.NetworkActionResolver;
+
+public class BluetoothActionResolverAndroid implements NetworkActionResolver{
 	
 	BluetoothMultiplayer bluetoothMultiplayer;
 	
@@ -24,6 +26,11 @@ public class BluetoothActionResolverAndroid implements BluetoothActionResolver{
 	
 	public boolean isServer() {
 		return bluetoothMultiplayer.isServer();
+		
+	}
+
+	public void addObserver(Observer observer) {
+		// TODO Auto-generated method stub
 		
 	}
 	

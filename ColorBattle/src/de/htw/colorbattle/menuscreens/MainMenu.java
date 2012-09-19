@@ -89,6 +89,7 @@ public class MainMenu implements Screen {
 			this.dispose();
 		} else if (btGameSprite.isTouched()) {
 			btGameSprite.resetIsTouched();
+			gameRef.netSvc = gameRef.bluetoothActionResolver;
 			gameRef.setScreen(new BluetoothMenu(gameRef));
 			this.dispose(); // wird noch ausgeführt
 		} else if (exitGameSprite.isTouched()) {

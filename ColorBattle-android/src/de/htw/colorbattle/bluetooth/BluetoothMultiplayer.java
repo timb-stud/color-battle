@@ -28,10 +28,12 @@ public class BluetoothMultiplayer {
     	connectionThread = new ConnectionThread(socket, mHandler);
     	connectionThread.start();
     	
-    	if(this.isServer){
-    		colorBattleGame.gameScreen.swapPlayers();
-    	}
-    	colorBattleGame.showGameScreen();
+//    	if(this.isServer){
+//    		colorBattleGame.gameScreen.swapPlayers();
+//    	}
+ 
+//    	if(!isServer)
+    		colorBattleGame.multiGame.joinGame();
 	}
 	
 	public void setColorBattleGame(ColorBattleGame colorBattleGame) {
@@ -61,7 +63,7 @@ public class BluetoothMultiplayer {
 	}
 	
 	private void receive(Object obj){
-		colorBattleGame.gameScreen.update(null, obj);
+		colorBattleGame.multiGame.update(null, obj);
 		Log.d("BT", "receive: " + obj.toString());
 	}
 	

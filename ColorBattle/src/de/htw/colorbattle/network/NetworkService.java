@@ -12,7 +12,7 @@ import com.badlogic.gdx.Gdx;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.utils.SerializeUtils;
 
-public class NetworkService extends Observable implements SendInterface {
+public class NetworkService extends Observable implements NetworkActionResolver {
 	
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
@@ -84,5 +84,23 @@ public class NetworkService extends Observable implements SendInterface {
 	@Override
 	public synchronized void addObserver(Observer observer) {
 		super.addObserver(observer);
+	}
+
+	@Override
+	public void connect() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startServer() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isServer() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
