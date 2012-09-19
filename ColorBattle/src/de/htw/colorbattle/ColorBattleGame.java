@@ -14,7 +14,6 @@ import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.MainActivityInterface;
 import de.htw.colorbattle.network.NetworkActionResolver;
-import de.htw.colorbattle.network.NetworkService;
 
 public class ColorBattleGame extends Game implements InputProcessor,
 		ApplicationListener {

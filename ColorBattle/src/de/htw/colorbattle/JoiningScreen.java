@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.menuscreens.GameCountDownScreen;
 import de.htw.colorbattle.menuscreens.TouchSprite;
