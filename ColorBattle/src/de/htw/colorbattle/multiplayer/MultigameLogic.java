@@ -82,14 +82,14 @@ public class MultigameLogic implements Observer{
 			case 2: //unten rechts
 				playerSim.x = 600;
 				playerSim.y = 200;
-				playerBuffer = new Player(Color.GREEN, 64 / 2); //‚TODO replace 64 with player width var
-				playerSim.setColorInt(Color.GREEN);
+				playerBuffer = new Player(Color.RED, 64 / 2); //‚TODO replace 64 with player width var
+				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
 					// player.x = 
 					// player.y =
-				playerBuffer = new Player(Color.RED, 64 / 2); //TODO replace 64 with player width var
-				playerSim.setColorInt(Color.RED);
+				playerBuffer = new Player(Color.BLUE, 64 / 2); //TODO replace 64 with player width var
+				playerSim.setColorInt(Color.BLUE);
 				break;
 			case 4: //unten links
 					// player.x = 
@@ -170,6 +170,9 @@ public class MultigameLogic implements Observer{
 		} else if (obj instanceof BombExplodeMsg) {
 			BombExplodeMsg bombExplodeMsg = (BombExplodeMsg)obj;
 			game.gameScreen.explodeBomb(bombExplodeMsg);
+		} else if(obj instanceof InvertControlMsg) {
+			InvertControlMsg invertControlMsg = (InvertControlMsg)obj;
+			game.gameScreen.invertControl(invertControlMsg);
 		}
 	}
 	

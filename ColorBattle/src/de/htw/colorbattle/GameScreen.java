@@ -25,6 +25,7 @@ import de.htw.colorbattle.gameobjects.PowerUp;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
+import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
 
 public class GameScreen implements Screen {
@@ -85,8 +86,8 @@ public class GameScreen implements Screen {
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-		player.x = width / 2 - playerWidth / 2;
-		player.y = height / 2 - playerHeight / 2;
+//		player.x = width / 2 - playerWidth / 2;
+//		player.y = height / 2 - playerHeight / 2;
 
 		playerSimulation = new PlayerSimulation(player);
 
@@ -118,9 +119,21 @@ public class GameScreen implements Screen {
 			boolean pickedByPlayer = powerUp.isPickedUpBy(player);
 			boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
 			if(powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
-				send(new BombExplodeMsg(pickedByPlayer));
+				send(new InvertControlMsg(false));
+				powerUp.invertControl = false;
 				powerUp.wasPickedUpByServer = pickedByOtherPlayer;
-				powerUp.isBombExploded = true;
+				if(powerUp.type == PowerUp.Type.BOMB) {
+					send(new BombExplodeMsg(pickedByPlayer));
+					powerUp.isBombExploded = true;
+				} else {
+					if(pickedByPlayer) {
+						powerUp.isVisible = false;
+						powerUp.invertControl = true;
+					} else {
+						send(new InvertControlMsg(true));
+					}
+					
+				}
 			}
 		}
 		
@@ -153,6 +166,9 @@ public class GameScreen implements Screen {
 
 		// Player movement
 		Accelerometer.updateDirection(player.direction);
+		if(powerUp.invertControl) {
+			player.direction.mul(-1);
+		}
 		// checkDesktopControl(); // not supported atm
 		player.move();
 		gameBorder.handelCollision(player);
@@ -204,9 +220,10 @@ public class GameScreen implements Screen {
 	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		for (Player p : playerMap.values()) {
-			playerList.add(p);
-		}
+		playerList.add(otherPlayer);
+//		for (Player p : playerMap.values()) {
+//			playerList.add(p);
+//		}
 		return new GameResult(playerList);
 	}
 
@@ -241,6 +258,11 @@ public class GameScreen implements Screen {
 	public void explodeBomb(BombExplodeMsg bombExplodeMsg){
 		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
 		powerUp.isBombExploded = true;
+	}
+	
+	public void invertControl(InvertControlMsg invertControlMsg){
+		powerUp.invertControl = invertControlMsg.invertControl;
+		powerUp.isVisible = false;
 	}
 
 	/**
