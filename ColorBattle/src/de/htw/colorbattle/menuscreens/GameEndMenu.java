@@ -32,12 +32,12 @@ public class GameEndMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		float width = BattleColorConfig.WIDTH;
+		//float width = BattleColorConfig.WIDTH;
 
 		wallpaper = new Texture(Gdx.files.internal("menu/GameFinishWallpaper.png"));
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
-		backSprite.setPosition((width - backSprite.getWidth()), 5);
+		backSprite.setPosition(5, 5);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
