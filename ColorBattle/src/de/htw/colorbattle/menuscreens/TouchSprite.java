@@ -1,4 +1,4 @@
-package de.htw.colorbattle;
+package de.htw.colorbattle.menuscreens;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,15 +11,26 @@ import com.badlogic.gdx.math.Vector3;
 public class TouchSprite extends Sprite implements InputProcessor {
 	private OrthographicCamera camera;
 	public boolean isTouched = false;
+	public boolean highlightOnTouch;
+	private Texture highlightTexture = null;
+	private Texture buttonTexture;
+	
 	
 	public TouchSprite(Texture t, OrthographicCamera camera) {
 		super(t);
+		this.buttonTexture = t;
 		this.camera = camera;
+		this.highlightOnTouch = false;
 	}
 	
 	public TouchSprite(FileHandle f, OrthographicCamera camera) {
 		super(new Texture(f));
+		this.buttonTexture = this.getTexture();
 		this.camera = camera;
+	}
+	
+	public void setTouchDownPicture(FileHandle f) {
+		highlightTexture = new Texture(f);
 	}
 	
 	/*
@@ -68,7 +79,13 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-			this.setColor(Color.RED);
+			if (highlightOnTouch) {
+				if (this.highlightTexture != null) {
+					this.setTexture(this.highlightTexture);
+				} else {
+					this.setColor(Color.RED);
+				}
+			}
 			return true;
 		}
 		return false;
@@ -78,7 +95,13 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-			this.setColor(Color.WHITE);
+			if (highlightOnTouch) {
+				if (this.highlightTexture != null) {
+					this.setTexture(this.buttonTexture);
+				} else {
+					this.setColor(Color.WHITE);
+				}
+			}
 			isTouched = true;
 			return true;
 		}

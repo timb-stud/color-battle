@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
-import de.htw.colorbattle.TouchSprite;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class BluetoothMenu implements Screen {
 
@@ -38,13 +38,13 @@ public class BluetoothMenu implements Screen {
 
 		// Grafikelemente anlegen
 
-		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
+		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		joinBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Join_BT_Button.png"), ownCamera);
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
-						- joinBtGameSprite.getHeight());
+						- joinBtGameSprite.getHeight()-15.0f);
 
 		openBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Open_BT_Button.png"), ownCamera);
@@ -54,7 +54,7 @@ public class BluetoothMenu implements Screen {
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
-		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, 0);
+		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, +15.0f);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
@@ -79,19 +79,28 @@ public class BluetoothMenu implements Screen {
 
 		if (joinBtGameSprite.isTouched()) {
 			joinBtGameSprite.resetIsTouched(); 
-			
-			// TODO action,dispose
+			gameRef.multiGame = new MultigameLogic(gameRef, false);
+			gameRef.netSvc.connect();
+			gameRef.setScreen(gameRef.joiningScreen);
+			this.dispose();
 
 		} else if (openBtGameSprite.isTouched()) {
 			 openBtGameSprite.resetIsTouched(); 
-			
-			// TODO action,dispose
-			
+			 gameRef.netSvc.startServer();
+			 startServer(2);
 		} else if (backSprite.isTouched()) {
 			gameRef.setScreen(new MainMenu(gameRef));
-			this.dispose(); 
+			this.dispose();
 		}
-
+	}
+	
+	private void startServer(int players){
+		gameRef.bcConfig.multigamePlayerCount = players; // TODO gefällt mir gar nicht die config dafür zu nutzen .... ist ja keine laufzeit config
+		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
+		gameRef.multiGame = new MultigameLogic(gameRef, true);
+		gameRef.multiGame.startServer();
+		gameRef.setScreen(gameRef.joiningScreen);
+		this.dispose();
 	}
 
 	@Override

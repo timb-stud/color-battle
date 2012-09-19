@@ -9,10 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
-import de.htw.colorbattle.TouchSprite;
 import de.htw.colorbattle.config.BattleColorConfig;
 
-public class GameEndScreenNew implements Screen {
+public class GameEndMenu implements Screen {
 
 	private ColorBattleGame gameRef;
 	private SpriteBatch ownBatch;
@@ -26,7 +25,7 @@ public class GameEndScreenNew implements Screen {
 	private InputMultiplexer inputMulti;
 	private TouchSprite backSprite;
 
-	public GameEndScreenNew(ColorBattleGame game) {
+	public GameEndMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,

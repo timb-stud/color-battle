@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.GameCountDownScreen;
+import de.htw.colorbattle.menuscreens.TouchSprite;
 
 public class JoiningScreen implements Screen {
 	private ColorBattleGame game;
@@ -39,10 +41,9 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.draw(batch);
 		batch.end();
 		
-		if(game.bcConfig.gameMode == GameMode.BLUETOOTH)
-			game.setScreen(game.gameScreen);
-		else if (game.multiGame != null && game.multiGame.isGameStarted())
-			game.setScreen(game.gameScreen);
+		if (game.multiGame.isGameStarted())
+			//game.setScreen(game.gameScreen);
+			game.setScreen(new GameCountDownScreen(game));
 	}
 
 	@Override
