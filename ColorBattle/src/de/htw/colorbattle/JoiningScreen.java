@@ -41,9 +41,11 @@ public class JoiningScreen implements Screen {
 		batch.end();
 		
 		if(game.bcConfig.gameMode == GameMode.BLUETOOTH)
-			game.setScreen(game.gameScreen);
+			//game.setScreen(game.gameScreen);
+			game.setScreen(new GameCountDownScreen(game));
 		else if (game.multiGame != null && game.multiGame.isGameStarted())
-			game.setScreen(game.gameScreen);
+			//game.setScreen(game.gameScreen);
+			game.setScreen(new GameCountDownScreen(game));
 	}
 
 	@Override
