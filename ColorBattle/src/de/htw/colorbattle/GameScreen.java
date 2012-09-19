@@ -3,6 +3,7 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -15,15 +16,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
-import de.htw.colorbattle.config.BattleColorConfig;
-import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
+import de.htw.colorbattle.gameobjects.PowerUp;
 import de.htw.colorbattle.input.Accelerometer;
 import de.htw.colorbattle.menuscreens.GameEndMenu;
+import de.htw.colorbattle.multiplayer.BombExplodeMsg;
+import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
 
 public class GameScreen implements Screen {
 
@@ -46,6 +48,14 @@ public class GameScreen implements Screen {
 												// auf dem aktuellen Stand sein
 												// um Endscreen korrekt
 												// anzuzeigen
+	
+	//Powerup
+	private PowerUp powerUp;
+	private Texture powerUpTexture;
+	private float powerUpTimer;
+	
+	//Server
+	private boolean isServer;
 
 	// Game End Elements
 	private CountDown countDown;
@@ -82,6 +92,11 @@ public class GameScreen implements Screen {
 
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
+		
+		//Powerup
+		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
+		powerUp = new PowerUp(0	, 0, powerUpTexture.getWidth(), powerUpTexture.getHeight());
+		
 	}
 
 	@Override
@@ -92,6 +107,23 @@ public class GameScreen implements Screen {
 		game.camera.update();
 		batch.setProjectionMatrix(game.camera.combined);
 
+		//Server stuff
+		if(isServer){
+			powerUpTimer += Gdx.graphics.getDeltaTime();
+			if(powerUpTimer > 5){
+				powerUpTimer = 0;
+				powerUp.spawn();
+				send(new PowerUpSpawnMsg(powerUp));
+			}
+			boolean pickedByPlayer = powerUp.isPickedUpBy(player);
+			boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
+			if(powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
+				send(new BombExplodeMsg(pickedByPlayer));
+				powerUp.wasPickedUpByServer = pickedByOtherPlayer;
+				powerUp.isBombExploded = true;
+			}
+		}
+		
 		// Player zeichnen // TODO alle Schritte wirklich nötig ?
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
@@ -99,6 +131,12 @@ public class GameScreen implements Screen {
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
+		if(powerUp.isBombExploded){
+			Color color = powerUp.wasPickedUpByServer ? otherPlayer.color : player.color;
+			batch.draw(powerUp.getBombTexture(color), powerUp.rect.x - powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
+			powerUp.isVisible = false;
+			powerUp.isBombExploded = false;
+		}
 		batch.end();
 		colorFrameBuffer.end();
 		// TODO unterschied colorframebuffer und normaler batch ?
@@ -107,6 +145,9 @@ public class GameScreen implements Screen {
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
+		if(powerUp.isVisible) {
+			batch.draw(powerUpTexture, powerUp.rect.x, powerUp.rect.y);
+		}
 		batch.draw(countDown.countDownTexture, countDown.x, countDown.y); // Zeit
 		batch.end();
 
@@ -123,7 +164,7 @@ public class GameScreen implements Screen {
 		// NetworkCommunication
 		if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
 			playerSimulation.update(player);
-			sendPosition();
+			send(playerSimulation);
 		}
 
 		// Game End
@@ -145,9 +186,9 @@ public class GameScreen implements Screen {
 		otherPlayer = buffer;
 	}
 
-	private void sendPosition() {
+	private void send(Object obj) {
 		try {
-			game.netSvc.send(playerSimulation);
+			game.netSvc.send(obj);
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send position update.", e);
 			e.printStackTrace(); // TODO Handle exception
@@ -191,6 +232,16 @@ public class GameScreen implements Screen {
 	public void updateOtherPlayer(PlayerSimulation ps) {
 		otherPlayer.update(ps);
 	}
+	
+	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg){
+		powerUp.set(powerUpSpawnMsg);
+		powerUp.isVisible = true;
+	}
+	
+	public void explodeBomb(BombExplodeMsg bombExplodeMsg){
+		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
+		powerUp.isBombExploded = true;
+	}
 
 	/**
 	 * checks Input-Keys for Desktop Version
@@ -225,6 +276,8 @@ public class GameScreen implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 		// TODO vllt kann man den Wallpaper direkt zeichnen auf das Element das
 		// nicht gelöscht wird , und nicht extra nochmal im render
+		//Server
+		isServer = game.multiGame.isServer();
 	}
 
 	@Override
