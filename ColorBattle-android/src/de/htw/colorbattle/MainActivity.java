@@ -47,7 +47,6 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         bcConfig.width = 800;
         bcConfig.height = 480;
-        bcConfig.multigamePlayerCount = 2; //TODO set later
 //        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();

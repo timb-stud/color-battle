@@ -25,22 +25,33 @@ public class MultigameLogic implements Observer{
 	Player ownPlayer;
 	ColorBattleGame game;
 	
-	public MultigameLogic(ColorBattleGame game,boolean isServer) {
+	public MultigameLogic(ColorBattleGame game, int playerCount) {
+		this(game);
+		this.playerCount = playerCount;
+		this.isServer = true;
+	}
+
+	public MultigameLogic(ColorBattleGame game) {
 		
 			this.game = game;
 			this.bcConfig = game.bcConfig;
+			
 			if (game.netSvc instanceof NetworkService)
 				game.netSvc.addObserver(this);
 				
-			this.isServer = isServer;
 			this.isGameStarted = false;
-			this.gameTime = bcConfig.gameTime;
-			this.playerCount = bcConfig.multigamePlayerCount;
 			this.joinedPlayers = 1; //1 for own Player
+			this.gameTime = bcConfig.gameTime;
 			this.ownPlayer = game.gameScreen.getPlayer();
 			
-			if(isServer)
+			if(isServer){
 				game.gameScreen.swapPlayers();
+				ownPlayer.id = joinedPlayers;
+				ownPlayer.x = 50;
+				ownPlayer.y = 50;
+				game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
+				Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
+			}
 			
 			if (playerCount == 1){ //TODO only needed to test with one device. can be removed in final version
 				Player playerBuffer = new Player(Color.MAGENTA, 64 / 2);
@@ -49,14 +60,6 @@ public class MultigameLogic implements Observer{
 				game.gameScreen.getPlayerMap().put(1, playerBuffer);
 			}
 		checkIfGameCanStart();
-	}
-	
-	public void startServer(){
-		ownPlayer.id = joinedPlayers;
-		ownPlayer.x = 50;
-		ownPlayer.y = 50;
-		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
-		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 	}
 	
 	public void joinGame(){
