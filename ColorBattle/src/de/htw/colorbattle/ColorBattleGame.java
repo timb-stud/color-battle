@@ -19,7 +19,6 @@ import de.htw.colorbattle.network.NetworkActionResolver;
 public class ColorBattleGame extends Game implements InputProcessor,
 		ApplicationListener {
 
-	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
@@ -39,7 +38,7 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
+		this.camera.setToOrtho(false, BattleColorConfig.WIDTH, BattleColorConfig.HEIGHT);
 		this.bluetoothActionResolver = bluetoothActionResolver;
 		this.mainActivity = mainActivity;
 	}
@@ -52,8 +51,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			gameScreen = new GameScreen(this);
-			joiningScreen = new JoiningScreen(this);
-
 			SplashMenu newmenu = new SplashMenu(this);
 			this.setScreen(newmenu);
 
@@ -76,7 +73,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public void dispose() {
 		super.dispose();
 		gameScreen.dispose();
-		joiningScreen.dispose();
 	}
 
 	@Override

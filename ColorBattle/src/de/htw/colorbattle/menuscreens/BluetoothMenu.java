@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class BluetoothMenu implements Screen {
@@ -81,7 +82,12 @@ public class BluetoothMenu implements Screen {
 			joinBtGameSprite.resetIsTouched(); 
 			gameRef.multiGame = new MultigameLogic(gameRef, false);
 			gameRef.netSvc.connect();
-			gameRef.setScreen(gameRef.joiningScreen);
+			try {
+				gameRef.setScreen(new JoiningScreen(gameRef));
+			} catch (NetworkException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.dispose();
 
 		} else if (openBtGameSprite.isTouched()) {
@@ -99,7 +105,12 @@ public class BluetoothMenu implements Screen {
 		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
 		gameRef.multiGame = new MultigameLogic(gameRef, true);
 		gameRef.multiGame.startServer();
-		gameRef.setScreen(gameRef.joiningScreen);
+		try {
+			gameRef.setScreen(new JoiningScreen(gameRef));
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.dispose();
 	}
 

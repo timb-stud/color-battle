@@ -45,8 +45,6 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
         bcConfig.playSound = false;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
-        bcConfig.width = 800;
-        bcConfig.height = 480;
         bcConfig.multigamePlayerCount = 2; //TODO set later
 //        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
         
