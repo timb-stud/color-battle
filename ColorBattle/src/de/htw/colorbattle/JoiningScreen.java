@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.TouchSprite;
 
 public class JoiningScreen implements Screen {
 	private ColorBattleGame game;

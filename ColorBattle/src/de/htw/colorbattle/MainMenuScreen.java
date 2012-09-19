@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.TouchSprite;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 public class MainMenuScreen implements Screen {

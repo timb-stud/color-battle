@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
-import de.htw.colorbattle.TouchSprite;
 import de.htw.colorbattle.config.BattleColorConfig;
 
 public class BluetoothMenu implements Screen {
@@ -81,6 +80,7 @@ public class BluetoothMenu implements Screen {
 			joinBtGameSprite.resetIsTouched(); 
 			
 			// TODO action,dispose
+			//game.bluetoothActionResolver.connect(); // das stand in join nach fallunterscheidung wlan bluetooth
 
 		} else if (openBtGameSprite.isTouched()) {
 			 openBtGameSprite.resetIsTouched(); 

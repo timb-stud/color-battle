@@ -8,10 +8,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.menuscreens.MainMenu;
+import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.BluetoothActionResolver;
 import de.htw.colorbattle.network.NetworkService;
@@ -64,7 +63,8 @@ public class ColorBattleGame extends Game implements InputProcessor, Application
 			if (!BattleColorConfig.ueberarbeitetesMenu) {// TODO irgendwann komplett umstellen
 				this.setScreen(splashScreen);
 			} else {
-				MainMenu newmenu = new MainMenu(this);
+				//MainMenu newmenu = new MainMenu(this);
+				SplashMenu newmenu = new SplashMenu(this);
 				this.setScreen(newmenu);
 			}
 

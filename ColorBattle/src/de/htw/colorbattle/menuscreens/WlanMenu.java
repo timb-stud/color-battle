@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.htw.colorbattle.ColorBattleGame;
-import de.htw.colorbattle.TouchSprite;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
@@ -38,7 +37,7 @@ public class WlanMenu implements Screen {
 		ownBatch = new SpriteBatch();
 
 		float width = BattleColorConfig.WIDTH;
-		float height = BattleColorConfig.HEIGHT;
+		//float height = BattleColorConfig.HEIGHT;
 
 		// Grafikelemente anlegen
 

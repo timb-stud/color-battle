@@ -23,9 +23,8 @@ import de.htw.colorbattle.gameobjects.GameBorder;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.input.Accelerometer;
-import de.htw.colorbattle.menuscreens.GameEndScreenNew;
-import de.htw.colorbattle.menuscreens.MainMenu;
-import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.menuscreens.GameEndMenu;
+
 
 public class GameScreen implements Screen {
 	
@@ -134,7 +133,7 @@ public class GameScreen implements Screen {
 				game.gameEndScreen.setGameresult(this.getGameResult());
 				game.setScreen(game.gameEndScreen);
 			} else {
-				GameEndScreenNew gen = new GameEndScreenNew(game);
+				GameEndMenu gen = new GameEndMenu(game);
 				gen.setGameresult(this.getGameResult());
 				game.setScreen(gen);
 			}
@@ -201,6 +200,7 @@ public class GameScreen implements Screen {
 	/**
 	 * checks Input-Keys for Desktop Version
 	 */
+	@SuppressWarnings("unused")
 	private void checkDesktopControl() {
 		if (Gdx.input.isKeyPressed(Keys.UP))
 			player.y += player.speed * Gdx.graphics.getDeltaTime();
