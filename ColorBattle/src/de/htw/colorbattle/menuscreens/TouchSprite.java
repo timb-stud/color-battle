@@ -12,16 +12,25 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	private OrthographicCamera camera;
 	public boolean isTouched = false;
 	public boolean highlightOnTouch;
+	private Texture highlightTexture = null;
+	private Texture buttonTexture;
+	
 	
 	public TouchSprite(Texture t, OrthographicCamera camera) {
 		super(t);
+		this.buttonTexture = t;
 		this.camera = camera;
-		this.highlightOnTouch = true;
+		this.highlightOnTouch = false;
 	}
 	
 	public TouchSprite(FileHandle f, OrthographicCamera camera) {
 		super(new Texture(f));
+		this.buttonTexture = this.getTexture();
 		this.camera = camera;
+	}
+	
+	public void setTouchDownPicture(FileHandle f) {
+		highlightTexture = new Texture(f);
 	}
 	
 	/*
@@ -71,7 +80,11 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
 			if (highlightOnTouch) {
-				this.setColor(Color.RED);
+				if (this.highlightTexture != null) {
+					this.setTexture(this.highlightTexture);
+				} else {
+					this.setColor(Color.RED);
+				}
 			}
 			return true;
 		}
@@ -83,7 +96,11 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
 			if (highlightOnTouch) {
-				this.setColor(Color.WHITE);
+				if (this.highlightTexture != null) {
+					this.setTexture(this.buttonTexture);
+				} else {
+					this.setColor(Color.WHITE);
+				}
 			}
 			isTouched = true;
 			return true;
