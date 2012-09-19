@@ -11,10 +11,12 @@ import com.badlogic.gdx.math.Vector3;
 public class TouchSprite extends Sprite implements InputProcessor {
 	private OrthographicCamera camera;
 	public boolean isTouched = false;
+	public boolean highlightOnTouch;
 	
 	public TouchSprite(Texture t, OrthographicCamera camera) {
 		super(t);
 		this.camera = camera;
+		this.highlightOnTouch = true;
 	}
 	
 	public TouchSprite(FileHandle f, OrthographicCamera camera) {
@@ -68,7 +70,9 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-			this.setColor(Color.RED);
+			if (highlightOnTouch) {
+				this.setColor(Color.RED);
+			}
 			return true;
 		}
 		return false;
@@ -78,7 +82,9 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
 		if (this.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-			this.setColor(Color.WHITE);
+			if (highlightOnTouch) {
+				this.setColor(Color.WHITE);
+			}
 			isTouched = true;
 			return true;
 		}
