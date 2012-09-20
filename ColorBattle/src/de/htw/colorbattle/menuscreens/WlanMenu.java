@@ -7,11 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
+/**
+ * WlanMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * um ein WlanGame zu starten
+ */
 public class WlanMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -35,15 +40,11 @@ public class WlanMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		//float width = BattleColorConfig.WIDTH;
-		//float height = BattleColorConfig.HEIGHT;
-
 		// Grafikelemente anlegen
-
 		wallpaper = new Texture(Gdx.files.internal("menu/WLANMenuScreenWallpaper.png"));
 
 		joinWlanGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/join_WLAN.png"), ownCamera);
+				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinWlanGameSprite.setPosition(10.0f, 320.0f);
 
 		open2PlWlanGameSprite = new TouchSprite(
@@ -61,7 +62,7 @@ public class WlanMenu implements Screen {
 		open4PlWlanGameSprite.setPosition(
 				440.0f, 30.0f);
 
-		backSprite = new TouchSprite(Gdx.files.internal("menu/back_WLAN.png"),
+		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
 		backSprite.setPosition(10, 30.0f);
 
@@ -92,13 +93,11 @@ public class WlanMenu implements Screen {
 
 		if (joinWlanGameSprite.isTouched()) {
 			joinWlanGameSprite.resetIsTouched(); 
-
 			gameRef.multiGame = new MultigameLogic(gameRef);
 			gameRef.multiGame.joinGame();
-			gameRef.setScreen(gameRef.joiningScreen); //TODO bessere Lösung
+			gameRef.setScreen(new JoiningScreen(gameRef));
 			this.dispose();
 			
-
 		} else if (open2PlWlanGameSprite.isTouched()) {
 			open2PlWlanGameSprite.resetIsTouched(); 
 			this.startServer(2);
@@ -124,7 +123,7 @@ public class WlanMenu implements Screen {
 	
 	private void startServer(int players){
 		gameRef.multiGame = new MultigameLogic(gameRef, players);
-		gameRef.setScreen(gameRef.joiningScreen);		
+		gameRef.setScreen(new JoiningScreen(gameRef));
 	}
 	
 	@Override
@@ -134,6 +133,13 @@ public class WlanMenu implements Screen {
 		inputMulti.removeProcessor(joinWlanGameSprite);
 		inputMulti.removeProcessor(open2PlWlanGameSprite);
 		inputMulti.removeProcessor(open3PlWlanGameSprite);
+		inputMulti.removeProcessor(open4PlWlanGameSprite);
+		inputMulti.removeProcessor(backSprite);
+		joinWlanGameSprite.disposeTouchSprite();
+		open2PlWlanGameSprite.disposeTouchSprite();
+		open3PlWlanGameSprite.disposeTouchSprite();
+		open4PlWlanGameSprite.disposeTouchSprite();
+		backSprite.disposeTouchSprite();
 		joinWlanGameSprite = null;
 		open2PlWlanGameSprite = null;
 		open3PlWlanGameSprite = null;

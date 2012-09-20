@@ -6,11 +6,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.toast.Toast;
 
+/**
+ * GameCountDownScreen erstellt die Oberfläche,
+ * inklusive Skalierung,
+ * welche einen Countdown vor Spielbeginn runter zählt.
+ */
 public class GameCountDownScreen implements Screen {
 	private ColorBattleGame gameRef;
 	private OrthographicCamera ownCamera;

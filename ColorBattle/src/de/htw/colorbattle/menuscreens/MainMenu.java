@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 
+/**
+ * MainMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * für das Hauptmenü
+ */
 public class MainMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -27,6 +31,12 @@ public class MainMenu implements Screen {
 
 	private Texture wallpaper;
 
+	/**
+	 * wird benötigt wegen einem asynchronem Thread von Gdx,
+	 * und verhindert einen gelegentlichen Nullpointer
+	 */
+	private boolean endButtonPushed = false;
+
 	public MainMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -39,13 +49,15 @@ public class MainMenu implements Screen {
 
 		// Grafikelemente anlegen
 
-		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
+		wallpaper = new Texture(
+				Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		wlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Button_WLAN.png"), ownCamera);
 		wlanGameSprite.setPosition((width - wlanGameSprite.getWidth()) / 2.0f,
-				height - wlanGameSprite.getHeight()-15.0f);
-		wlanGameSprite.setTouchDownPicture(Gdx.files.internal("menu/Button_WLAN_hover.png"));
+				height - wlanGameSprite.getHeight() - 15.0f);
+		wlanGameSprite.setTouchDownPicture(Gdx.files
+				.internal("menu/Button_WLAN_hover.png"));
 		wlanGameSprite.highlightOnTouch = true;
 
 		btGameSprite = new TouchSprite(
@@ -68,35 +80,40 @@ public class MainMenu implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		ownBatch.setProjectionMatrix(ownCamera.combined);
+		if (!endButtonPushed) {
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			ownBatch.setProjectionMatrix(ownCamera.combined);
 
-		ownBatch.begin();
-		ownBatch.draw(wallpaper, 0, 0);
-		btGameSprite.draw(ownBatch);
-		wlanGameSprite.draw(ownBatch);
-		exitGameSprite.draw(ownBatch);
-		ownBatch.end();
+			ownBatch.begin();
+			ownBatch.draw(wallpaper, 0, 0);
+			btGameSprite.draw(ownBatch);
+			wlanGameSprite.draw(ownBatch);
+			exitGameSprite.draw(ownBatch);
+			ownBatch.end();
 
-		if (wlanGameSprite.isTouched()) {
-			wlanGameSprite.resetIsTouched();
-			gameRef.setScreen(new WlanMenu(gameRef));
-			try {
-				gameRef.netSvc = NetworkService.getInstance(
-						gameRef.bcConfig.multicastAddress, gameRef.bcConfig.multicastPort);
-			} catch (NetworkException e) {
-				Gdx.app.error("Network", "Can't create Wifi network service");
+			if (wlanGameSprite.isTouched()) {
+				wlanGameSprite.resetIsTouched();
+				gameRef.setScreen(new WlanMenu(gameRef));
+				try {
+					gameRef.netSvc = NetworkService.getInstance(
+							gameRef.bcConfig.multicastAddress,
+							gameRef.bcConfig.multicastPort);
+				} catch (NetworkException e) {
+					Gdx.app.error("Network",
+							"Can't create Wifi network service");
+				}
+				this.dispose();
+			} else if (btGameSprite.isTouched()) {
+				btGameSprite.resetIsTouched();
+				gameRef.mainActivity.enableBluetoothQuestion();
+				gameRef.netSvc = gameRef.bluetoothActionResolver;
+				gameRef.setScreen(new BluetoothMenu(gameRef));
+				this.dispose();
+			} else if (exitGameSprite.isTouched()) {
+				Gdx.app.exit();
+				endButtonPushed = true;
+				this.dispose();
 			}
-			this.dispose();
-		} else if (btGameSprite.isTouched()) {
-			btGameSprite.resetIsTouched();
-			gameRef.mainActivity.enableBluetoothQuestion();
-			gameRef.netSvc = gameRef.bluetoothActionResolver;
-			gameRef.setScreen(new BluetoothMenu(gameRef));
-			this.dispose();
-		} else if (exitGameSprite.isTouched()) {
-			this.dispose();
-			Gdx.app.exit();
 		}
 	}
 
@@ -107,13 +124,16 @@ public class MainMenu implements Screen {
 		inputMulti.removeProcessor(wlanGameSprite);
 		inputMulti.removeProcessor(btGameSprite);
 		inputMulti.removeProcessor(exitGameSprite);
+		wlanGameSprite.disposeTouchSprite();
+		btGameSprite.disposeTouchSprite();
+		exitGameSprite.disposeTouchSprite();
 		wlanGameSprite = null;
 		btGameSprite = null;
 		exitGameSprite = null;
 		inputMulti = null;
 		wallpaper.dispose();
 	}
-	
+
 	// other methods not need here
 	@Override
 	public void resize(int width, int height) {

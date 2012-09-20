@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.config.GameMode;
+import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
@@ -20,7 +21,7 @@ public class MultigameLogic implements Observer{
 	int gameTime;
 	int playerCount;
 	int joinedPlayers;
-	BattleColorConfig bcConfig;
+	RuntimeConfig bcConfig;
 	boolean isGameStarted;
 	boolean isServer;
 	Player ownPlayer;
@@ -38,8 +39,8 @@ public class MultigameLogic implements Observer{
 			this.bcConfig = game.bcConfig;
 			
 			this.isGameStarted = false;
+			this.gameTime = BattleColorConfig.GAME_TIME;
 			this.joinedPlayers = 1; //1 for own Player
-			this.gameTime = bcConfig.gameTime;
 			this.ownPlayer = game.gameScreen.getPlayer();
 			
 			if(isServer){

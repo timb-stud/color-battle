@@ -5,95 +5,83 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
-import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
 
 /**
- * GameEndMenu erstellt die Oberfläche,
+ * JoiningScreen erstellt die Oberfläche,
  * inklusive Buttons und Skalierung,
- * zum anzeigen des Spielergebnisses
+ * welche zum warten auf andere Spieler benutzt wird.
  */
-public class GameEndMenu implements Screen {
-
+public class JoiningScreen implements Screen {
 	private ColorBattleGame gameRef;
 	private SpriteBatch ownBatch;
 	private OrthographicCamera ownCamera;
 
-	private boolean scoreComputed = false;
-	private GameResult gameresult;
-
-	private Texture wallpaper;
-	private Texture scoreTexture;
+	private TouchSprite waitingForPlayerSprite;
 	private InputMultiplexer inputMulti;
 	private TouchSprite backSprite;
 
-	public GameEndMenu(ColorBattleGame game) {
+	public JoiningScreen(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		wallpaper = new Texture(
-				Gdx.files.internal("menu/GameFinishWallpaper.png"));
+		float width = BattleColorConfig.WIDTH;
+		float height = BattleColorConfig.HEIGHT;
+
+		waitingForPlayerSprite = new TouchSprite(
+				Gdx.files.internal("menu/WaitingForPlayer.png"), ownCamera);
+		waitingForPlayerSprite.setPosition(
+				(width - waitingForPlayerSprite.getWidth()) / 2.0f,
+				(height - waitingForPlayerSprite.getHeight()) / 2.0f);
 
 		backSprite = new TouchSprite(
 				Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
 		backSprite.setPosition(5, 5);
-
+		
 		// for Touch-Events
-		inputMulti = new InputMultiplexer();
-		inputMulti.addProcessor(backSprite);
-		Gdx.input.setInputProcessor(inputMulti);
+				inputMulti = new InputMultiplexer();
+				inputMulti.addProcessor(backSprite);
+				Gdx.input.setInputProcessor(inputMulti);
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		ownBatch.setProjectionMatrix(ownCamera.combined);
 
 		ownBatch.begin();
-		ownBatch.draw(wallpaper, 0, 0);
+		waitingForPlayerSprite.draw(ownBatch);
 		backSprite.draw(ownBatch);
 		ownBatch.end();
 
-		if (scoreComputed) {
-			if (scoreTexture != null) {
-				ownBatch.begin();
-				ownBatch.draw(scoreTexture, 150, -10);
-				ownBatch.end();
-			}
-		} else if (gameresult != null) {
-			this.scoreTexture = gameresult.getScoreScreen(ownBatch);
-			scoreComputed = true;
-		}
-
-		if (backSprite.isTouched()) {
+		if (gameRef.multiGame.isGameStarted()) {
+			gameRef.setScreen(new GameCountDownScreen(gameRef));
+			this.dispose();
+		}else if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
-			gameRef.create(); // TODO könnte man auch anderst lösen...
+			gameRef.setScreen(new MainMenu(gameRef));
+			//TODO hier müssen ev noch server / netzwerk dinge zurück gesetzt werden
 			this.dispose();
 		}
 	}
 
-	public void setGameresult(GameResult gameresult) {
-		this.gameresult = gameresult;
-	}
-
 	@Override
 	public void dispose() {
-		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO was macht der input multiplexer vom game überhaupt mit dem backsprite ??? ???
-		inputMulti.removeProcessor(backSprite);
-		inputMulti = null;
 		ownBatch.dispose();
 		ownCamera = null;
-		wallpaper.dispose();
-		scoreTexture.dispose();
+		waitingForPlayerSprite.disposeTouchSprite();
+		waitingForPlayerSprite = null;
+		inputMulti.removeProcessor(backSprite);
+		inputMulti = null;
 		backSprite.disposeTouchSprite();
 		backSprite = null;
-		gameresult = null;
 	}
 
 	// other methods not need here
@@ -116,5 +104,4 @@ public class GameEndMenu implements Screen {
 	@Override
 	public void resume() {
 	}
-
 }

@@ -8,7 +8,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
@@ -18,23 +20,26 @@ import de.htw.colorbattle.network.NetworkActionResolver;
 public class ColorBattleGame extends Game implements InputProcessor,
 		ApplicationListener {
 
-	public JoiningScreen joiningScreen;
 	public GameScreen gameScreen;
-	public MultigameLogic multiGame;
-	public BattleColorConfig bcConfig;
-	public Music music;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
+	
+	public RuntimeConfig bcConfig;
+	public Music music;
+	
+	//Networks
+	public MultigameLogic multiGame;
 	public NetworkActionResolver netSvc;
 	public NetworkActionResolver bluetoothActionResolver;
 	public MainActivityInterface mainActivity;
 
-	public ColorBattleGame(BattleColorConfig bcConfig,
+	
+	public ColorBattleGame(RuntimeConfig bcConfig,
 			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, bcConfig.width, bcConfig.height);
+		this.camera.setToOrtho(false, BattleColorConfig.WIDTH, BattleColorConfig.HEIGHT);
 		this.bluetoothActionResolver = bluetoothActionResolver;
 		this.mainActivity = mainActivity;
 	}
@@ -47,8 +52,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			gameScreen = new GameScreen(this);
-			joiningScreen = new JoiningScreen(this);
-
 			SplashMenu newmenu = new SplashMenu(this);
 			this.setScreen(newmenu);
 
@@ -71,7 +74,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public void dispose() {
 		super.dispose();
 		gameScreen.dispose();
-		joiningScreen.dispose();
 	}
 
 	@Override

@@ -7,11 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
+/**
+ * BluetoothMenu  erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * um ein BluetoothGame zu starten
+ */
 public class BluetoothMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -41,7 +46,7 @@ public class BluetoothMenu implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		joinBtGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/Join_BT_Button.png"), ownCamera);
+				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
 						- joinBtGameSprite.getHeight()-15.0f);
@@ -81,7 +86,7 @@ public class BluetoothMenu implements Screen {
 			joinBtGameSprite.resetIsTouched(); 
 			gameRef.multiGame = new MultigameLogic(gameRef);
 			gameRef.netSvc.connect();
-			gameRef.setScreen(gameRef.joiningScreen);
+			gameRef.setScreen(new JoiningScreen(gameRef));
 			this.dispose();
 
 		} else if (openBtGameSprite.isTouched()) {
@@ -96,7 +101,7 @@ public class BluetoothMenu implements Screen {
 	
 	private void startServer(int players){
 		gameRef.multiGame = new MultigameLogic(gameRef, players);
-		gameRef.setScreen(gameRef.joiningScreen);
+		gameRef.setScreen(new JoiningScreen(gameRef));
 		this.dispose();
 	}
 
@@ -107,6 +112,9 @@ public class BluetoothMenu implements Screen {
 		inputMulti.removeProcessor(joinBtGameSprite);
 		inputMulti.removeProcessor(openBtGameSprite);
 		inputMulti.removeProcessor(backSprite);
+		joinBtGameSprite.disposeTouchSprite();
+		openBtGameSprite.disposeTouchSprite();
+		backSprite.disposeTouchSprite();
 		joinBtGameSprite = null;
 		openBtGameSprite = null;
 		backSprite = null;

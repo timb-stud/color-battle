@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Die Klasse vereinfacht das benutzen von Sprites 
+ * welche als touchable Buttons benutzt werden
+ */
 public class TouchSprite extends Sprite implements InputProcessor {
 	private OrthographicCamera camera;
 	public boolean isTouched = false;
@@ -121,5 +125,14 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+	
+	public void disposeTouchSprite(){
+		if (highlightTexture != null){
+			highlightTexture.dispose();
+		}
+		if (buttonTexture != null){
+			buttonTexture.dispose();
+		}
 	}
 }

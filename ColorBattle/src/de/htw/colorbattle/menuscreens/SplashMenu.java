@@ -6,11 +6,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.toast.Toast;
 
+/**
+ * SplashMenu erstellt die Oberfläche des SplashScreens,
+ * inklusive Touchfunktion und Skalierung
+ */
 public class SplashMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -69,6 +72,7 @@ public class SplashMenu implements Screen {
 		ownBatch.dispose();
 		ownCamera = null;
 		inputMulti.removeProcessor(splash);
+		splash.disposeTouchSprite();
 		splash = null;
 		render_toast = null;
 		inputMulti = null;

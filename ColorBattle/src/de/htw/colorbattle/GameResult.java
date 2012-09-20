@@ -5,13 +5,14 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
-
+import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.gameobjects.Player;
 
 public class GameResult {
@@ -149,7 +150,6 @@ public class GameResult {
 		Texture tex;
 		FrameBuffer scoreFrameBuffer = new FrameBuffer(Format.RGBA8888,
 				WINDOW_WIDTH, WINDOW_HEIGHT, false);
-		// Attention Framebuffer flipped ?
 
 		// Hintergrund
 		pm = new Pixmap(WINDOW_WIDTH, WINDOW_HEIGHT, Format.RGBA8888);
@@ -157,6 +157,11 @@ public class GameResult {
 		pm.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		tex = new Texture(pm);
 
+		OrthographicCamera ownCamera = new OrthographicCamera();
+		ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
+				BattleColorConfig.HEIGHT);
+		batch.setProjectionMatrix(ownCamera.combined);
+		
 		scoreFrameBuffer.begin();
 		batch.begin();
 		batch.draw(tex, 0, 0);
