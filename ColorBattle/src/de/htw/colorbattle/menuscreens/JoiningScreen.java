@@ -1,6 +1,7 @@
 package de.htw.colorbattle.menuscreens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,8 @@ public class JoiningScreen implements Screen {
 	private OrthographicCamera ownCamera;
 
 	private TouchSprite waitingForPlayerSprite;
+	private InputMultiplexer inputMulti;
+	private TouchSprite backSprite;
 
 	public JoiningScreen(ColorBattleGame game) throws NetworkException {
 		this.gameRef = game;
@@ -37,7 +40,15 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.setPosition(
 				(width - waitingForPlayerSprite.getWidth()) / 2.0f,
 				(height - waitingForPlayerSprite.getHeight()) / 2.0f);
-		//TODO back button
+
+		backSprite = new TouchSprite(
+				Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
+		backSprite.setPosition(5, 5);
+		
+		// for Touch-Events
+				inputMulti = new InputMultiplexer();
+				inputMulti.addProcessor(backSprite);
+				Gdx.input.setInputProcessor(inputMulti);
 	}
 
 	@Override
@@ -48,10 +59,16 @@ public class JoiningScreen implements Screen {
 
 		ownBatch.begin();
 		waitingForPlayerSprite.draw(ownBatch);
+		backSprite.draw(ownBatch);
 		ownBatch.end();
 
 		if (gameRef.multiGame.isGameStarted()) {
 			gameRef.setScreen(new GameCountDownScreen(gameRef));
+			this.dispose();
+		}else if (backSprite.isTouched()) {
+			backSprite.resetIsTouched();
+			gameRef.setScreen(new MainMenu(gameRef));
+			//TODO hier müssen ev noch server / netzwerk dinge zurück gesetzt werden
 			this.dispose();
 		}
 	}
@@ -62,6 +79,10 @@ public class JoiningScreen implements Screen {
 		ownCamera = null;
 		waitingForPlayerSprite.disposeTouchSprite();
 		waitingForPlayerSprite = null;
+		inputMulti.removeProcessor(backSprite);
+		inputMulti = null;
+		backSprite.disposeTouchSprite();
+		backSprite = null;
 	}
 
 	// other methods not need here
