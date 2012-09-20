@@ -192,7 +192,7 @@ public class MultigameLogic implements Observer{
 	
 	private Player getOwnPlayer(HashMap<Integer, Player> playerMap){
 		for (Player p : playerMap.values()){
-			if (p.networkIdentifier.equals(ownPlayer.networkIdentifier)){
+			if (p.deviceId.equals(ownPlayer.deviceId)){
 				return p;
 			}
 		}

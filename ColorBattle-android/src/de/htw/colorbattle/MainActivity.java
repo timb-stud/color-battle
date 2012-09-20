@@ -53,8 +53,8 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
         bcConfig.playSound = false;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
-        bcConfig.gameMode = GameMode.OFF; //default is OFF
         BattleColorConfig.DEVICE_ID = getDeviceId();
+        bcConfig.gameMode = GameMode.OFF; //default is OFF
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);

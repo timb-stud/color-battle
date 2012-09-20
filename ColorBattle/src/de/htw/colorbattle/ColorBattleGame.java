@@ -62,6 +62,10 @@ public class ColorBattleGame extends Game implements InputProcessor,
 			// TODO: handle exception
 		}
 	}
+	
+	public static String getDeviceId(){
+		return BattleColorConfig.DEVICE_ID;
+	}
 
 	public void playSound() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("background-music.mp3"));
