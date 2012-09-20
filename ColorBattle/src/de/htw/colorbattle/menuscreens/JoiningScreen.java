@@ -10,6 +10,11 @@ import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 
+/**
+ * JoiningScreen erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * welche zum warten auf andere Spieler benutzt wird.
+ */
 public class JoiningScreen implements Screen {
 	private ColorBattleGame gameRef;
 	private SpriteBatch ownBatch;
@@ -32,6 +37,7 @@ public class JoiningScreen implements Screen {
 		waitingForPlayerSprite.setPosition(
 				(width - waitingForPlayerSprite.getWidth()) / 2.0f,
 				(height - waitingForPlayerSprite.getHeight()) / 2.0f);
+		//TODO back button
 	}
 
 	@Override
@@ -54,6 +60,7 @@ public class JoiningScreen implements Screen {
 	public void dispose() {
 		ownBatch.dispose();
 		ownCamera = null;
+		waitingForPlayerSprite.disposeTouchSprite();
 		waitingForPlayerSprite = null;
 	}
 

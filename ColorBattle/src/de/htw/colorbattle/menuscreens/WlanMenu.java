@@ -13,6 +13,11 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
+/**
+ * WlanMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * um ein WlanGame zu starten
+ */
 public class WlanMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -36,11 +41,7 @@ public class WlanMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		//float width = BattleColorConfig.WIDTH;
-		//float height = BattleColorConfig.HEIGHT;
-
 		// Grafikelemente anlegen
-
 		wallpaper = new Texture(Gdx.files.internal("menu/WLANMenuScreenWallpaper.png"));
 
 		joinWlanGameSprite = new TouchSprite(
@@ -148,6 +149,9 @@ public class WlanMenu implements Screen {
 		inputMulti.removeProcessor(joinWlanGameSprite);
 		inputMulti.removeProcessor(open2PlWlanGameSprite);
 		inputMulti.removeProcessor(open3PlWlanGameSprite);
+		joinWlanGameSprite.disposeTouchSprite();
+		open2PlWlanGameSprite.disposeTouchSprite();
+		open3PlWlanGameSprite.disposeTouchSprite();
 		joinWlanGameSprite = null;
 		open2PlWlanGameSprite = null;
 		open3PlWlanGameSprite = null;

@@ -13,6 +13,11 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 
+/**
+ * MainMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * für das Hauptmenü
+ */
 public class MainMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -120,6 +125,9 @@ public class MainMenu implements Screen {
 		inputMulti.removeProcessor(wlanGameSprite);
 		inputMulti.removeProcessor(btGameSprite);
 		inputMulti.removeProcessor(exitGameSprite);
+		wlanGameSprite.disposeTouchSprite();
+		btGameSprite.disposeTouchSprite();
+		exitGameSprite.disposeTouchSprite();
 		wlanGameSprite = null;
 		btGameSprite = null;
 		exitGameSprite = null;

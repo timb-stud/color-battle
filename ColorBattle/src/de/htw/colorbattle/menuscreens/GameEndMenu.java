@@ -11,6 +11,11 @@ import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
 
+/**
+ * GameEndMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * zum anzeigen des Spielergebnisses
+ */
 public class GameEndMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -86,6 +91,7 @@ public class GameEndMenu implements Screen {
 		ownCamera = null;
 		wallpaper.dispose();
 		scoreTexture.dispose();
+		backSprite.disposeTouchSprite();
 		backSprite = null;
 		gameresult = null;
 	}

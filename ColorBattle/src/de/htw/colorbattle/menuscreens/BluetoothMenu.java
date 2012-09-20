@@ -13,6 +13,11 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
+/**
+ * BluetoothMenu  erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * um ein BluetoothGame zu starten
+ */
 public class BluetoothMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -121,6 +126,9 @@ public class BluetoothMenu implements Screen {
 		inputMulti.removeProcessor(joinBtGameSprite);
 		inputMulti.removeProcessor(openBtGameSprite);
 		inputMulti.removeProcessor(backSprite);
+		joinBtGameSprite.disposeTouchSprite();
+		openBtGameSprite.disposeTouchSprite();
+		backSprite.disposeTouchSprite();
 		joinBtGameSprite = null;
 		openBtGameSprite = null;
 		backSprite = null;
