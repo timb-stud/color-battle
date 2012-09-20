@@ -45,7 +45,7 @@ public class WlanMenu implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("menu/WLANMenuScreenWallpaper.png"));
 
 		joinWlanGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/join_WLAN.png"), ownCamera);
+				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinWlanGameSprite.setPosition(10.0f, 320.0f);
 
 		open2PlWlanGameSprite = new TouchSprite(
@@ -63,7 +63,7 @@ public class WlanMenu implements Screen {
 		open4PlWlanGameSprite.setPosition(
 				440.0f, 30.0f);
 
-		backSprite = new TouchSprite(Gdx.files.internal("menu/back_WLAN.png"),
+		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
 		backSprite.setPosition(10, 30.0f);
 

@@ -47,7 +47,7 @@ public class BluetoothMenu implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		joinBtGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/Join_BT_Button.png"), ownCamera);
+				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
 						- joinBtGameSprite.getHeight()-15.0f);
