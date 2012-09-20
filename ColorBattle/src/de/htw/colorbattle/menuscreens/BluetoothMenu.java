@@ -84,14 +84,9 @@ public class BluetoothMenu implements Screen {
 
 		if (joinBtGameSprite.isTouched()) {
 			joinBtGameSprite.resetIsTouched(); 
-			gameRef.multiGame = new MultigameLogic(gameRef, false);
+			gameRef.multiGame = new MultigameLogic(gameRef);
 			gameRef.netSvc.connect();
-			try {
-				gameRef.setScreen(new JoiningScreen(gameRef));
-			} catch (NetworkException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			gameRef.setScreen(new JoiningScreen(gameRef));
 			this.dispose();
 
 		} else if (openBtGameSprite.isTouched()) {
@@ -105,16 +100,8 @@ public class BluetoothMenu implements Screen {
 	}
 	
 	private void startServer(int players){
-		gameRef.bcConfig.multigamePlayerCount = players; // TODO gefällt mir gar nicht die config dafür zu nutzen .... ist ja keine laufzeit config
-		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
-		gameRef.multiGame = new MultigameLogic(gameRef, true);
-		gameRef.multiGame.startServer();
-		try {
-			gameRef.setScreen(new JoiningScreen(gameRef));
-		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		gameRef.multiGame = new MultigameLogic(gameRef, players);
+		gameRef.setScreen(new JoiningScreen(gameRef));
 		this.dispose();
 	}
 

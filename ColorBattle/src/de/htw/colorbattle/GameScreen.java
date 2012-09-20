@@ -45,17 +45,14 @@ public class GameScreen implements Screen {
 	private Player player;
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, Player> playerMap; // TODO muss auch auf dem Client
-												// auf dem aktuellen Stand sein
-												// um Endscreen korrekt
-												// anzuzeigen
-	
-	//Powerup
+	private HashMap<Integer, Player> playerMap; 
+
+	// Powerup
 	private PowerUp powerUp;
 	private Texture powerUpTexture;
 	private float powerUpTimer;
-	
-	//Server
+
+	// Server
 	private boolean isServer;
 
 	// Game End Elements
@@ -80,24 +77,25 @@ public class GameScreen implements Screen {
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		int playerWidth = playerTexture.getWidth();
-		//int playerHeight = playerTexture.getHeight();
+		// int playerHeight = playerTexture.getHeight();
 		playerMap = new HashMap<Integer, Player>();
 
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-//		player.x = width / 2 - playerWidth / 2;
-//		player.y = height / 2 - playerHeight / 2;
+		// player.x = width / 2 - playerWidth / 2;
+		// player.y = height / 2 - playerHeight / 2;
 
 		playerSimulation = new PlayerSimulation(player);
 
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
-		
-		//Powerup
+
+		// Powerup
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
-		powerUp = new PowerUp(0	, 0, powerUpTexture.getWidth(), powerUpTexture.getHeight());
-		
+		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
+				powerUpTexture.getHeight());
+
 	}
 
 	@Override
@@ -108,33 +106,9 @@ public class GameScreen implements Screen {
 		game.camera.update();
 		batch.setProjectionMatrix(game.camera.combined);
 
-		//Server stuff
-		if(isServer){
-			powerUpTimer += Gdx.graphics.getDeltaTime();
-			if(powerUpTimer > 5){
-				powerUpTimer = 0;
-				powerUp.spawn();
-				send(new PowerUpSpawnMsg(powerUp));
-			}
-			boolean pickedByPlayer = powerUp.isPickedUpBy(player);
-			boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
-			if(powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
-				send(new InvertControlMsg(false));
-				powerUp.invertControl = false;
-				powerUp.wasPickedUpByServer = pickedByOtherPlayer;
-				if(powerUp.type == PowerUp.Type.BOMB) {
-					send(new BombExplodeMsg(pickedByPlayer));
-					powerUp.isBombExploded = true;
-				} else {
-					if(pickedByPlayer) {
-						powerUp.isVisible = false;
-						powerUp.invertControl = true;
-					} else {
-						send(new InvertControlMsg(true));
-					}
-					
-				}
-			}
+		// Server stuff
+		if (isServer) {
+			powerup();
 		}
 		
 		// Player zeichnen // TODO alle Schritte wirklich nötig ?
@@ -144,11 +118,8 @@ public class GameScreen implements Screen {
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		if(powerUp.isBombExploded){
-			Color color = powerUp.wasPickedUpByServer ? otherPlayer.color : player.color;
-			batch.draw(powerUp.getBombTexture(color), powerUp.rect.x - powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-			powerUp.isVisible = false;
-			powerUp.isBombExploded = false;
+		if (powerUp.isBombExploded) {
+			drawBomb();
 		}
 		batch.end();
 		colorFrameBuffer.end();
@@ -158,7 +129,7 @@ public class GameScreen implements Screen {
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
-		if(powerUp.isVisible) {
+		if (powerUp.isVisible) {
 			batch.draw(powerUpTexture, powerUp.rect.x, powerUp.rect.y);
 		}
 		batch.draw(countDown.countDownTexture, countDown.x, countDown.y); // Zeit
@@ -166,7 +137,7 @@ public class GameScreen implements Screen {
 
 		// Player movement
 		Accelerometer.updateDirection(player.direction);
-		if(powerUp.invertControl) {
+		if (powerUp.invertControl) {
 			player.direction.mul(-1);
 		}
 		// checkDesktopControl(); // not supported atm
@@ -195,6 +166,42 @@ public class GameScreen implements Screen {
 			// TaskManager / Neustart bug...
 		}
 	}
+	
+	private void powerup(){
+		powerUpTimer += Gdx.graphics.getDeltaTime();
+		if (powerUpTimer > 5) {
+			powerUpTimer = 0;
+			powerUp.spawn();
+			send(new PowerUpSpawnMsg(powerUp));
+		}
+		boolean pickedByPlayer = powerUp.isPickedUpBy(player);
+		boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
+		if (powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
+			send(new InvertControlMsg(false));
+			powerUp.invertControl = false;
+			powerUp.wasPickedUpByServer = pickedByOtherPlayer;
+			if (powerUp.type == PowerUp.Type.BOMB) {
+				send(new BombExplodeMsg(pickedByPlayer));
+				powerUp.isBombExploded = true;
+			} else {
+				if (pickedByPlayer) {
+					powerUp.isVisible = false;
+					powerUp.invertControl = true;
+				} else {
+					send(new InvertControlMsg(true));
+				}
+			}
+		}
+	}
+	
+	private void drawBomb(){
+		Color color = powerUp.wasPickedUpByServer ? otherPlayer.color
+				: player.color;
+		batch.draw(powerUp.getBombTexture(color), powerUp.rect.x
+				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
+		powerUp.isVisible = false;
+		powerUp.isBombExploded = false;
+	}
 
 	public void swapPlayers() {
 		Player buffer = player;
@@ -221,9 +228,9 @@ public class GameScreen implements Screen {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
 		playerList.add(otherPlayer);
-//		for (Player p : playerMap.values()) {
-//			playerList.add(p);
-//		}
+		// for (Player p : playerMap.values()) {
+		// playerList.add(p);
+		// }
 		return new GameResult(playerList);
 	}
 
@@ -240,6 +247,9 @@ public class GameScreen implements Screen {
 		this.otherPlayer.update(i.next()); // TODO only for playing with 2
 											// players
 		this.playerMap = playerMap;
+//		for(Player p : playerMap.values()){
+//			this.playerMap.get(p.id).update(p);
+//		}
 	}
 
 	public Player getPlayer() {
@@ -249,18 +259,18 @@ public class GameScreen implements Screen {
 	public void updateOtherPlayer(PlayerSimulation ps) {
 		otherPlayer.update(ps);
 	}
-	
-	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg){
+
+	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg) {
 		powerUp.set(powerUpSpawnMsg);
 		powerUp.isVisible = true;
 	}
-	
-	public void explodeBomb(BombExplodeMsg bombExplodeMsg){
+
+	public void explodeBomb(BombExplodeMsg bombExplodeMsg) {
 		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
 		powerUp.isBombExploded = true;
 	}
-	
-	public void invertControl(InvertControlMsg invertControlMsg){
+
+	public void invertControl(InvertControlMsg invertControlMsg) {
 		powerUp.invertControl = invertControlMsg.invertControl;
 		powerUp.isVisible = false;
 	}
@@ -298,7 +308,7 @@ public class GameScreen implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 		// TODO vllt kann man den Wallpaper direkt zeichnen auf das Element das
 		// nicht gelöscht wird , und nicht extra nochmal im render
-		//Server
+		// Server
 		isServer = game.multiGame.isServer();
 	}
 

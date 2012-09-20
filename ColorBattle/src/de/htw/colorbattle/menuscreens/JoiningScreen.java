@@ -24,7 +24,7 @@ public class JoiningScreen implements Screen {
 	private InputMultiplexer inputMulti;
 	private TouchSprite backSprite;
 
-	public JoiningScreen(ColorBattleGame game) throws NetworkException {
+	public JoiningScreen(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,

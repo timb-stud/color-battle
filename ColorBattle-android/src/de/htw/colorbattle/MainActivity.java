@@ -1,5 +1,7 @@
 package de.htw.colorbattle;
 
+import java.util.UUID;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -8,14 +10,20 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
+import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.network.MainActivityInterface;
+
 
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
 	
@@ -45,8 +53,8 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
         bcConfig.playSound = false;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
-        bcConfig.multigamePlayerCount = 2; //TODO set later
-//        bcConfig.gameMode = isBluetoothEnabled() ? GameMode.BLUETOOTH : GameMode.WIFI; //TODO set later
+        BattleColorConfig.DEVICE_ID = getDeviceId();
+        bcConfig.gameMode = GameMode.OFF; //default is OFF
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
@@ -73,6 +81,18 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
+    }
+    
+    private String getDeviceId(){
+    	  final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+    	    final String tmDevice, tmSerial, androidId;
+    	    tmDevice = "" + tm.getDeviceId();
+    	    tmSerial = "" + tm.getSimSerialNumber();
+    	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+    	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+    	    return deviceUuid.toString();
     }
     
     @Override
