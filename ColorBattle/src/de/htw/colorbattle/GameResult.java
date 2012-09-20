@@ -27,10 +27,10 @@ public class GameResult {
 
 	private static final int WINDOW_HEIGHT = 350;
 	private static final int WINDOW_WIDTH = 550;
-	
 
 	/**
 	 * generiert aus der aktuellen Ansicht ein Spielergebnis
+	 * 
 	 * @param playersList
 	 */
 	public GameResult(LinkedList<Player> playersList) {
@@ -43,6 +43,10 @@ public class GameResult {
 		this.pixelNumber = bytePixelArray.length / 4;
 		HashMap<Integer, Integer> readedPixel = getPixelMap(bytePixelArray);
 		readedPixel = filterAndInverseMap(readedPixel);
+		testOutput(readedPixel);
+		System.out.println(readedPixel.toString());
+		readedPixel = mergeSimilarColors(readedPixel);
+		System.out.println(readedPixel.toString());
 		addScoresToPlayerList(readedPixel);
 	}
 
@@ -58,7 +62,9 @@ public class GameResult {
 					| ((bytePixelArray[i + 2] & 0xFF) << 16)
 					| ((bytePixelArray[i + 3] & 0xFF) << 24);
 
-			if (pixelMap.containsKey(currentPixel)) {
+			if (pixelMap.containsKey(currentPixel)) { // TODO not need contains
+														// optimieren mit null
+														// prüfung
 				pixelCount = pixelMap.get(currentPixel);
 				pixelCount++;
 				pixelMap.put(currentPixel, pixelCount);
@@ -108,6 +114,12 @@ public class GameResult {
 
 	private float round2digitsDown(float value) {
 		return (float) Math.round((value - 0.005) * 100) / 100;
+	}
+	
+	private float round1digit(float value) {
+		float x = (float) Math.round((value) * 10) / 10;
+		System.out.println("n: "+value + " neu: "+x);
+		return (float) Math.round((value) * 10) / 10;
 	}
 
 	private void addScoresToPlayerList(HashMap<Integer, Integer> pixelMap) {
@@ -161,16 +173,15 @@ public class GameResult {
 		ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
 				BattleColorConfig.HEIGHT);
 		batch.setProjectionMatrix(ownCamera.combined);
-		
+
 		scoreFrameBuffer.begin();
 		batch.begin();
 		batch.draw(tex, 0, 0);
-		
 
 		int y = 10;
 		for (Texture tex2 : this.getPlayerScoreTextures()) {
 			batch.draw(tex2, 75, y);
-			y += BAR_HEIGHT+10;
+			y += BAR_HEIGHT + 10;
 		}
 		batch.end();
 		scoreFrameBuffer.end();
@@ -180,6 +191,105 @@ public class GameResult {
 
 	public LinkedList<Player> getScoredPlayerList() {
 		return playerList;
+	}
+
+	/**
+	 * prüft ob die Farbwerte in der Hashmap ähnlich sind falls dies der Fall
+	 * ist werden die Values also die Anzahl aufaddiert.
+	 */
+	private HashMap<Integer, Integer> mergeSimilarColors(
+			HashMap<Integer, Integer> pixelMap) {
+		Color mainLoopColor = new Color();
+		Color innerLoopColor = new Color();
+		HashMap<Integer, Integer> newMap = new HashMap<Integer, Integer>();
+		Set<Integer> keyset = pixelMap.keySet();
+		int mainLoopValue;
+		for (int mainLoopKey : keyset) {
+			mainLoopValue = pixelMap.get(mainLoopKey);
+			for (int innerLoopKey : keyset) {
+				if (mainLoopKey != innerLoopKey) {
+					Color.rgba8888ToColor(mainLoopColor, mainLoopKey);
+					Color.rgba8888ToColor(innerLoopColor, innerLoopKey);
+					if (isColorSimilarEnoughToMerge(mainLoopColor,
+							innerLoopColor)) {
+						mainLoopValue = mainLoopValue
+								+ pixelMap.get(innerLoopKey);
+
+					}
+				}
+			}
+			newMap.put(mainLoopKey, mainLoopValue);
+		}
+		return newMap;
+	}
+
+	private boolean isColorSimilarEnoughToMerge(Color colorFix, Color colorVar) {
+		
+			if ((isValueRoundableToValue(colorFix.a, colorVar.a))
+					&& (isValueRoundableToValue(colorFix.r, colorVar.r))
+					&& (isValueRoundableToValue(colorFix.g, colorVar.g))
+					&& (isValueRoundableToValue(colorFix.b, colorVar.b))) {
+				return true;
+			} else {
+				return false;
+			}
+	
+	}
+
+	// TODO später löschen aber vllt brauch ich es wieder
+	/**
+	 * prüft ob mindestens 2 der 4 rgba Werte gleich sind
+	 */
+	private boolean areMinTwoRGBAValuesTheSame(Color colorFix, Color colorVar) {
+		if (colorFix.a == colorVar.a) {
+			if (colorFix.r == colorVar.r) {
+				return true;
+			} else if (colorFix.g == colorVar.g) {
+				return true;
+			} else if (colorFix.b == colorVar.b) {
+				return true;
+			}
+		} else if (colorFix.r == colorVar.r) {
+			if (colorFix.g == colorVar.g) {
+				return true;
+			} else if (colorFix.b == colorVar.b) {
+				return true;
+			}
+		} else if (colorFix.g == colorVar.g) {
+			if (colorFix.b == colorVar.b) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	private boolean isValueRoundableToValue(float valueOne, float valueTwo) {
+		if (valueOne == valueTwo){
+			return true;
+		}else if (round1digit(valueOne)==round1digit(valueTwo)){
+			return true;			
+		}else if (true){
+			
+		}
+		
+		return false;
+	}
+	
+	
+
+	// TODO methode kann später mal entfernt werden
+	private void testOutput(HashMap<Integer, Integer> readedPixel) {
+		Set<Integer> keyset = readedPixel.keySet();
+		Color curcolor = new Color();
+		for (int currentkey : keyset) {
+			Color.rgba8888ToColor(curcolor, currentkey);
+			System.out.println("Farbe int-Wert: " + currentkey + " value: "
+					+ readedPixel.get(currentkey) + " a: " + curcolor.a
+					+ " r: " + curcolor.r + " g: " + curcolor.g + " b: "
+					+ curcolor.b);
+		}
 	}
 
 }
