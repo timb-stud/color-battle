@@ -18,9 +18,10 @@ import de.htw.colorbattle.gameobjects.Player;
 public class GameResult {
 
 	private static final int FILTER_COLOR_MIN_FREQUENCY = 100;
-	private int pixelNumber;
+	private int totalPixel;
 	private LinkedList<Player> playerList;
 
+	private static final float ROUNDING_FACTOR = 1.0035f;
 	// Graphics
 	private static final int BAR_HEIGHT = 90;
 	private static final int BAR_MAX_WIDTH = 1100;
@@ -30,7 +31,6 @@ public class GameResult {
 
 	/**
 	 * generiert aus der aktuellen Ansicht ein Spielergebnis
-	 * 
 	 * @param playersList
 	 */
 	public GameResult(LinkedList<Player> playersList) {
@@ -40,14 +40,14 @@ public class GameResult {
 
 	private void computeScore() {
 		byte[] bytePixelArray = ScreenUtils.getFrameBufferPixels(false);
-		this.pixelNumber = bytePixelArray.length / 4;
+		this.totalPixel = bytePixelArray.length / 4;
 		HashMap<Integer, Integer> readedPixel = getPixelMap(bytePixelArray);
-		readedPixel = filterAndInverseMap(readedPixel);
-		testOutput(readedPixel);
-		System.out.println(readedPixel.toString());
+		readedPixel = filterAndInverseMapAndRecalculateTotalPixels(readedPixel);
 		readedPixel = mergeSimilarColors(readedPixel);
-		System.out.println(readedPixel.toString());
 		addScoresToPlayerList(readedPixel);
+		for (Player p : playerList) {
+			System.out.println(p.getGameScore() + " player " + p.id);
+		}
 	}
 
 	private HashMap<Integer, Integer> getPixelMap(byte[] bytePixelArray) {
@@ -61,10 +61,8 @@ public class GameResult {
 					| ((bytePixelArray[i + 1] & 0xFF) << 8)
 					| ((bytePixelArray[i + 2] & 0xFF) << 16)
 					| ((bytePixelArray[i + 3] & 0xFF) << 24);
-
-			if (pixelMap.containsKey(currentPixel)) { // TODO not need contains
-														// optimieren mit null
-														// prüfung
+			
+			if (pixelMap.containsKey(currentPixel)) {
 				pixelCount = pixelMap.get(currentPixel);
 				pixelCount++;
 				pixelMap.put(currentPixel, pixelCount);
@@ -75,20 +73,22 @@ public class GameResult {
 		return pixelMap;
 	}
 
-	private HashMap<Integer, Integer> filterAndInverseMap(
+	private HashMap<Integer, Integer> filterAndInverseMapAndRecalculateTotalPixels(
 			HashMap<Integer, Integer> pixelMap) {
 		Color currentColor = new Color();
 		HashMap<Integer, Integer> newMap = new HashMap<Integer, Integer>();
 		Set<Integer> keyset = pixelMap.keySet();
 		int currentvalue;
+		this.totalPixel = 0;
 		for (int currentkey : keyset) {
 			currentvalue = pixelMap.get(currentkey);
 			if (currentvalue > FILTER_COLOR_MIN_FREQUENCY) {
 				Color.rgba8888ToColor(currentColor, currentkey);
-				// das hier kann man ev optimieren
 				newMap.put(currentColor.toIntBits(), currentvalue);
+				this.totalPixel = this.totalPixel + currentvalue;
 			}
 		}
+		this.totalPixel = (int) ((float)totalPixel/ROUNDING_FACTOR);
 		return newMap;
 	}
 
@@ -115,10 +115,8 @@ public class GameResult {
 	private float round2digitsDown(float value) {
 		return (float) Math.round((value - 0.005) * 100) / 100;
 	}
-	
+
 	private float round1digit(float value) {
-		float x = (float) Math.round((value) * 10) / 10;
-		System.out.println("n: "+value + " neu: "+x);
 		return (float) Math.round((value) * 10) / 10;
 	}
 
@@ -133,7 +131,8 @@ public class GameResult {
 				Color.rgba8888ToColor(currentColor, currentkey);
 				if (colorIsSimlarToColor(playerColor, currentColor)) {
 					currentvalue = pixelMap.get(currentkey);
-					pl.setGameScore(((double) currentvalue / (double) pixelNumber) * 100.0);
+					System.out.println("cv "+currentvalue+ "  tp" + totalPixel);
+					pl.setGameScore(((double) currentvalue / (double) totalPixel) * 100.0);
 					break;
 				}
 			}
@@ -214,7 +213,6 @@ public class GameResult {
 							innerLoopColor)) {
 						mainLoopValue = mainLoopValue
 								+ pixelMap.get(innerLoopKey);
-
 					}
 				}
 			}
@@ -224,16 +222,23 @@ public class GameResult {
 	}
 
 	private boolean isColorSimilarEnoughToMerge(Color colorFix, Color colorVar) {
-		
-			if ((isValueRoundableToValue(colorFix.a, colorVar.a))
-					&& (isValueRoundableToValue(colorFix.r, colorVar.r))
-					&& (isValueRoundableToValue(colorFix.g, colorVar.g))
-					&& (isValueRoundableToValue(colorFix.b, colorVar.b))) {
-				return true;
-			} else {
-				return false;
-			}
-	
+		if ((isValueRoundableToValue(colorFix.a, colorVar.a))
+				&& (isValueRoundableToValue(colorFix.r, colorVar.r))
+				&& (isValueRoundableToValue(colorFix.g, colorVar.g))
+				&& (isValueRoundableToValue(colorFix.b, colorVar.b))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean isValueRoundableToValue(float valueOne, float valueTwo) {
+		if (valueOne == valueTwo) {
+			return true;
+		} else if (round1digit(valueOne) == round1digit(valueTwo)) {
+			return true;
+		}
+		return false;
 	}
 
 	// TODO später löschen aber vllt brauch ich es wieder
@@ -264,20 +269,6 @@ public class GameResult {
 		}
 		return false;
 	}
-
-	private boolean isValueRoundableToValue(float valueOne, float valueTwo) {
-		if (valueOne == valueTwo){
-			return true;
-		}else if (round1digit(valueOne)==round1digit(valueTwo)){
-			return true;			
-		}else if (true){
-			
-		}
-		
-		return false;
-	}
-	
-	
 
 	// TODO methode kann später mal entfernt werden
 	private void testOutput(HashMap<Integer, Integer> readedPixel) {
