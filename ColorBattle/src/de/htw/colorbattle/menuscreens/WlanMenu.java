@@ -148,9 +148,13 @@ public class WlanMenu implements Screen {
 		inputMulti.removeProcessor(joinWlanGameSprite);
 		inputMulti.removeProcessor(open2PlWlanGameSprite);
 		inputMulti.removeProcessor(open3PlWlanGameSprite);
+		inputMulti.removeProcessor(open4PlWlanGameSprite);
+		inputMulti.removeProcessor(backSprite);
 		joinWlanGameSprite.disposeTouchSprite();
 		open2PlWlanGameSprite.disposeTouchSprite();
 		open3PlWlanGameSprite.disposeTouchSprite();
+		open4PlWlanGameSprite.disposeTouchSprite();
+		backSprite.disposeTouchSprite();
 		joinWlanGameSprite = null;
 		open2PlWlanGameSprite = null;
 		open3PlWlanGameSprite = null;
