@@ -6,6 +6,7 @@ import java.util.Observer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Logger;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
@@ -23,7 +24,7 @@ public class MultigameLogic implements Observer{
 	int joinedPlayers;
 	RuntimeConfig bcConfig;
 	boolean isGameStarted;
-	boolean isServer;
+	boolean isServer = false;
 	Player ownPlayer;
 	ColorBattleGame game;
 	
@@ -31,35 +32,33 @@ public class MultigameLogic implements Observer{
 		this(game);
 		this.playerCount = playerCount;
 		this.isServer = true;
+		this.joinedPlayers = 1; //1 for own Player
+
+		game.gameScreen.swapPlayers();
+		ownPlayer.id = joinedPlayers;
+		ownPlayer.x = 50;
+		ownPlayer.y = 50;
+		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
+		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
+
+		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
+			playerCount = 1;
+			game.gameScreen.getPlayerMap().put(1, ownPlayer);
+		}
+		checkIfGameCanStart();
 	}
 
 	public MultigameLogic(ColorBattleGame game) {
 		
-			this.game = game;
-			this.bcConfig = game.bcConfig;
-			
-			this.isGameStarted = false;
-			this.gameTime = BattleColorConfig.GAME_TIME;
-			this.joinedPlayers = 1; //1 for own Player
-			this.ownPlayer = game.gameScreen.getPlayer();
-			
-			if(isServer){
-				game.gameScreen.swapPlayers();
-				ownPlayer.id = joinedPlayers;
-				ownPlayer.x = 50;
-				ownPlayer.y = 50;
-				game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
-				Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
-			}
-			
-			if (game.netSvc instanceof NetworkService)
-				game.netSvc.addObserver(this);
-			
-			if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
-				playerCount = 1;
-				game.gameScreen.getPlayerMap().put(1, ownPlayer);
-			}
-		checkIfGameCanStart();
+		this.game = game;
+		this.bcConfig = game.bcConfig;
+		
+		this.isGameStarted = false;
+		this.gameTime = BattleColorConfig.GAME_TIME;
+		this.ownPlayer = game.gameScreen.getPlayer();
+		
+		if (game.netSvc instanceof NetworkService)
+			game.netSvc.addObserver(this);
 	}
 	
 	public void joinGame(){

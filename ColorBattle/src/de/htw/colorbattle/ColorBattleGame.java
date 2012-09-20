@@ -59,7 +59,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 			Gdx.app.error("NetworkException",
 					"ColorBattleGame: Can't create network connection.", e);
 			e.printStackTrace();
-			// TODO: handle exception
 		}
 	}
 	
