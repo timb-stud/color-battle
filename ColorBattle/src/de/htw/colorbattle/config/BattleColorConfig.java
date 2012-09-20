@@ -12,7 +12,7 @@ public class BattleColorConfig {
 	//only default value, values updated in main activity
 	public int multigamePlayerCount = 1; 
 	public float networkPxlUpdateIntervall = 1;
-	public int gameTime = 60;
+	public static final int GAME_TIME = 60;
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;
 	

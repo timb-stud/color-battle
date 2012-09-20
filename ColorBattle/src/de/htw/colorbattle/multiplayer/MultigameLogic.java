@@ -34,7 +34,7 @@ public class MultigameLogic implements Observer{
 				
 			this.isServer = isServer;
 			this.isGameStarted = false;
-			this.gameTime = bcConfig.gameTime;
+			this.gameTime = BattleColorConfig.GAME_TIME;
 			this.playerCount = bcConfig.multigamePlayerCount;
 			this.joinedPlayers = 1; //1 for own Player
 			this.ownPlayer = game.gameScreen.getPlayer();

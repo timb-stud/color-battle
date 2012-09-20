@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
+import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
 import de.htw.colorbattle.gameobjects.GameBorder;
@@ -152,7 +153,7 @@ public class GameScreen implements Screen {
 		}
 		batch.end();
 		colorFrameBuffer.end();
-		// TODO unterschied colorframebuffer und normaler batch ?
+
 		batch.begin();
 		batch.draw(wallpaper, 0, 0); // Hintergrund
 		batch.draw(flipper, 0, 0);
@@ -186,7 +187,7 @@ public class GameScreen implements Screen {
 		// Game End
 		if (!gameEnd) {
 			gameEnd = countDown.activateCountDown(endTime,
-					game.bcConfig.gameTime);
+					BattleColorConfig.GAME_TIME);
 		} else {
 			GameEndMenu gen = new GameEndMenu(game);
 			gen.setGameresult(this.getGameResult());
@@ -289,7 +290,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
-		endTime = System.currentTimeMillis() / 1000 + game.bcConfig.gameTime;
+		endTime = System.currentTimeMillis() / 1000 + BattleColorConfig.GAME_TIME;
 
 		if (game.bcConfig.playSound) {
 			game.playSound();
