@@ -8,9 +8,10 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.menuscreens.JoiningScreen;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.MainActivityInterface;
@@ -23,7 +24,7 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
 	
-	public BattleColorConfig bcConfig;
+	public RuntimeConfig bcConfig;
 	public Music music;
 	
 	//Networks
@@ -33,7 +34,7 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public MainActivityInterface mainActivity;
 
 	
-	public ColorBattleGame(BattleColorConfig bcConfig,
+	public ColorBattleGame(RuntimeConfig bcConfig,
 			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
 		super();
 		this.bcConfig = bcConfig;

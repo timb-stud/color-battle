@@ -14,7 +14,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
-import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.network.MainActivityInterface;
 
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
@@ -39,7 +39,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         cfg.useAccelerometer = true;
         cfg.useCompass = false;
         
-        BattleColorConfig bcConfig = new BattleColorConfig();
+        RuntimeConfig bcConfig = new RuntimeConfig();
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view

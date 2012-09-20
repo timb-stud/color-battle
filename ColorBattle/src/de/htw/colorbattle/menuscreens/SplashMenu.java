@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.toast.Toast;

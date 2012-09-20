@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
