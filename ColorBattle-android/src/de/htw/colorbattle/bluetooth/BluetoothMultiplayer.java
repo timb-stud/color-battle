@@ -52,14 +52,12 @@ public class BluetoothMultiplayer {
 	
 	public void send(Object obj){
 		if(connectionThread != null){
-			Log.d("BT", "send: " + obj.toString());
 			connectionThread.write(SerializeUtils.serializeObject(obj));
 		}
 	}
 	
 	private void receive(Object obj){
 		colorBattleGame.multiGame.update(null, obj);
-		Log.d("BT", "receive: " + obj.toString());
 	}
 	
 	public boolean isServer(){
