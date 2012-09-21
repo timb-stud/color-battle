@@ -99,7 +99,8 @@ public class GameScreen implements Screen {
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
 				powerUpTexture.getHeight());
-
+		
+		game.toast.toaster();
 	}
 
 	@Override
