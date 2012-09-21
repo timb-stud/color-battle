@@ -89,22 +89,22 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	@Override
 	public void dispose() {
 		super.dispose();
-		gameScreen.dispose();
-		/*inputMultiplexer = null;
+		gameScreen.disposeFromGameScreen();
+		inputMultiplexer = null;
 		camera = null;
 		bcConfig = null;
 		music = null;
 		multiGame = null;
 		netSvc = null;
 		bluetoothActionResolver = null;
-		mainActivity = null;*/
+		mainActivity = null;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.BACK) {
 			// this.setScreen(mainMenuScreen);
-			Gdx.app.exit();
+			//Gdx.app.exit();
 		}
 		return false;
 	}

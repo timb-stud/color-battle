@@ -45,7 +45,7 @@ public class GameScreen implements Screen {
 	private Player player;
 	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
-	private HashMap<Integer, Player> playerMap; 
+	private HashMap<Integer, Player> playerMap;
 
 	// Powerup
 	private PowerUp powerUp;
@@ -76,7 +76,7 @@ public class GameScreen implements Screen {
 		// Player Allgemein
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
-		 
+
 		playerMap = new HashMap<Integer, Player>();
 
 		int playerWidth = playerTexture.getWidth();
@@ -85,8 +85,8 @@ public class GameScreen implements Screen {
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-		
-		//set player default position
+
+		// set player default position
 		player.x = width / 2 - playerWidth / 2;
 		player.y = height / 2 - playerHeight / 2;
 
@@ -99,7 +99,7 @@ public class GameScreen implements Screen {
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
 				powerUpTexture.getHeight());
-		
+
 		game.toast.toaster();
 	}
 
@@ -115,7 +115,7 @@ public class GameScreen implements Screen {
 		if (isServer) {
 			powerup();
 		}
-		
+
 		// Player zeichnen // TODO alle Schritte wirklich nötig ?
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
@@ -171,8 +171,8 @@ public class GameScreen implements Screen {
 			// TaskManager / Neustart bug...
 		}
 	}
-	
-	private void powerup(){
+
+	private void powerup() {
 		powerUpTimer += Gdx.graphics.getDeltaTime();
 		if (powerUpTimer > 5) {
 			powerUpTimer = 0;
@@ -198,8 +198,8 @@ public class GameScreen implements Screen {
 			}
 		}
 	}
-	
-	private void drawBomb(){
+
+	private void drawBomb() {
 		Color color = powerUp.wasPickedUpByServer ? otherPlayer.color
 				: player.color;
 		batch.draw(powerUp.getBombTexture(color), powerUp.rect.x
@@ -252,9 +252,9 @@ public class GameScreen implements Screen {
 		this.otherPlayer.update(i.next()); // TODO only for playing with 2
 											// players
 		this.playerMap = playerMap;
-//		for(Player p : playerMap.values()){
-//			this.playerMap.get(p.id).update(p);
-//		}
+		// for(Player p : playerMap.values()){
+		// this.playerMap.get(p.id).update(p);
+		// }
 	}
 
 	public Player getPlayer() {
@@ -304,7 +304,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
-		endTime = System.currentTimeMillis() / 1000 + BattleColorConfig.GAME_TIME;
+		endTime = System.currentTimeMillis() / 1000
+				+ BattleColorConfig.GAME_TIME;
 
 		if (game.bcConfig.playSound) {
 			game.playSound();
@@ -336,23 +337,32 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// never called automatically!!!
 		playerTexture.dispose();
 		player.dispose();
 		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
-
-		// TODO von andy: ich kanns net testen wegen TaskManager / Neustart
-		// bug...
-		/*
-		 * wallpaper.dispose(); countDown.dispose(); endTime = 0; gameEnd =
-		 * false; //das hier könnte ein Problem sein ev. wieder entfernen
-		 * playerSimulation = null; playerMap = null; flipper = null; gameBorder
-		 * = null; game = null; //das hier könnte ein Problem sein ev. wieder
-		 * entfernen netSvc = null; //das hier könnte ein Problem sein ev.
-		 * wieder entfernen width = 0 ; height = 0; wallpaper.dispose();
-		 */
+		wallpaper.dispose();
+		countDown.dispose();
+		powerUpTexture.dispose();
+		playerSimulation = null;
+		playerMap = null;
+		flipper = null;
+		gameBorder = null;
 	}
-
+	
+	public void disposeFromGameScreen() {
+		playerTexture.dispose();
+		player.dispose();
+		otherPlayer.dispose();
+		colorFrameBuffer.dispose();
+		// batch.dispose(); // Nullpointer
+		// wallpaper.dispose(); // Nullpointer
+		countDown.dispose();
+		powerUpTexture.dispose();
+		playerSimulation = null;
+		playerMap = null;
+		flipper = null;
+		gameBorder = null;
+	}
 }
