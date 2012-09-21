@@ -71,6 +71,10 @@ public class GameCountDownScreen implements Screen {
 	}
 
 	private void setTexture() {
+		if(texture != null){
+			texture.dispose();
+			texture = null;
+		}
 		texture = new Texture(Gdx.files.internal("menu/" + countdown + ".png"));
 	}
 
