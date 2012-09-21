@@ -225,6 +225,7 @@ public class GameResult {
 	}
 
 	private boolean isValueRoundableToValue(float valueOne, float valueTwo) {
+		// alternative wäre maximale Abweichung der Werte zu berechnen, dies wäre eventuell etwas genauer
 		if (valueOne == valueTwo) {
 			return true;
 		} else if (round1digit(valueOne) == round1digit(valueTwo)) {
