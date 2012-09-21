@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.toast.Toast;
 
 /**
  * GameEndMenu erstellt die Oberfläche,
@@ -24,6 +26,7 @@ public class GameEndMenu implements Screen {
 
 	private boolean scoreComputed = false;
 	private GameResult gameresult;
+	private Toast render_toast;
 
 	private Texture wallpaper;
 	private Texture scoreTexture;
@@ -48,6 +51,8 @@ public class GameEndMenu implements Screen {
 		inputMulti = new InputMultiplexer();
 		inputMulti.addProcessor(backSprite);
 		Gdx.input.setInputProcessor(inputMulti);
+		
+		this.render_toast  = new Toast(7, 6);
 	}
 
 	@Override
@@ -67,12 +72,15 @@ public class GameEndMenu implements Screen {
 				ownBatch.end();
 			}
 		} else if (gameresult != null) {
-			this.scoreTexture = gameresult.getScoreScreen(ownBatch);
+			this.scoreTexture = gameresult.getScoreScreen(ownBatch, ownCamera);
 			scoreComputed = true;
 		}
+		
+		render_toast.toaster();
 
 		if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
+			gameRef.setShowSplashScreen(false);
 			gameRef.create(); // TODO könnte man auch anderst lösen...
 			this.dispose();
 		}
@@ -80,6 +88,16 @@ public class GameEndMenu implements Screen {
 
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
+		
+		String toastMsg = "";
+		float score;
+		for (Player currentPlayer : gameresult.getScoredPlayerList()){
+			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
+			toastMsg = toastMsg + " PlayerID: " + currentPlayer.id + " Score: "+ score+"\n"; 
+		}
+		render_toast.makeText(toastMsg, "font", 
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.LONG*2.0f);
+	
 	}
 
 	@Override
@@ -94,6 +112,7 @@ public class GameEndMenu implements Screen {
 		backSprite.disposeTouchSprite();
 		backSprite = null;
 		gameresult = null;
+		render_toast=null;
 	}
 
 	// other methods not need here

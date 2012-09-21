@@ -3,7 +3,6 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
-import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.gameobjects.Player;
 
 public class GameResult {
@@ -24,10 +22,10 @@ public class GameResult {
 	private static final float ROUNDING_FACTOR = 1.0035f;
 	// Graphics
 	private static final int BAR_HEIGHT = 90;
-	private static final int BAR_MAX_WIDTH = 1100;
+	private static final int BAR_MAX_WIDTH = 470;
 
 	private static final int WINDOW_HEIGHT = 350;
-	private static final int WINDOW_WIDTH = 550;
+	private static final int WINDOW_WIDTH = 570;
 
 	/**
 	 * generiert aus der aktuellen Ansicht ein Spielergebnis
@@ -45,9 +43,6 @@ public class GameResult {
 		readedPixel = filterAndInverseMapAndRecalculateTotalPixels(readedPixel);
 		readedPixel = mergeSimilarColors(readedPixel);
 		addScoresToPlayerList(readedPixel);
-		for (Player p : playerList) {
-			System.out.println(p.getGameScore() + " player " + p.id);
-		}
 	}
 
 	private HashMap<Integer, Integer> getPixelMap(byte[] bytePixelArray) {
@@ -131,7 +126,6 @@ public class GameResult {
 				Color.rgba8888ToColor(currentColor, currentkey);
 				if (colorIsSimlarToColor(playerColor, currentColor)) {
 					currentvalue = pixelMap.get(currentkey);
-					System.out.println("cv "+currentvalue+ "  tp" + totalPixel);
 					pl.setGameScore(((double) currentvalue / (double) totalPixel) * 100.0);
 					break;
 				}
@@ -147,7 +141,7 @@ public class GameResult {
 			pm = new Pixmap(BAR_MAX_WIDTH, BAR_HEIGHT, Format.RGBA8888);
 			pm.setColor(pl.getColor());
 			pm.fillRectangle(0, 0,
-					(int) ((double) BAR_MAX_WIDTH / 100.0 * pl.getGameScore()),
+					(int) ((double) BAR_MAX_WIDTH * (pl.getGameScore()/100)),
 					BAR_HEIGHT);
 			tex = new Texture(pm);
 			texList.add(tex);
@@ -155,7 +149,7 @@ public class GameResult {
 		return texList;
 	}
 
-	public Texture getScoreScreen(SpriteBatch batch) {
+	public Texture getScoreScreen(SpriteBatch otherBatch, OrthographicCamera otherCam) {
 
 		Pixmap pm;
 		Texture tex;
@@ -168,21 +162,19 @@ public class GameResult {
 		pm.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		tex = new Texture(pm);
 
-		OrthographicCamera ownCamera = new OrthographicCamera();
-		ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
-				BattleColorConfig.HEIGHT);
-		batch.setProjectionMatrix(ownCamera.combined);
+
+		otherBatch.setProjectionMatrix(otherCam.combined);
 
 		scoreFrameBuffer.begin();
-		batch.begin();
-		batch.draw(tex, 0, 0);
+		otherBatch.begin();
+		otherBatch.draw(tex, 0, 0);
 
 		int y = 10;
 		for (Texture tex2 : this.getPlayerScoreTextures()) {
-			batch.draw(tex2, 75, y);
+			otherBatch.draw(tex2, 50, y);
 			y += BAR_HEIGHT + 10;
 		}
-		batch.end();
+		otherBatch.end();
 		scoreFrameBuffer.end();
 
 		return scoreFrameBuffer.getColorBufferTexture();
