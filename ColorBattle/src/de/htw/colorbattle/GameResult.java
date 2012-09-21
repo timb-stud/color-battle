@@ -19,7 +19,7 @@ public class GameResult {
 	private int totalPixel;
 	private LinkedList<Player> playerList;
 
-	private static final float ROUNDING_FACTOR = 1.0035f;
+	private static final float ROUNDING_FACTOR = 1.002f;
 	// Graphics
 	private static final int BAR_HEIGHT = 90;
 	private static final int BAR_MAX_WIDTH = 470;
