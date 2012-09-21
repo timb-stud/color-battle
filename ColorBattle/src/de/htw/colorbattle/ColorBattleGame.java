@@ -16,6 +16,7 @@ import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.MainActivityInterface;
 import de.htw.colorbattle.network.NetworkActionResolver;
+import de.htw.colorbattle.toast.Toast;
 
 public class ColorBattleGame extends Game implements InputProcessor,
 		ApplicationListener {
@@ -23,6 +24,8 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public GameScreen gameScreen;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
+	
+	public Toast toast;
 	
 	public RuntimeConfig bcConfig;
 	public Music music;
@@ -42,6 +45,7 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		this.camera.setToOrtho(false, BattleColorConfig.WIDTH, BattleColorConfig.HEIGHT);
 		this.bluetoothActionResolver = bluetoothActionResolver;
 		this.mainActivity = mainActivity;
+		this.toast = new Toast(7, 20);
 	}
 
 	@Override
