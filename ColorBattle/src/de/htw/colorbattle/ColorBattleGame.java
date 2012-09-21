@@ -86,6 +86,14 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public void dispose() {
 		super.dispose();
 		gameScreen.dispose();
+		/*inputMultiplexer = null;
+		camera = null;
+		bcConfig = null;
+		music = null;
+		multiGame = null;
+		netSvc = null;
+		bluetoothActionResolver = null;
+		mainActivity = null;*/
 	}
 
 	@Override
