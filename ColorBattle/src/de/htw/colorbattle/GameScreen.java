@@ -167,7 +167,7 @@ public class GameScreen implements Screen {
 			GameEndMenu gen = new GameEndMenu(game);
 			gen.setGameresult(this.getGameResult());
 			game.setScreen(gen);
-			this.dispose();//
+			this.dispose();//neu könnte noch probleme verursachen
 		}
 	}
 
