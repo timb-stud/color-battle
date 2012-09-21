@@ -65,8 +65,8 @@ public class GameScreen implements Screen {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
 		// Spielfeld
-		width = (int) this.game.camera.viewportWidth;
-		height = (int) this.game.camera.viewportHeight;
+		width = BattleColorConfig.WIDTH;
+		height = BattleColorConfig.HEIGHT;
 		batch = new SpriteBatch();
 		colorFrameBuffer = new FrameBuffer(Format.RGBA8888, width, height,
 				false);
@@ -167,8 +167,7 @@ public class GameScreen implements Screen {
 			GameEndMenu gen = new GameEndMenu(game);
 			gen.setGameresult(this.getGameResult());
 			game.setScreen(gen);
-			// TODO von andy: dispose hier! ich kanns net gut testen wegen
-			// TaskManager / Neustart bug...
+			this.dispose();//
 		}
 	}
 
