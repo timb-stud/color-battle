@@ -50,12 +50,14 @@ public class GameCountDown implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
-		if (countdown == 0) {
-			gameRef.setScreen(gameRef.gameScreen);
-		} else if(System.currentTimeMillis() - oldTime > 1000) {
-			oldTime = System.currentTimeMillis();
-			setTexture();
-			countdown--;
+		if (System.currentTimeMillis() - oldTime > 1000) {
+			if (countdown == 0) {
+				gameRef.setScreen(gameRef.gameScreen);
+			} else if(System.currentTimeMillis() - oldTime > 1000) { //Eine Sekunde vergangen
+				oldTime = System.currentTimeMillis();
+				countdown--;
+				setTexture();
+			}
 		}
 		
 		batch.setProjectionMatrix(ownCamera.combined);

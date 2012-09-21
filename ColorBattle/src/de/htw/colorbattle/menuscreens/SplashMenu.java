@@ -29,7 +29,7 @@ public class SplashMenu implements Screen {
 	 */
 	public SplashMenu(ColorBattleGame game) {
 		this.gameRef = game;
-		this.render_toast  = new Toast(7, 6);
+		this.render_toast  = new Toast(7, 20);
 	}
 
 	@Override
