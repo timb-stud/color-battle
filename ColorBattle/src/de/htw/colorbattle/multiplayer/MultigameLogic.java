@@ -43,7 +43,6 @@ public class MultigameLogic implements Observer{
 
 		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
 			playerCount = 1;
-			game.gameScreen.getPlayerMap().put(1, ownPlayer);
 		}
 		checkIfGameCanStart();
 	}

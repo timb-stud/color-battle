@@ -76,15 +76,19 @@ public class GameScreen implements Screen {
 		// Player Allgemein
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
-		int playerWidth = playerTexture.getWidth();
-		// int playerHeight = playerTexture.getHeight();
+		 
 		playerMap = new HashMap<Integer, Player>();
+
+		int playerWidth = playerTexture.getWidth();
+		int playerHeight = playerTexture.getHeight();
 
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
-		// player.x = width / 2 - playerWidth / 2;
-		// player.y = height / 2 - playerHeight / 2;
+		
+		//set player default position
+		player.x = width / 2 - playerWidth / 2;
+		player.y = height / 2 - playerHeight / 2;
 
 		playerSimulation = new PlayerSimulation(player);
 
