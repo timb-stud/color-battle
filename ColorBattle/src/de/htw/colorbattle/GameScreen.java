@@ -3,13 +3,13 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,6 +39,7 @@ public class GameScreen implements Screen {
 	private int width;
 	private int height;
 	private Texture wallpaper;
+	private OrthographicCamera ownCamera;
 
 	// Players & Network
 	private TextureRegion flipper;
@@ -63,6 +64,9 @@ public class GameScreen implements Screen {
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		this.ownCamera = new OrthographicCamera();
+		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
+				BattleColorConfig.HEIGHT);
 
 		// Spielfeld
 		width = BattleColorConfig.WIDTH;
@@ -76,6 +80,7 @@ public class GameScreen implements Screen {
 		// Player Allgemein
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
+		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 
 		playerMap = new HashMap<Integer, Player>();
 
@@ -108,8 +113,7 @@ public class GameScreen implements Screen {
 		// Screen und Kamera
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		game.camera.update();
-		batch.setProjectionMatrix(game.camera.combined);
+		batch.setProjectionMatrix(ownCamera.combined);
 
 		// Server stuff
 		if (isServer) {
@@ -308,11 +312,7 @@ public class GameScreen implements Screen {
 
 		if (game.bcConfig.playSound) {
 			game.playSound();
-		}
-		// called when this screen is set as the screen with game.setScreen();
-		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
-		// TODO vllt kann man den Wallpaper direkt zeichnen auf das Element das
-		// nicht gelöscht wird , und nicht extra nochmal im render
+		}		
 		// Server
 		isServer = game.multiGame.isServer();
 	}
@@ -323,15 +323,24 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void hide() {
-		// called when current screen changes from this to a different screen
 	}
 
+	/**
+	 * wird zum Beispiel mit drücken des HomeButtons aufgerufen
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/**
+	 * wird beim zurückkehren vom HomeScreen aufgerufen
+	 */
 	@Override
 	public void resume() {
+		//andy: ich hab auf den ersten Blick keine Ahnung warum die Texturen verloren gehen, bei den Menues passiert es nicht...
+		//damits halbwegs was aussieht:
+		player.repaintColorTexture();
+		otherPlayer.repaintColorTexture();
 	}
 
 	@Override
@@ -348,6 +357,7 @@ public class GameScreen implements Screen {
 		playerMap = null;
 		flipper = null;
 		gameBorder = null;
+		ownCamera = null;
 	}
 	
 	public void disposeFromGameScreen() {
@@ -355,13 +365,12 @@ public class GameScreen implements Screen {
 		player.dispose();
 		otherPlayer.dispose();
 		colorFrameBuffer.dispose();
-		// batch.dispose(); // Nullpointer
-		// wallpaper.dispose(); // Nullpointer
 		countDown.dispose();
 		powerUpTexture.dispose();
 		playerSimulation = null;
 		playerMap = null;
 		flipper = null;
 		gameBorder = null;
+		ownCamera = null;
 	}
 }
