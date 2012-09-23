@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import de.htw.colorbattle.ColorBattleGame;
+
 public class PlayerSimulation implements Serializable{
 	private static final long serialVersionUID = 1525952974653455375L;
 	public int id;
@@ -15,12 +17,12 @@ public class PlayerSimulation implements Serializable{
 	public float speed;
 	public float maxSpeed;
 	public Vector2 direction;
-	public String networkIdentifier;
+	public String deviceId;
 	public int colorInt;
 	
 	public PlayerSimulation(float radius){
 		id = 0;
-		networkIdentifier = Long.toString( System.currentTimeMillis() ); //TODO should be changed to network ip
+		deviceId = ColorBattleGame.getDeviceId();
 		x = 0;
 		y = 0;
 		this.radius = radius;
@@ -43,7 +45,7 @@ public class PlayerSimulation implements Serializable{
 		this.maxSpeed = p.maxSpeed;
 		this.direction.x = p.direction.x;
 		this.direction.y = p.direction.y;
-		this.networkIdentifier = p.networkIdentifier;
+		this.deviceId = p.deviceId;
 		this.colorInt = p.colorInt;
 //		Gdx.app.debug("PS", "update PlayerSim playerid: " + this.id + " colorInt " + this.colorInt);
 	}

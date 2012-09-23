@@ -1,0 +1,17 @@
+package de.htw.colorbattle.config;
+
+
+/**
+ * Fuer Konfigurationen zur Laufzeit
+ */
+public class RuntimeConfig {
+	public boolean isWifiConnected;
+	public String multicastAddress;
+	public int multicastPort;
+	public boolean playSound;
+	public GameMode gameMode;
+	
+	public int multigamePlayerCount = 1; 
+	public float networkPxlUpdateIntervall = 1;
+}
+

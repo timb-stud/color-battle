@@ -6,12 +6,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
+/**
+ * GameCountDown erstellt die Oberfläche,
+ * inklusive Skalierung,
+ * welche einen Countdown vor Spielbeginn runter zählt.
+ */
 public class GameCountDown implements Screen {
 	private ColorBattleGame gameRef;
 	private OrthographicCamera ownCamera;
@@ -50,6 +54,12 @@ public class GameCountDown implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
+		
+		batch.setProjectionMatrix(ownCamera.combined);
+		batch.begin();
+		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
+		batch.end();
+		toast.toaster();
 		if (System.currentTimeMillis() - oldTime > 1000) {
 			if (countdown == 0) {
 				gameRef.setScreen(gameRef.gameScreen);
@@ -59,53 +69,44 @@ public class GameCountDown implements Screen {
 				setTexture();
 			}
 		}
-		
-		batch.setProjectionMatrix(ownCamera.combined);
-		batch.begin();
-		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
-		batch.end();
-		
-		toast.toaster();
 	}
 
 	private void setTexture() {
+		if(texture != null){
+			texture.dispose();
+			texture = null;
+		}
 		texture = new Texture(Gdx.files.internal("menu/" + countdown + ".png"));
 	}
 
 	@Override
+	public void dispose() {
+		ownCamera= null;
+		texture.dispose();
+		batch.dispose();
+		oldTime = 0;
+		toast = null;
+	}
+	
+	// other methods not need here
+	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

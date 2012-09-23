@@ -7,11 +7,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
+/**
+ * BluetoothMenu  erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * um ein BluetoothGame zu starten
+ */
 public class BluetoothMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -41,7 +45,7 @@ public class BluetoothMenu implements Screen {
 		wallpaper = new Texture(Gdx.files.internal("menu/MenuScreenWallpaper.png"));
 
 		joinBtGameSprite = new TouchSprite(
-				Gdx.files.internal("menu/Join_BT_Button.png"), ownCamera);
+				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
 						- joinBtGameSprite.getHeight()-15.0f);
@@ -79,9 +83,9 @@ public class BluetoothMenu implements Screen {
 
 		if (joinBtGameSprite.isTouched()) {
 			joinBtGameSprite.resetIsTouched(); 
-			gameRef.multiGame = new MultigameLogic(gameRef, false);
+			gameRef.multiGame = new MultigameLogic(gameRef);
 			gameRef.netSvc.connect();
-			gameRef.setScreen(gameRef.joiningScreen);
+			gameRef.setScreen(new JoiningScreen(gameRef));
 			this.dispose();
 
 		} else if (openBtGameSprite.isTouched()) {
@@ -95,14 +99,30 @@ public class BluetoothMenu implements Screen {
 	}
 	
 	private void startServer(int players){
-		gameRef.bcConfig.multigamePlayerCount = players; // TODO gefällt mir gar nicht die config dafür zu nutzen .... ist ja keine laufzeit config
-		//TODO das untendrunter kann man bestimmt auch schöner machen als über den gameref
-		gameRef.multiGame = new MultigameLogic(gameRef, true);
-		gameRef.multiGame.startServer();
-		gameRef.setScreen(gameRef.joiningScreen);
+		gameRef.multiGame = new MultigameLogic(gameRef, players);
+		gameRef.setScreen(new JoiningScreen(gameRef));
 		this.dispose();
 	}
 
+	@Override
+	public void dispose() {
+		ownBatch.dispose();
+		ownCamera = null;
+		inputMulti.removeProcessor(joinBtGameSprite);
+		inputMulti.removeProcessor(openBtGameSprite);
+		inputMulti.removeProcessor(backSprite);
+		joinBtGameSprite.disposeTouchSprite();
+		openBtGameSprite.disposeTouchSprite();
+		backSprite.disposeTouchSprite();
+		joinBtGameSprite = null;
+		openBtGameSprite = null;
+		backSprite = null;
+		inputMulti = null;
+		wallpaper.dispose();
+	}
+	
+	// other methods not need here
+	
 	@Override
 	public void resize(int width, int height) {
 	}
@@ -122,19 +142,5 @@ public class BluetoothMenu implements Screen {
 
 	@Override
 	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-		ownBatch.dispose();
-		ownCamera = null;
-		inputMulti.removeProcessor(joinBtGameSprite);
-		inputMulti.removeProcessor(openBtGameSprite);
-		inputMulti.removeProcessor(backSprite);
-		joinBtGameSprite = null;
-		openBtGameSprite = null;
-		backSprite = null;
-		inputMulti = null;
-		wallpaper.dispose();
 	}
 }
