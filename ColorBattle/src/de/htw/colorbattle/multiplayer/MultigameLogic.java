@@ -29,13 +29,13 @@ public class MultigameLogic implements Observer{
 	Player ownPlayer;
 	ColorBattleGame game;
 	
-	public MultigameLogic(ColorBattleGame game, int playerCount) {
+	public MultigameLogic(ColorBattleGame game, final int playerCount) {
 		this(game);
 		this.playerCount = playerCount;
 		this.isServer = true;
 		this.joinedPlayers = 1; //1 for own Player
 
-		game.gameScreen.swapPlayers();
+//		game.gameScreen.swapPlayers();
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
 		ownPlayer.y = 50;
@@ -46,7 +46,7 @@ public class MultigameLogic implements Observer{
 				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, Toast.TEXT_POS.middle, Toast.TEXT_POS.middle_down, Toast.LONG);
 		
 		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
-			playerCount = 1;
+			this.playerCount = 1;
 		}
 		checkIfGameCanStart();
 	}
@@ -91,14 +91,14 @@ public class MultigameLogic implements Observer{
 				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
-					// player.x = 
-					// player.y =
+				playerSim.x = 600;
+				playerSim.y = 200;
 				playerBuffer = new Player(Color.BLUE, 64 / 2); //TODO replace 64 with player width var
 				playerSim.setColorInt(Color.BLUE);
 				break;
 			case 4: //unten links
-					// player.x = 
-					// player.y =
+				playerSim.x = 600;
+				playerSim.y = 200;
 				playerBuffer = new Player(Color.PINK, 64 / 2); //TODO replace 64 with player width var
 				playerSim.setColorInt(Color.PINK);
 				break;
@@ -113,25 +113,12 @@ public class MultigameLogic implements Observer{
 	}
 	
 	private void sendJoinMsg(final PlayerSimulation ownPlayerSim){
-//		new Thread(new Runnable() {
-//			public void run() {
-//				ToggleTask toggleTask = new ToggleTask();
-//				Timer timer = new Timer();
-//				timer.schedule(toggleTask, 3000);
-//				while(!isGameStarted){
-					try{
-//						if(!toggleTask.toggleState()){
-//							toggleTask.setToggleState(true);
-							game.netSvc.send(ownPlayerSim);
-							Gdx.app.debug("Multiplayer Game", "sent join msg");
-//						}
-					} catch (NetworkException e) {
-						Gdx.app.error("NetworkException", "Can't send join message.", e);
-					}
-//				}
-//				timer.cancel();
-//			} 
-//		}).start(); 
+		try{
+			game.netSvc.send(ownPlayerSim);
+			Gdx.app.debug("Multiplayer Game", "sent join msg");
+		} catch (NetworkException e) {
+			Gdx.app.error("NetworkException", "Can't send join message.", e);
+		} 
 	}
 	
 	private void sendGameStartMsg(){
@@ -189,7 +176,7 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");
 		playerMap.remove(player.id);
 		Gdx.app.debug("Multiplayer Game", "removed own player with id " + player.id + " in playerMap.");
-		game.gameScreen.setPlayerMap(playerMap);
+		game.gameScreen.setOtherPlayers(playerMap);
 	}
 	
 	private Player getOwnPlayer(HashMap<Integer, Player> playerMap){
