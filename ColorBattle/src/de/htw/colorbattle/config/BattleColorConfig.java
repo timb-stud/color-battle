@@ -4,6 +4,7 @@ package de.htw.colorbattle.config;
  * Für eine feste Konfiguration
  */
 public class BattleColorConfig {
+	// TODO sau fest ^^ 
 	public boolean isWifiConnected;
 	public String multicastAddress;
 	public int multicastPort;

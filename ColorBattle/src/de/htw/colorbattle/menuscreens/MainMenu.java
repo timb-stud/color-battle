@@ -110,9 +110,10 @@ public class MainMenu implements Screen {
 				gameRef.setScreen(new BluetoothMenu(gameRef));
 				this.dispose();
 			} else if (exitGameSprite.isTouched()) {
-				Gdx.app.exit();
 				endButtonPushed = true;
+				gameRef.dispose();
 				this.dispose();
+				Gdx.app.exit();
 			}
 		}
 	}

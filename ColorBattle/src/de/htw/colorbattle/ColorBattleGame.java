@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
+import de.htw.colorbattle.menuscreens.MainMenu;
 import de.htw.colorbattle.menuscreens.SplashMenu;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 import de.htw.colorbattle.network.MainActivityInterface;
@@ -24,25 +25,28 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public GameScreen gameScreen;
 	public InputMultiplexer inputMultiplexer;
 	public OrthographicCamera camera;
-	
+
 	public Toast toast;
 	
 	public RuntimeConfig bcConfig;
 	public Music music;
-	
-	//Networks
+
+	// Networks
 	public MultigameLogic multiGame;
 	public NetworkActionResolver netSvc;
 	public NetworkActionResolver bluetoothActionResolver;
 	public MainActivityInterface mainActivity;
 
-	
+	private boolean showSplashScreen = true;
+
 	public ColorBattleGame(RuntimeConfig bcConfig,
-			NetworkActionResolver bluetoothActionResolver, MainActivityInterface mainActivity) {
+			NetworkActionResolver bluetoothActionResolver,
+			MainActivityInterface mainActivity) {
 		super();
 		this.bcConfig = bcConfig;
 		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, BattleColorConfig.WIDTH, BattleColorConfig.HEIGHT);
+		this.camera.setToOrtho(false, BattleColorConfig.WIDTH,
+				BattleColorConfig.HEIGHT);
 		this.bluetoothActionResolver = bluetoothActionResolver;
 		this.mainActivity = mainActivity;
 		this.toast = new Toast(7, 20);
@@ -56,8 +60,13 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			gameScreen = new GameScreen(this);
-			SplashMenu newmenu = new SplashMenu(this);
-			this.setScreen(newmenu);
+			if (showSplashScreen) {
+				SplashMenu splashMenu = new SplashMenu(this);
+				this.setScreen(splashMenu);
+			} else {
+				MainMenu mainMenu = new MainMenu(this);
+				this.setScreen(mainMenu);
+			}
 
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException",
@@ -65,8 +74,8 @@ public class ColorBattleGame extends Game implements InputProcessor,
 			e.printStackTrace();
 		}
 	}
-	
-	public static String getDeviceId(){
+
+	public static String getDeviceId() {
 		return BattleColorConfig.DEVICE_ID;
 	}
 
@@ -80,14 +89,22 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	@Override
 	public void dispose() {
 		super.dispose();
-		gameScreen.dispose();
+		gameScreen.disposeFromGameScreen();
+		inputMultiplexer = null;
+		camera = null;
+		bcConfig = null;
+		music = null;
+		multiGame = null;
+		netSvc = null;
+		bluetoothActionResolver = null;
+		mainActivity = null;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.BACK) {
 			// this.setScreen(mainMenuScreen);
-			Gdx.app.exit();
+			//Gdx.app.exit();
 		}
 		return false;
 	}
@@ -125,5 +142,9 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void setShowSplashScreen(boolean showSplashScreen) {
+		this.showSplashScreen = showSplashScreen;
 	}
 }
