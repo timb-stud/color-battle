@@ -82,7 +82,6 @@ public class GameScreen implements Screen {
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 
-		playerMap = new HashMap<Integer, Player>();
 
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
@@ -99,7 +98,9 @@ public class GameScreen implements Screen {
 
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		otherPlayer.setColorInt(Color.RED);
-
+		playerMap = new HashMap<Integer, Player>();
+		playerMap.put(2, otherPlayer);
+		
 		// Powerup
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
@@ -115,10 +116,10 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(ownCamera.combined);
 
-		// Server stuff
-		if (isServer) {
-			powerup();
-		}
+//		// Server stuff
+//		if (isServer) {
+//			powerup();
+//		}
 
 		// Player zeichnen // TODO alle Schritte wirklich nötig ?
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
@@ -126,10 +127,11 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
-		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		if (powerUp.isBombExploded) {
-			drawBomb();
-		}
+		for (Player p : playerMap.values())
+			batch.draw(p.colorTexture, p.x, p.y);
+//		if (powerUp.isBombExploded) {
+//			drawBomb();
+//		}
 		batch.end();
 		colorFrameBuffer.end();
 
@@ -137,7 +139,8 @@ public class GameScreen implements Screen {
 		batch.draw(wallpaper, 0, 0); // Hintergrund
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
-		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
+		for (Player p : playerMap.values())
+			batch.draw(playerTexture, p.x, p.y);
 		if (powerUp.isVisible) {
 			batch.draw(powerUpTexture, powerUp.rect.x, powerUp.rect.y);
 		}
@@ -154,8 +157,10 @@ public class GameScreen implements Screen {
 		gameBorder.handelCollision(player);
 		playerSimulation.move();
 		gameBorder.handelCollision(playerSimulation);
-		otherPlayer.move();
-		gameBorder.handelCollision(otherPlayer);
+		for (Player p : playerMap.values()){
+			p.move();
+			gameBorder.handelCollision(p);
+		}
 
 		// NetworkCommunication
 		if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
@@ -250,14 +255,17 @@ public class GameScreen implements Screen {
 		return playerMap;
 	}
 
-	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
-		Iterator<Player> i = playerMap.values().iterator();
-		this.otherPlayer.update(i.next()); // TODO only for playing with 2
-											// players
-		this.playerMap = playerMap;
-		// for(Player p : playerMap.values()){
-		// this.playerMap.get(p.id).update(p);
-		// }
+	public void setOtherPlayers(HashMap<Integer, PlayerSimulation> initPlayerMap) {
+		Iterator<PlayerSimulation> i = initPlayerMap.values().iterator();
+		for(Player p : this.playerMap.values()){
+			if (i.hasNext()){
+				PlayerSimulation initP = i.next();
+				p.update(initP);
+//				p.setNewColor(initP.colorInt); //not needed. set in update methode
+				p.repaintColorTexture();
+			}
+		}
+//		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
 	}
 
 	public Player getPlayer() {
@@ -265,7 +273,14 @@ public class GameScreen implements Screen {
 	}
 
 	public void updateOtherPlayer(PlayerSimulation ps) {
-		otherPlayer.update(ps);
+//		otherPlayer.update(ps);
+		for(int key : this.playerMap.keySet()){
+			Player p = this.playerMap.get(key);
+			if(p.id == ps.id){
+				p.update(ps);
+				playerMap.put(key, p);
+			}
+		}
 	}
 
 	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg) {
