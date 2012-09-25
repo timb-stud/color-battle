@@ -176,7 +176,8 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");
 		playerMap.remove(player.id);
 		Gdx.app.debug("Multiplayer Game", "removed own player with id " + player.id + " in playerMap.");
-		game.gameScreen.setOtherPlayers(playerMap);
+//		game.gameScreen.setOtherPlayers(playerMap);
+		game.gameScreen.setPlayerMap(playerMap);
 	}
 	
 	private Player getOwnPlayer(HashMap<Integer, Player> playerMap){
