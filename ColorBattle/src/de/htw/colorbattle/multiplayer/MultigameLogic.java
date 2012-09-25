@@ -78,7 +78,6 @@ public class MultigameLogic implements Observer{
 			return;
 		
 		joinedPlayers++;
-		//TODO set start position of playerSim. HINT: playerSim will update playerBuffer
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
@@ -159,6 +158,8 @@ public class MultigameLogic implements Observer{
 	private void updatePlayerMap(HashMap<Integer, PlayerSimulation> playerMap){
 		PlayerSimulation player = getOwnPlayer(playerMap);
 		game.gameScreen.getPlayer().update(player);
+		game.gameScreen.getPlayer().setNewColor(player.colorInt);
+		game.gameScreen.getPlayer().repaintColorTexture();
 		game.gameScreen.getPlayerSimulation().update(player);
 //		ownPlayer.id = player.id;
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");

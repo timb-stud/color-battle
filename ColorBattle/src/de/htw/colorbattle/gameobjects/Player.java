@@ -60,7 +60,7 @@ public class Player extends PlayerSimulation {
 		colorPixmap.setColor(color);
 		colorPixmap.fillCircle(r, r, r);
 		this.colorTexture = new Texture(colorPixmap);
-		colorPixmap.dispose();
+//		colorPixmap.dispose();
 	}
 
 	@Override
