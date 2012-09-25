@@ -19,7 +19,7 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 	private int mcPort;
 	private static NetworkService netSvc;
 	
-	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
+	private static final int MAX_UDP_DATAGRAM_LEN = 2048;
 	
 	private NetworkService(String mcAddress, int mcPort) throws NetworkException{
         try {
