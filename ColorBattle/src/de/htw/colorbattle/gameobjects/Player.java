@@ -42,6 +42,20 @@ public class Player extends PlayerSimulation {
 	public Color getColor() {
 		return color;
 	}
+	
+	public void setNewColor(int colorInt){
+		this.colorInt = colorInt;
+		setNewColor(this.getColorInt());
+	}
+	
+	public void setNewColor(Color color){
+		int r = Math.round(this.radius);
+		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
+		colorPixmap.setColor(color);
+		colorPixmap.fillCircle(r, r, r);
+		Texture tex = new Texture(colorPixmap);
+		this.colorTexture = tex;
+	}
 
 	@Override
 	public String toString() {
