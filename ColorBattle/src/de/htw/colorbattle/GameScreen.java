@@ -42,6 +42,7 @@ public class GameScreen implements Screen {
 	private int height;
 	private Texture wallpaper;
 	private OrthographicCamera ownCamera;
+	private boolean drawToastCountdown = false;
 
 	// Players & Network
 	private TextureRegion flipper;
@@ -178,16 +179,28 @@ public class GameScreen implements Screen {
 		
 		//toaster
 		switch (countDown.getRemainingTimeInSeconds(BattleColorConfig.GAME_TIME)) {
-			case 30: game.toast.makeText("30 Seconds left",
-					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+			case 31: drawToastCountdown = true;
 					break;
-			case 10: game.toast.makeText("10 Seconds left",
+			case 30: 
+				if (drawToastCountdown) {
+					game.toast.makeText("30 Seconds left",
 					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+					drawToastCountdown = false;
+				}
 					break;
-			case 5: game.toast.makeText("5 Seconds left, hurry up!!!",
-					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+			case 11: drawToastCountdown = true;
+					break;
+			case 10:
+				if (drawToastCountdown) {
+					game.toast.makeText("10 Seconds left",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+					drawToastCountdown = false;
+				}
+					break;
+			case 6: drawToastCountdown = true;
 					break;
 		}
+		game.toast.toaster();
 	}
 
 	private void powerup() {

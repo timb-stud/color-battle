@@ -60,10 +60,10 @@ public class GameCountDown implements Screen {
 		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
 		batch.end();
 		toast.toaster();
-		if (System.currentTimeMillis() - oldTime > 1000) {
-			if (countdown == 0) {
+		if (System.currentTimeMillis() - oldTime > 1000) { //Eine Sekunde vergangen
+			if (countdown == 1) {
 				gameRef.setScreen(gameRef.gameScreen);
-			} else if(System.currentTimeMillis() - oldTime > 1000) { //Eine Sekunde vergangen
+			} else {
 				oldTime = System.currentTimeMillis();
 				countdown--;
 				setTexture();

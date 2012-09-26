@@ -69,7 +69,6 @@ public class JoiningScreen implements Screen {
 			//TODO hier müssen ev noch server / netzwerk dinge zurück gesetzt werden
 			this.dispose();
 		}
-		gameRef.toast.toaster();
 	}
 
 	@Override

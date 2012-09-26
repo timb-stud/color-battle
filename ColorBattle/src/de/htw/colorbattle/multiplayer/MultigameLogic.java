@@ -17,6 +17,7 @@ import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 public class MultigameLogic implements Observer{
 
@@ -43,7 +44,7 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 		
 		game.toast.makeText(" player game has started. GameTime: " + gameTime + " PlayerCount: " + playerCount , "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, Toast.TEXT_POS.middle, Toast.TEXT_POS.middle_down, Toast.LONG);
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
 		
 		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
 			this.playerCount = 1;
