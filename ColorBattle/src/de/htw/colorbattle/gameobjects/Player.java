@@ -45,6 +45,15 @@ public class Player extends PlayerSimulation {
 		return color;
 	}
 	
+	public void setNewColor(int colorInt){
+		this.colorInt = colorInt;
+		this.color = this.getColorInt();
+	}
+	
+	public void setColor(Color color){
+		this.color = color;
+	}
+	
 	public void repaintColorTexture(){
 		int r = playerRadius;
 		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
