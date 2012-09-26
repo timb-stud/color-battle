@@ -261,8 +261,8 @@ public class GameScreen implements Screen {
 			if (i.hasNext()){
 				PlayerSimulation initP = i.next();
 				p.update(initP);
-				p.setNewColor(initP.colorInt); //not needed. set in update methode
-				p.repaintColorTexture();
+//				p.setNewColor(initP.colorInt); //not needed. set in update methode
+//				p.repaintColorTexture();
 			}
 		}
 //		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players

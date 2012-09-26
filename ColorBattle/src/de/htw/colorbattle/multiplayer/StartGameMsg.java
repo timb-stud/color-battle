@@ -2,8 +2,9 @@ package de.htw.colorbattle.multiplayer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
-import de.htw.colorbattle.gameobjects.Player;
+
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 
 
