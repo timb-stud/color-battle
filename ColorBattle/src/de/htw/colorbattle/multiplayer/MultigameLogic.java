@@ -35,7 +35,7 @@ public class MultigameLogic implements Observer{
 		this.isServer = true;
 		this.joinedPlayers = 1; //1 for own Player
 
-//		game.gameScreen.swapPlayers();
+		game.gameScreen.swapPlayers();
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
 		ownPlayer.y = 50;
