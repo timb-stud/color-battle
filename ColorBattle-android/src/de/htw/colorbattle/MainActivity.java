@@ -32,7 +32,7 @@ import de.htw.colorbattle.network.MainActivityInterface;
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
 	
 	private  WifiManager wifiManager;
-	private MulticastLock multicastLock; 
+	private MulticastLock multicastLock;
 	private ColorBattleGame colorBattleGame;
 	BluetoothMultiplayer bluetoothMultiplayer;
 	BluetoothActionResolverAndroid bluetoothActionResolverAndroid;

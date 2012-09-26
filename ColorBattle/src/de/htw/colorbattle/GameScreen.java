@@ -7,6 +7,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -55,6 +56,13 @@ public class GameScreen implements Screen {
 	private PowerUp powerUp;
 	private Texture powerUpTexture;
 	private float powerUpTimer;
+	
+	
+	//Sound
+	private Sound bombSound;
+	private Sound invertSound;
+	private Sound powerUpSound;
+	private boolean playInvertSound = false;
 
 	// Server
 	private boolean isServer;
@@ -107,6 +115,11 @@ public class GameScreen implements Screen {
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
 				powerUpTexture.getHeight());
+		
+		//Sound
+		bombSound = Gdx.audio.newSound(Gdx.files.internal("sound/pop.mp3"));
+		invertSound = Gdx.audio.newSound(Gdx.files.internal("sound/8-bit.mp3"));
+		powerUpSound = Gdx.audio.newSound(Gdx.files.internal("sound/powerup.mp3"));
 
 		game.toast.toaster();
 	}
@@ -131,6 +144,7 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 		if (powerUp.isBombExploded) {
+			bombSound.play();
 			drawBomb();
 		}
 		batch.end();
@@ -164,6 +178,12 @@ public class GameScreen implements Screen {
 		if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
 			playerSimulation.update(player);
 			send(playerSimulation);
+		}
+		
+		//Sound
+		if(playInvertSound){
+			invertSound.play();
+			playInvertSound = false;
 		}
 
 		// Game End
@@ -211,6 +231,7 @@ public class GameScreen implements Screen {
 		if (powerUpTimer > 5) {
 			powerUpTimer = 0;
 			powerUp.spawn();
+			powerUpSound.play();
 			send(new PowerUpSpawnMsg(powerUp));
 		}
 		boolean pickedByPlayer = powerUp.isPickedUpBy(player);
@@ -226,7 +247,10 @@ public class GameScreen implements Screen {
 				if (pickedByPlayer) {
 					powerUp.isVisible = false;
 					powerUp.invertControl = true;
+					playInvertSound = true;
 				} else {
+					powerUp.isVisible = false;
+					playInvertSound = true;
 					send(new InvertControlMsg(true));
 				}
 			}
@@ -314,6 +338,7 @@ public class GameScreen implements Screen {
 	 * @param powerUpSpawnMsg
 	 */
 	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg) {
+		powerUpSound.play();
 		powerUp.set(powerUpSpawnMsg);
 		powerUp.isVisible = true;
 	}
@@ -333,6 +358,7 @@ public class GameScreen implements Screen {
 	public void invertControl(InvertControlMsg invertControlMsg) {
 		powerUp.invertControl = invertControlMsg.invertControl;
 		powerUp.isVisible = false;
+		playInvertSound = true;
 	}
 
 	/**
