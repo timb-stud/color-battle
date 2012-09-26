@@ -24,7 +24,11 @@ import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.network.MainActivityInterface;
 
-
+/**
+ * 
+ * Main Activity for the android game
+ *
+ */
 public class MainActivity extends AndroidApplication implements MainActivityInterface{
 	
 	private  WifiManager wifiManager;
@@ -36,6 +40,9 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
 	
 	private static final int REQUEST_ENABLE_BT = 3;
 	
+	/**
+	 * Initializes all android specific and game relevant objects
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,18 +70,31 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
     }
     
+    /**
+     * Checks if wifi is connected
+     * @return true if wifi is connected
+     * 			false if wifi is not connected
+     */
     private boolean isWifiConnected(){
     	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
     	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
     	return mWifi.isConnected();
     }
     
+    /**
+     * Checks if bluetooth is enabled
+     * @return true if bluetooth is enabled
+     * 			false if bleutooth is not enabled
+     */
     private boolean isBluetoothEnabled(){
     	if(mBluetoothAdapter == null) //device doesn't support bluetooth
     		return false;
     	return mBluetoothAdapter.isEnabled();
     }
     
+    /**
+     * Displays a dialog asking to enable bluetooth
+     */
     public void enableBluetoothQuestion(){
         // If BT is not on, request that it be enabled.
         if (!mBluetoothAdapter.isEnabled()) {
@@ -83,6 +103,10 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         }
     }
     
+    /**
+     * 
+     * @return the device id as string
+     */
     private String getDeviceId(){
     	  final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -118,6 +142,9 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
     	Log.d("MulticastLock","multicastLock.acquire()");
     }
     
+    /**
+     * Releases the multicast lock
+     */
     private void ReleaseMulticastLock(){
     	 multicastLock.release();
     	 Log.d("MulticastLock","multicastLock.release()");
