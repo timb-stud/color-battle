@@ -261,8 +261,9 @@ public class GameScreen implements Screen {
 			if (i.hasNext()){
 				PlayerSimulation initP = i.next();
 				p.update(initP);
-//				p.setNewColor(initP.colorInt); //not needed. set in update methode
-//				p.repaintColorTexture();
+				p.setNewColor(initP.colorInt); //not needed. set in update methode
+//				p.color = Color.MAGENTA;
+				p.repaintColorTexture();
 			}
 		}
 //		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
@@ -298,6 +299,13 @@ public class GameScreen implements Screen {
 		powerUp.isVisible = false;
 	}
 
+	public void setOwnPlayer(PlayerSimulation p) {
+		this.player.update(p);
+		this.player.setNewColor(p.colorInt);
+//		this.player.color = Color.ORANGE;
+		this.player.repaintColorTexture();
+	}
+	
 	/**
 	 * checks Input-Keys for Desktop Version
 	 */
@@ -388,4 +396,5 @@ public class GameScreen implements Screen {
 		gameBorder = null;
 		ownCamera = null;
 	}
+
 }

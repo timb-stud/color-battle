@@ -34,7 +34,7 @@ public class MultigameLogic implements Observer{
 		this.isServer = true;
 		this.joinedPlayers = 1; //1 for own Player
 
-		game.gameScreen.swapPlayers();
+//		game.gameScreen.swapPlayers();
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
 		ownPlayer.y = 50;
@@ -157,9 +157,7 @@ public class MultigameLogic implements Observer{
 	
 	private void updatePlayerMap(HashMap<Integer, PlayerSimulation> playerMap){
 		PlayerSimulation player = getOwnPlayer(playerMap);
-		game.gameScreen.getPlayer().update(player);
-//		game.gameScreen.getPlayer().setNewColor(player.colorInt);
-//		game.gameScreen.getPlayer().repaintColorTexture();
+		game.gameScreen.setOwnPlayer(player);
 		game.gameScreen.getPlayerSimulation().update(player);
 //		ownPlayer.id = player.id;
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");
