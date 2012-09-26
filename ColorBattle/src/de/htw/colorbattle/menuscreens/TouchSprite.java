@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Die Klasse vereinfacht das benutzen von Sprites 
- * welche als touchable Buttons benutzt werden
+ * This class provides a touchable Sprite.
+ * It extends the libgdx Sprite class and adds touch functionality
  */
 public class TouchSprite extends Sprite implements InputProcessor {
 	private OrthographicCamera camera;
@@ -19,7 +19,11 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	private Texture highlightTexture = null;
 	private Texture buttonTexture;
 	
-	
+	/* 
+	 * Constructor
+	 * @param Texture needed to crate the sprite
+	 * @param OrthographicCamera to transform native touch coordinates on the Gamearea
+	 */
 	public TouchSprite(Texture t, OrthographicCamera camera) {
 		super(t);
 		this.buttonTexture = t;
@@ -27,12 +31,28 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		this.highlightOnTouch = false;
 	}
 	
+	/*
+	 * Constructor
+	 * @param Filehandle Path to File that will be used as Texture
+	 * @param OrthographicCamera to transform native touch coordinates on the Gamearea
+	 */
 	public TouchSprite(FileHandle f, OrthographicCamera camera) {
 		super(new Texture(f));
 		this.buttonTexture = this.getTexture();
 		this.camera = camera;
 	}
 	
+	/*
+	 * Constructor
+	 * @param Filehandle Path to File that will be used as Texture
+	 */
+	public TouchSprite(FileHandle f) {
+		super(new Texture(f));
+	}
+	
+	/*
+	 * Method to set another picture to simualate the click effect
+	*/
 	public void setTouchDownPicture(FileHandle f) {
 		highlightTexture = new Texture(f);
 	}
@@ -47,38 +67,59 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	    return touchPos;
 	}
 	
+	/*
+	 * set the touched state
+	 */
 	public void setIsTouched(boolean touch){
 		this.isTouched = touch;
 	}
 	
-	public TouchSprite(FileHandle f) {
-		super(new Texture(f));
-	}
-
-	
+	/*
+	 * returned the touched state
+	 */
 	public boolean isTouched() {
 		return isTouched;
 	}
 	
+	/*
+	 * reset the touched state
+	 */
 	public void resetIsTouched() {
 		isTouched = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#keyDown(int)
+	 */
 	@Override
 	public boolean keyDown(int keycode) {
 		return false;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#keyUp(int)
+	 */
 	@Override
 	public boolean keyUp(int keycode) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#keyTyped(char)
+	 */
 	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
 
+	/*
+	 * @see com.badlogic.gdx.InputProcessor#touchDown(int, int, int, int)
+	 * transform coordinates of the touch event and check it hits the sprite
+	 * if highlight boolean set to true, sprite will be highlight on touchDown
+	 */
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
@@ -95,6 +136,11 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		return false;
 	}
 
+	/*
+	 * @see com.badlogic.gdx.InputProcessor#touchUp(int, int, int, int)
+	 * transform coordinates of the touch event and check it hits the sprite
+	 * if highlight boolean set to true, highlight will be reseted
+	 */
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		Vector3 touchPos = transformCoordinates(x, y);
@@ -112,21 +158,36 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#touchDragged(int, int, int)
+	 */
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#touchMoved(int, int)
+	 */
 	@Override
 	public boolean touchMoved(int x, int y) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.InputProcessor#scrolled(int)
+	 */
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
 	}
 	
+	/*
+	 * dispose the used textures
+	 */
 	public void disposeTouchSprite(){
 		if (highlightTexture != null){
 			highlightTexture.dispose();

@@ -1,0 +1,33 @@
+pop.mp3
+
+by:	 		Gniffelbaf
+license:	http://creativecommons.org/publicdomain/zero/1.0/
+from: 		http://www.freesound.org/people/Gniffelbaf/sounds/82117/
+
+
+
+background.mp3
+
+by: 		RutgerMuller
+license:	http://creativecommons.org/publicdomain/zero/1.0/
+from:		http://www.freesound.org/people/RutgerMuller/sounds/51239/
+
+
+
+8-bit.mp3
+
+This sound is extracted from a sound file created by bennychico11
+
+by: 		bennychico11
+license:	http://creativecommons.org/licenses/by/3.0/
+from:		http://www.freesound.org/people/bennychico11/sounds/110930/
+
+
+
+powerup.mp3
+
+This sound is extracted from a sound file created by bennychico11
+
+by: 		bennychico11
+license:	http://creativecommons.org/licenses/by/3.0/
+from:		http://www.freesound.org/people/bennychico11/sounds/110930/

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,11 +28,13 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
+import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 public class GameScreen implements Screen {
 
 	private ColorBattleGame game;
-	// zeichnen und Screen
+	// Textures and other stuff
 	private SpriteBatch batch;
 	private Texture playerTexture;
 	private FrameBuffer colorFrameBuffer;
@@ -40,6 +43,7 @@ public class GameScreen implements Screen {
 	private int height;
 	private Texture wallpaper;
 	private OrthographicCamera ownCamera;
+	private boolean drawToastCountdown = false;
 
 	// Players & Network
 	private TextureRegion flipper;
@@ -52,6 +56,13 @@ public class GameScreen implements Screen {
 	private PowerUp powerUp;
 	private Texture powerUpTexture;
 	private float powerUpTimer;
+	
+	
+	//Sound
+	private Sound bombSound;
+	private Sound invertSound;
+	private Sound powerUpSound;
+	private boolean playInvertSound = false;
 
 	// Server
 	private boolean isServer;
@@ -68,7 +79,7 @@ public class GameScreen implements Screen {
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
 				BattleColorConfig.HEIGHT);
 
-		// Spielfeld
+		// Playground
 		width = BattleColorConfig.WIDTH;
 		height = BattleColorConfig.HEIGHT;
 		batch = new SpriteBatch();
@@ -77,7 +88,7 @@ public class GameScreen implements Screen {
 		gameBorder = new GameBorder(width, height);
 		countDown = new CountDown(Color.ORANGE, 480);
 
-		// Player Allgemein
+		// Player & flipper
 		flipper = new TextureRegion();
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
@@ -87,7 +98,7 @@ public class GameScreen implements Screen {
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 
-		// spezielle Player
+		// set player color
 		player = new Player(Color.GREEN, playerWidth / 2);
 		player.setColorInt(Color.GREEN);
 
@@ -104,13 +115,18 @@ public class GameScreen implements Screen {
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
 				powerUpTexture.getHeight());
+		
+		//Sound
+		bombSound = Gdx.audio.newSound(Gdx.files.internal("sound/pop.mp3"));
+		invertSound = Gdx.audio.newSound(Gdx.files.internal("sound/8-bit.mp3"));
+		powerUpSound = Gdx.audio.newSound(Gdx.files.internal("sound/powerup.mp3"));
 
 		game.toast.toaster();
 	}
 
 	@Override
 	public void render(float delta) {
-		// Screen und Kamera
+		// clear screen & set camera
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(ownCamera.combined);
@@ -120,7 +136,7 @@ public class GameScreen implements Screen {
 			powerup();
 		}
 
-		// Player zeichnen // TODO alle Schritte wirklich nötig ?
+		// Player draw the player color to the framebuffer// TODO is really everything necessary?
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
 		flipper.flip(false, true);
 		colorFrameBuffer.begin();
@@ -128,13 +144,14 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
 		if (powerUp.isBombExploded) {
+			bombSound.play();
 			drawBomb();
 		}
 		batch.end();
 		colorFrameBuffer.end();
 
 		batch.begin();
-		batch.draw(wallpaper, 0, 0); // Hintergrund
+		batch.draw(wallpaper, 0, 0); // draw Wallpaper
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
 		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
@@ -144,7 +161,7 @@ public class GameScreen implements Screen {
 		batch.draw(countDown.countDownTexture, countDown.x, countDown.y); // Zeit
 		batch.end();
 
-		// Player movement
+		// update Player movement from accelerometer
 		Accelerometer.updateDirection(player.direction);
 		if (powerUp.invertControl) {
 			player.direction.mul(-1);
@@ -162,6 +179,12 @@ public class GameScreen implements Screen {
 			playerSimulation.update(player);
 			send(playerSimulation);
 		}
+		
+		//Sound
+		if(playInvertSound){
+			invertSound.play();
+			playInvertSound = false;
+		}
 
 		// Game End
 		if (!gameEnd) {
@@ -173,13 +196,42 @@ public class GameScreen implements Screen {
 			game.setScreen(gen);
 			this.dispose();//neu könnte noch probleme verursachen
 		}
+		
+		//toaster
+		switch (countDown.getRemainingTimeInSeconds(BattleColorConfig.GAME_TIME)) {
+			case 31: drawToastCountdown = true;
+					break;
+			case 30: 
+				if (drawToastCountdown) {
+					game.toast.makeText("30 Seconds left",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+					drawToastCountdown = false;
+				}
+					break;
+			case 11: drawToastCountdown = true;
+					break;
+			case 10:
+				if (drawToastCountdown) {
+					game.toast.makeText("10 Seconds left",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+					drawToastCountdown = false;
+				}
+					break;
+			case 6: drawToastCountdown = true;
+					break;
+		}
+		game.toast.toaster();
 	}
 
+	/**
+	 * Server side management of the powerups 
+	 */
 	private void powerup() {
 		powerUpTimer += Gdx.graphics.getDeltaTime();
 		if (powerUpTimer > 5) {
 			powerUpTimer = 0;
 			powerUp.spawn();
+			powerUpSound.play();
 			send(new PowerUpSpawnMsg(powerUp));
 		}
 		boolean pickedByPlayer = powerUp.isPickedUpBy(player);
@@ -195,13 +247,19 @@ public class GameScreen implements Screen {
 				if (pickedByPlayer) {
 					powerUp.isVisible = false;
 					powerUp.invertControl = true;
+					playInvertSound = true;
 				} else {
+					powerUp.isVisible = false;
+					playInvertSound = true;
 					send(new InvertControlMsg(true));
 				}
 			}
 		}
 	}
 
+	/**
+	 * Draws the bomb 
+	 */
 	private void drawBomb() {
 		Color color = powerUp.wasPickedUpByServer ? otherPlayer.color
 				: player.color;
@@ -211,12 +269,19 @@ public class GameScreen implements Screen {
 		powerUp.isBombExploded = false;
 	}
 
+	/**
+	 * The server swaps player and otherPlayer in order to have different color and startpositions.
+	 */
 	public void swapPlayers() {
 		Player buffer = player;
 		player = otherPlayer;
 		otherPlayer = buffer;
 	}
-
+	
+	/**
+	 * Sends gameobjects to the other devices.
+	 * @param obj
+	 */
 	private void send(Object obj) {
 		try {
 			game.netSvc.send(obj);
@@ -227,10 +292,10 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * liest die Player aus der playerMap und erzeug das Spielergebnis für den
-	 * aktuellen Screen
 	 * 
-	 * @return
+	 * Reads all Players from the playerMap and creates the gameresult for the game result screen.
+	 * 
+	 * @return gameResult
 	 */
 	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
@@ -268,19 +333,32 @@ public class GameScreen implements Screen {
 		otherPlayer.update(ps);
 	}
 
+	/**
+	 * Gets called if the server sends a msg that a new powerup has spawned
+	 * @param powerUpSpawnMsg
+	 */
 	public void spawnPowerUp(PowerUpSpawnMsg powerUpSpawnMsg) {
+		powerUpSound.play();
 		powerUp.set(powerUpSpawnMsg);
 		powerUp.isVisible = true;
 	}
-
+	/**
+	 * Gets called if the server sends a message that a player has picked up the Bomb PowerUp
+	 * @param bombExplodeMsg
+	 */
 	public void explodeBomb(BombExplodeMsg bombExplodeMsg) {
 		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
 		powerUp.isBombExploded = true;
 	}
-
+	
+	/**
+	 * Gets called if the server sends a message that a player has picked up the Invert PowerUp
+	 * @param invertControlMsg
+	 */
 	public void invertControl(InvertControlMsg invertControlMsg) {
 		powerUp.invertControl = invertControlMsg.invertControl;
 		powerUp.isVisible = false;
+		playInvertSound = true;
 	}
 
 	/**
@@ -301,8 +379,8 @@ public class GameScreen implements Screen {
 	// ---------------------- down libgdx Elements ----------------------
 
 	/**
-	 * Called when this screen becomes the current screen for a Game. also
-	 * einmal beim Spielstart!
+	 * Called when this screen becomes visible. (Just once on gamestart)
+	 * 
 	 */
 	@Override
 	public void show() {
@@ -326,14 +404,14 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * wird zum Beispiel mit drücken des HomeButtons aufgerufen
+	 * Gets called when the homebutton is pressed
 	 */
 	@Override
 	public void pause() {
 	}
 
 	/**
-	 * wird beim zurückkehren vom HomeScreen aufgerufen
+	 * Gets called when returning from homescreen
 	 */
 	@Override
 	public void resume() {
@@ -343,6 +421,9 @@ public class GameScreen implements Screen {
 		otherPlayer.repaintColorTexture();
 	}
 
+	/**
+	 * Disposes all objects
+	 */
 	@Override
 	public void dispose() {
 		playerTexture.dispose();
@@ -360,6 +441,9 @@ public class GameScreen implements Screen {
 		ownCamera = null;
 	}
 	
+	/**
+	 * Disposes all objects
+	 */
 	public void disposeFromGameScreen() {
 		playerTexture.dispose();
 		player.dispose();

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
-import de.htw.colorbattle.toast.Toast;
 
 /**
  * SplashMenu erstellt die Oberfläche des SplashScreens,
@@ -22,7 +21,6 @@ public class SplashMenu implements Screen {
 
 	private TouchSprite splash;
 	private InputMultiplexer inputMulti;
-	private Toast render_toast;
 
 	/**
 	 * Constructor for the splash screen
@@ -32,7 +30,6 @@ public class SplashMenu implements Screen {
 	 */
 	public SplashMenu(ColorBattleGame game) {
 		this.gameRef = game;
-		this.render_toast  = new Toast(7, 6);
 		this.ownCamera = new OrthographicCamera();
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
 				BattleColorConfig.HEIGHT);
@@ -44,9 +41,6 @@ public class SplashMenu implements Screen {
 		inputMulti = new InputMultiplexer();
 		inputMulti.addProcessor(splash);
 		Gdx.input.setInputProcessor(inputMulti);
-		
-		render_toast.makeText("Welcome to Game", "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.MED);
 	}
 
 	@Override
@@ -57,8 +51,6 @@ public class SplashMenu implements Screen {
 		ownBatch.begin();
 		splash.draw(ownBatch);
 		ownBatch.end();
-		
-		render_toast.toaster();
 
 		if (splash.isTouched()) {
 			splash.resetIsTouched();
@@ -74,7 +66,6 @@ public class SplashMenu implements Screen {
 		inputMulti.removeProcessor(splash);
 		splash.disposeTouchSprite();
 		splash = null;
-		render_toast = null;
 		inputMulti = null;
 	}
 

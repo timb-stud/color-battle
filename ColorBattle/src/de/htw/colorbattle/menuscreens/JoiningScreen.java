@@ -61,7 +61,7 @@ public class JoiningScreen implements Screen {
 		ownBatch.end();
 
 		if (gameRef.multiGame.isGameStarted()) {
-			gameRef.setScreen(new GameCountDownScreen(gameRef));
+			gameRef.setScreen(new GameCountDown(gameRef));
 			this.dispose();
 		}else if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
@@ -69,7 +69,6 @@ public class JoiningScreen implements Screen {
 			//TODO hier müssen ev noch server / netzwerk dinge zurück gesetzt werden
 			this.dispose();
 		}
-		gameRef.toast.toaster();
 	}
 
 	@Override

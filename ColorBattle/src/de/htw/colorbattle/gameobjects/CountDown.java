@@ -58,5 +58,9 @@ public class CountDown {
 	public Color getColor() {
 		return color;
 	}
+	
+	public int getRemainingTimeInSeconds(int gameTime) {
+		return (int)(gameTime -  seconds);
+	}
 
 }
