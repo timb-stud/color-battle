@@ -122,8 +122,8 @@ public class MultigameLogic implements Observer{
 		} catch (NetworkException e) {
 			Gdx.app.error("NetworkException", "Can't send start message.", e);
 		}
-		isGameStarted = true;
 		updatePlayerMap(logicPlayerMap);
+		isGameStarted = true;
 	}
 	
 	@Override
