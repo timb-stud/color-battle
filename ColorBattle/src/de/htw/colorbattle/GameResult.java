@@ -13,6 +13,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.htw.colorbattle.gameobjects.Player;
 
+/**
+ * Supplies all functions to compute the result of the GameScreen 
+ * and generates a bar chart for the output
+ */
 public class GameResult {
 
 	private static final int FILTER_COLOR_MIN_FREQUENCY = 100;
@@ -28,14 +32,17 @@ public class GameResult {
 	private static final int WINDOW_WIDTH = 570;
 
 	/**
-	 * generiert aus der aktuellen Ansicht ein Spielergebnis
-	 * @param playersList
+	 * computes the result of the current Screen
+	 * @param playersList the Player-List of the current game
 	 */
 	public GameResult(LinkedList<Player> playersList) {
 		this.playerList = playersList;
 		computeScore();
 	}
 
+	/**
+	 * computes the score with the pixels of the current FrameBuffer
+	 */
 	private void computeScore() {
 		byte[] bytePixelArray = ScreenUtils.getFrameBufferPixels(false);
 		this.totalPixel = bytePixelArray.length / 4;
@@ -45,6 +52,11 @@ public class GameResult {
 		addScoresToPlayerList(readedPixel);
 	}
 
+	/**
+	 * converts the byteArray into an HashMap
+	 * @param bytePixelArray the byteArray that represents the rgba8888 pixels
+	 * @return a HashMap represents the pixel and the frequency of the pixel
+	 */
 	private HashMap<Integer, Integer> getPixelMap(byte[] bytePixelArray) {
 		int currentPixel;
 		int pixelCount;
@@ -68,6 +80,12 @@ public class GameResult {
 		return pixelMap;
 	}
 
+	/**
+	 * filters the map of low frequency pixel and inverses the integer value for the use with the Colorobjects
+	 * and updates the totalPixel count with a rounding factor
+	 * @param pixelMap is a HashMap represents the pixel and the frequency of the pixel
+	 * @return a HashMap represents the pixel and the frequency of the pixel
+	 */
 	private HashMap<Integer, Integer> filterAndInverseMapAndRecalculateTotalPixels(
 			HashMap<Integer, Integer> pixelMap) {
 		Color currentColor = new Color();
@@ -90,9 +108,9 @@ public class GameResult {
 	/**
 	 * ignores alpha component, and rounds values
 	 * 
-	 * @param colorPlayer
-	 * @param colorReaded
-	 * @return
+	 * @param colorPlayer ColorObject of the player
+	 * @param colorReaded ColorObject of the readed pixel from the FrameBuffer
+	 * @return 
 	 */
 	private boolean colorIsSimlarToColor(Color colorPlayer, Color colorReaded) {
 		if (colorPlayer.b != round2digitsDown(colorReaded.b)) {
@@ -107,14 +125,28 @@ public class GameResult {
 		return true;
 	}
 
+	/**
+	 * rounds a float value of 2 digits down
+	 * @param value a float value
+	 * @return the rounded value
+	 */
 	private float round2digitsDown(float value) {
 		return (float) Math.round((value - 0.005) * 100) / 100;
 	}
 
+	/**
+	 * rounds a float value of 1 digit
+	 * @param value a float value
+	 * @return the rounded value
+	 */
 	private float round1digit(float value) {
 		return (float) Math.round((value) * 10) / 10;
 	}
 
+	/**
+	 * adds a percental value to the Players
+	 * @param pixelMap is a HashMap represents the pixel and the frequency of the pixel
+	 */
 	private void addScoresToPlayerList(HashMap<Integer, Integer> pixelMap) {
 		Set<Integer> keyset = pixelMap.keySet();
 		Color playerColor;
@@ -133,6 +165,10 @@ public class GameResult {
 		}
 	}
 
+	/**
+	 * generates a bar chart for the output
+	 * @return a list of textures with a bar representing the score
+	 */
 	private LinkedList<Texture> getPlayerScoreTextures() {
 		LinkedList<Texture> texList = new LinkedList<Texture>();
 		Pixmap pm;
@@ -149,14 +185,19 @@ public class GameResult {
 		return texList;
 	}
 
+	/**
+	 * generates a texture with all score-bars
+	 * @param otherBatch the batch to draw on it
+	 * @param otherCam the Camera for resolution scaling
+	 * @return a texture with all score-bars
+	 */
 	public Texture getScoreScreen(SpriteBatch otherBatch, OrthographicCamera otherCam) {
-
 		Pixmap pm;
 		Texture tex;
 		FrameBuffer scoreFrameBuffer = new FrameBuffer(Format.RGBA8888,
 				WINDOW_WIDTH, WINDOW_HEIGHT, false);
 
-		// Hintergrund
+		// background
 		pm = new Pixmap(WINDOW_WIDTH, WINDOW_HEIGHT, Format.RGBA8888);
 		pm.setColor(Color.WHITE);
 		pm.fillRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -185,8 +226,10 @@ public class GameResult {
 	}
 
 	/**
-	 * prüft ob die Farbwerte in der Hashmap ähnlich sind falls dies der Fall
-	 * ist werden die Values also die Anzahl aufaddiert.
+	 * checks if the color values â€‹â€‹in the hashmap are similar if this is the case
+	 * so the values â€‹â€‹are merged
+	 * @param pixelMap is a HashMap represents the pixel and the frequency of the pixel
+	 * @return the merged HashMap
 	 */
 	private HashMap<Integer, Integer> mergeSimilarColors(
 			HashMap<Integer, Integer> pixelMap) {
@@ -213,6 +256,12 @@ public class GameResult {
 		return newMap;
 	}
 
+	/**
+	 * checks if the colorFix is similar enough to colorVar for merging the Color 
+	 * @param colorFix a Color
+	 * @param colorVar a Color
+	 * @return true if similar
+	 */
 	private boolean isColorSimilarEnoughToMerge(Color colorFix, Color colorVar) {
 		if ((isValueRoundableToValue(colorFix.a, colorVar.a))
 				&& (isValueRoundableToValue(colorFix.r, colorVar.r))
@@ -224,8 +273,14 @@ public class GameResult {
 		}
 	}
 
+	/**
+	 * checks if the one digit rounded values are the same.
+	 * @param valueOne a float value
+	 * @param valueTwo a float value
+	 * @return true if the same
+	 */
 	private boolean isValueRoundableToValue(float valueOne, float valueTwo) {
-		// alternative wäre maximale Abweichung der Werte zu berechnen, dies wäre eventuell etwas genauer
+		// alternative maximum deviation of the values â€‹â€‹would be calculated, it would probably slightly more accurate
 		if (valueOne == valueTwo) {
 			return true;
 		} else if (round1digit(valueOne) == round1digit(valueTwo)) {
@@ -233,47 +288,4 @@ public class GameResult {
 		}
 		return false;
 	}
-
-	// TODO später löschen aber vllt brauch ich es wieder
-	/**
-	 * prüft ob mindestens 2 der 4 rgba Werte gleich sind
-	 */
-	private boolean areMinTwoRGBAValuesTheSame(Color colorFix, Color colorVar) {
-		if (colorFix.a == colorVar.a) {
-			if (colorFix.r == colorVar.r) {
-				return true;
-			} else if (colorFix.g == colorVar.g) {
-				return true;
-			} else if (colorFix.b == colorVar.b) {
-				return true;
-			}
-		} else if (colorFix.r == colorVar.r) {
-			if (colorFix.g == colorVar.g) {
-				return true;
-			} else if (colorFix.b == colorVar.b) {
-				return true;
-			}
-		} else if (colorFix.g == colorVar.g) {
-			if (colorFix.b == colorVar.b) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-
-	// TODO methode kann später mal entfernt werden
-	private void testOutput(HashMap<Integer, Integer> readedPixel) {
-		Set<Integer> keyset = readedPixel.keySet();
-		Color curcolor = new Color();
-		for (int currentkey : keyset) {
-			Color.rgba8888ToColor(curcolor, currentkey);
-			System.out.println("Farbe int-Wert: " + currentkey + " value: "
-					+ readedPixel.get(currentkey) + " a: " + curcolor.a
-					+ " r: " + curcolor.r + " g: " + curcolor.g + " b: "
-					+ curcolor.b);
-		}
-	}
-
 }
