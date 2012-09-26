@@ -88,7 +88,6 @@ public class GameScreen implements Screen {
 
 		// spezielle Player
 		player = new Player(Color.GREEN, playerWidth / 2);
-		player.setColorInt(Color.GREEN);
 
 		// set player default position
 		player.x = width / 2 - playerWidth / 2;
@@ -97,9 +96,10 @@ public class GameScreen implements Screen {
 		playerSimulation = new PlayerSimulation(player);
 
 		otherPlayer = new Player(Color.RED, playerWidth / 2);
-		otherPlayer.setColorInt(Color.RED);
 		playerMap = new HashMap<Integer, Player>();
-		playerMap.put(2, otherPlayer);
+		playerMap.put(1, new Player(Color.RED, playerWidth / 2));
+		playerMap.put(2, new Player(Color.RED, playerWidth / 2));
+		playerMap.put(3, otherPlayer);
 		
 		// Powerup
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
@@ -256,10 +256,13 @@ public class GameScreen implements Screen {
 	}
 
 	public void setOtherPlayers(HashMap<Integer, PlayerSimulation> initPlayerMap) {
-		Iterator<PlayerSimulation> i = initPlayerMap.values().iterator();
+		int notNeededPlayerCount = 3 - initPlayerMap.size();
+		for (int i = 1; i <= notNeededPlayerCount; i++)
+			this.playerMap.remove(i);
+		Iterator<PlayerSimulation> it = initPlayerMap.values().iterator();
 		for(Player p : this.playerMap.values()){
-			if (i.hasNext()){
-				PlayerSimulation initP = i.next();
+			if (it.hasNext()){
+				PlayerSimulation initP = it.next();
 				p.update(initP);
 				p.setNewColor(initP.colorInt); //not needed. set in update methode
 //				p.color = Color.MAGENTA;
@@ -279,7 +282,7 @@ public class GameScreen implements Screen {
 			Player p = this.playerMap.get(key);
 			if(p.id == ps.id){
 				p.update(ps);
-				playerMap.put(key, p);
+//				playerMap.put(key, p);
 			}
 		}
 	}
