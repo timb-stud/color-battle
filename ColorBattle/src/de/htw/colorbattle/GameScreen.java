@@ -27,6 +27,8 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
+import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 public class GameScreen implements Screen {
 
@@ -172,6 +174,19 @@ public class GameScreen implements Screen {
 			gen.setGameresult(this.getGameResult());
 			game.setScreen(gen);
 			this.dispose();//neu könnte noch probleme verursachen
+		}
+		
+		//toaster
+		switch (countDown.getRemainingTimeInSeconds(BattleColorConfig.GAME_TIME)) {
+			case 30: game.toast.makeText("30 Seconds left",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+					break;
+			case 10: game.toast.makeText("10 Seconds left",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+					break;
+			case 5: game.toast.makeText("5 Seconds left, hurry up!!!",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+					break;
 		}
 	}
 
