@@ -72,7 +72,7 @@ public class MultigameLogic implements Observer{
 		this.bcConfig = game.bcConfig;
 		
 		this.isGameStarted = false;
-		this.gameTime = BattleColorConfig.GAME_TIME;
+		this.gameTime = game.bcConfig.gameTime;
 		this.ownPlayer = game.gameScreen.getPlayer();
 		
 		if (game.netSvc instanceof NetworkService)
@@ -187,6 +187,7 @@ public class MultigameLogic implements Observer{
 		// StartGameMsg contains player infomations witch set by server
 		} else if(obj instanceof StartGameMsg) { 
 			StartGameMsg startGameMsg = (StartGameMsg) obj;
+			game.bcConfig.gameTime = startGameMsg.gameTime;
 			updatePlayerMap(startGameMsg.getPlayerMap());
 			isGameStarted = true; //now game will be start
 			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");

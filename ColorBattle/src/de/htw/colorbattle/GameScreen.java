@@ -189,7 +189,7 @@ public class GameScreen implements Screen {
 		// Game End
 		if (!gameEnd) {
 			gameEnd = countDown.activateCountDown(endTime,
-					BattleColorConfig.GAME_TIME);
+					game.bcConfig.gameTime);
 		} else {
 			GameEndMenu gen = new GameEndMenu(game);
 			gen.setGameresult(this.getGameResult());
@@ -198,7 +198,7 @@ public class GameScreen implements Screen {
 		}
 		
 		//toaster
-		switch (countDown.getRemainingTimeInSeconds(BattleColorConfig.GAME_TIME)) {
+		switch (countDown.getRemainingTimeInSeconds(game.bcConfig.gameTime)) {
 			case 31: drawToastCountdown = true;
 					break;
 			case 30: 
@@ -393,7 +393,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		Gdx.app.log("GameScreen", "show();");
 		endTime = System.currentTimeMillis() / 1000
-				+ BattleColorConfig.GAME_TIME;
+				+ game.bcConfig.gameTime;
 
 		if (game.bcConfig.playSound) {
 			game.playSound();
