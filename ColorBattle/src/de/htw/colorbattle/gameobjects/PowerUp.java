@@ -36,7 +36,7 @@ public class PowerUp {
 	}
 	
 	public Texture getBombTexture(Color color) {
-		float size = 2.5f;
+		float size = 3.5f;
 		float width = rect.width * size;
 		float height = rect.height * size;
 		Pixmap pixmap = new Pixmap((int)width, (int)height, Format.RGBA8888);
