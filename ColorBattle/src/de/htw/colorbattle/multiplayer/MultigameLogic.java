@@ -15,6 +15,7 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
 import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 public class MultigameLogic implements Observer{
 
@@ -34,7 +35,7 @@ public class MultigameLogic implements Observer{
 		this.isServer = true;
 		this.joinedPlayers = 1; //1 for own Player
 
-//		game.gameScreen.swapPlayers();
+		game.gameScreen.swapPlayers();
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
 		ownPlayer.y = 50;
@@ -43,7 +44,7 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
 		
 		game.toast.makeText(" player game has started. GameTime: " + gameTime + " PlayerCount: " + playerCount , "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, Toast.TEXT_POS.middle, Toast.TEXT_POS.middle_down, Toast.LONG);
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
 		
 		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
 			this.playerCount = 1;
@@ -141,7 +142,6 @@ public class MultigameLogic implements Observer{
 			PlayerSimulation playerSim = (PlayerSimulation) obj;
 //			game.gameScreen.getPlayerMap().get(playerSim.id).update(playerSim);
 			game.gameScreen.updateOtherPlayer(playerSim); //only for two player mode
-			
 //			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
 		} else if (obj instanceof PowerUpSpawnMsg){
 			PowerUpSpawnMsg powerUpSpawnMsg = (PowerUpSpawnMsg)obj;
@@ -164,6 +164,7 @@ public class MultigameLogic implements Observer{
 		playerMap.remove(player.id);
 		Gdx.app.debug("Multiplayer Game", "removed own player with id " + player.id + " in playerMap.");
 		game.gameScreen.setOtherPlayers(playerMap);
+//		game.gameScreen.setPlayerMap(playerMap);
 	}
 	
 	private PlayerSimulation getOwnPlayer(HashMap<Integer, PlayerSimulation> playerMap){

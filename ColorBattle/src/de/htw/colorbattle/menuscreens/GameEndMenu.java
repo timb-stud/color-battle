@@ -12,6 +12,7 @@ import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 /**
  * GameEndMenu erstellt die Oberfläche,
@@ -52,7 +53,7 @@ public class GameEndMenu implements Screen {
 		inputMulti.addProcessor(backSprite);
 		Gdx.input.setInputProcessor(inputMulti);
 		
-		this.render_toast  = new Toast(7, 6);
+		this.render_toast  = new Toast(7, 20);
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class GameEndMenu implements Screen {
 			toastMsg = toastMsg + " PlayerID: " + currentPlayer.id + " Score: "+ score+"\n"; 
 		}
 		render_toast.makeText(toastMsg, "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_up, Toast.TEXT_POS.middle_up, Toast.LONG*2.0f);
+		        Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG*2.0f);
 	
 	}
 

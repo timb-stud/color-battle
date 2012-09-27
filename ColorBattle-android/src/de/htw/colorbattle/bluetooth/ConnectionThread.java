@@ -7,6 +7,10 @@ import java.io.OutputStream;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 
+/**
+ * Handles all incoming and outgoing bluetooth socket connections.
+ *
+ */
 class ConnectionThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
