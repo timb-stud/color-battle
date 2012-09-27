@@ -217,8 +217,15 @@ public class GameScreen implements Screen {
 					drawToastCountdown = false;
 				}
 					break;
-			case 6: drawToastCountdown = true;
+			case 1: drawToastCountdown = true;
 					break;
+			case 0:
+				if (drawToastCountdown) {
+					game.toast.makeText("Game ends. Now calculating game result!",
+					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+					drawToastCountdown = false;
+				}
+				break;
 		}
 		game.toast.toaster();
 	}
