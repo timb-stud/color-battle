@@ -61,7 +61,7 @@ public class PowerUp {
 	}
 	
 	private void shuffleType(){
-		if(Math.random() < 0.5){
+		if(Math.random() < 0.7){
 			type = Type.BOMB;
 		}else {
 			type = Type.INVERT;
