@@ -133,9 +133,9 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(ownCamera.combined);
 
 //		// Server stuff
-//		if (isServer) {
-//			powerup();
-//		}
+		if (isServer && game.multiGame.getPlayerCount() == 2) {
+			powerup();
+		}
 
 		// Player draw the player color to the framebuffer// TODO is really everything necessary?
 		flipper.setRegion(colorFrameBuffer.getColorBufferTexture());
@@ -145,10 +145,12 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		for (Player p : playerMap.values())
 			batch.draw(p.colorTexture, p.x, p.y);
-//		if (powerUp.isBombExploded) {
-//			bombSound.play();
-//			drawBomb();
-//		}
+		if  (game.multiGame.getPlayerCount() == 2){
+			if (powerUp.isBombExploded) {
+				bombSound.play();
+				drawBomb();
+			}
+		}
 		batch.end();
 		colorFrameBuffer.end();
 

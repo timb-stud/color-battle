@@ -46,7 +46,8 @@ public class MultigameLogic implements Observer{
 		this.joinedPlayers = 1; //1 for own Player
 
 		//swap color of players
-		game.gameScreen.swapPlayers();
+		if(playerCount == 2)
+			game.gameScreen.swapPlayers();
 		
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
@@ -245,5 +246,9 @@ public class MultigameLogic implements Observer{
 
 	public void setGameStarted(boolean isGameStarted) {
 		this.isGameStarted = isGameStarted;
+	}
+	
+	public int getPlayerCount() {
+		return playerCount;
 	}
 }
