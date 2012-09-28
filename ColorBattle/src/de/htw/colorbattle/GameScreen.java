@@ -312,10 +312,9 @@ public class GameScreen implements Screen {
 	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		playerList.add(otherPlayer);
-		// for (Player p : playerMap.values()) {
-		// playerList.add(p);
-		// }
+		 for (Player p : playerMap.values()) {
+			 playerList.add(p);
+		 }
 		return new GameResult(playerList);
 	}
 
