@@ -2,14 +2,15 @@ package de.htw.colorbattle.multiplayer;
 
 import java.io.Serializable;
 import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 
 
+/**
+ * 
+ * This message gets send to the clients if all clients are connected and the game starts.
+ */
 public class StartGameMsg implements Serializable{
 	
 	public StartGameMsg(HashMap<Integer, Player> pMap, int gameTime) {
@@ -18,6 +19,10 @@ public class StartGameMsg implements Serializable{
 		setPlayerMap(pMap);
 	}
 	
+	/**
+	 *  Sets the playerMap
+	 * @param pMap
+	 */
 	private void setPlayerMap(HashMap<Integer, Player> pMap){
 		for (Player p : pMap.values()){
 			PlayerSimulation ps = new PlayerSimulation(p);
@@ -25,6 +30,10 @@ public class StartGameMsg implements Serializable{
 		}
 	}
 	
+	/**
+	 * 
+	 * @return the playerMap
+	 */
 	public HashMap<Integer, Player> getPlayerMap(){
 		HashMap<Integer, Player> pMap = new HashMap<Integer, Player>();
 		for (PlayerSimulation ps : playerMap.values()){

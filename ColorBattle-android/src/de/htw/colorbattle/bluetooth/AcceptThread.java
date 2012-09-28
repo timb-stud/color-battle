@@ -7,6 +7,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
+/**
+ * 
+ * Opens a server socket that waits for an incoming connection.
+ *
+ */
 class AcceptThread extends Thread {
     private final BluetoothServerSocket mmServerSocket;
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

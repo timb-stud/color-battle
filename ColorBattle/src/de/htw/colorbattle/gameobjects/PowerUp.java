@@ -5,10 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-
+import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
-
-
 
 public class PowerUp {
 	public boolean isVisible;
@@ -20,7 +18,6 @@ public class PowerUp {
 	private Rectangle playerRect;
 
 	public enum Type {BOMB, INVERT}
-	
 
 	public PowerUp(int x, int y, int width, int height) {
 		super();
@@ -39,7 +36,7 @@ public class PowerUp {
 	}
 	
 	public Texture getBombTexture(Color color) {
-		float size = 2.5f;
+		float size = 3.5f;
 		float width = rect.width * size;
 		float height = rect.height * size;
 		Pixmap pixmap = new Pixmap((int)width, (int)height, Format.RGBA8888);
@@ -50,21 +47,21 @@ public class PowerUp {
 		return texture;
 	}
 	
-	public void shufflePosition(){
-		float x = (float)Math.random() * 800;
-		if(x + rect.width > 800){
-			x = 800 - rect.width;
+	private void shufflePosition(){
+		float x = (float)Math.random() * BattleColorConfig.WIDTH;
+		if(x + rect.width > BattleColorConfig.WIDTH){
+			x = BattleColorConfig.WIDTH - rect.width;
 		}
-		float y = (float)Math.random() * 480;
-		if(y + rect.height > 480){
-			y = 480 - rect.height;
+		float y = (float)Math.random() * BattleColorConfig.HEIGHT;
+		if(y + rect.height > BattleColorConfig.HEIGHT){
+			y = BattleColorConfig.HEIGHT - rect.height;
 		}
 		rect.x = x;
 		rect.y = y;
 	}
 	
-	public void shuffleType(){
-		if(Math.random() < 0.5){
+	private void shuffleType(){
+		if(Math.random() < 0.7){
 			type = Type.BOMB;
 		}else {
 			type = Type.INVERT;
@@ -81,5 +78,4 @@ public class PowerUp {
 		rect.x = powerUpSpawnMsg.x;
 		rect.y = powerUpSpawnMsg.y;
 	}
-	
 }

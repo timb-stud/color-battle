@@ -1,3 +1,4 @@
+
 package de.htw.colorbattle.multiplayer;
 
 import java.util.HashMap;
@@ -6,69 +7,100 @@ import java.util.Observer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Logger;
 
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.config.GameMode;
+import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
+/**
+ * Pass incoming network data to classes which handle the data.
+ * Also manage the process by start a new multi game and add joined player to game
+ */
 public class MultigameLogic implements Observer{
 
 	int gameTime;
 	int playerCount;
 	int joinedPlayers;
-	BattleColorConfig bcConfig;
+	RuntimeConfig bcConfig;
 	boolean isGameStarted;
-	boolean isServer;
+	boolean isServer = false;
 	Player ownPlayer;
 	ColorBattleGame game;
 	
-	public MultigameLogic(ColorBattleGame game,boolean isServer) {
+	/**
+	 * Consturctor - start new server - called (from server) if opened a new game
+	 * @param game reference to ColorBattleGame class
+	 * @param playerCount	contains the count of players you want to play with
+	 */
+	public MultigameLogic(ColorBattleGame game, final int playerCount) {
+		this(game);
+		this.playerCount = playerCount;
+		this.isServer = true;
+		this.joinedPlayers = 1; //1 for own Player
+
+		//swap color of players
+		game.gameScreen.swapPlayers();
 		
-			this.game = game;
-			this.bcConfig = game.bcConfig;
-			if (game.netSvc instanceof NetworkService)
-				game.netSvc.addObserver(this);
-				
-			this.isServer = isServer;
-			this.isGameStarted = false;
-			this.gameTime = bcConfig.gameTime;
-			this.playerCount = bcConfig.multigamePlayerCount;
-			this.joinedPlayers = 1; //1 for own Player
-			this.ownPlayer = game.gameScreen.getPlayer();
-			
-			if(isServer)
-				game.gameScreen.swapPlayers();
-			
-			if (playerCount == 1){ //TODO only needed to test with one device. can be removed in final version
-				Player playerBuffer = new Player(Color.MAGENTA, 64 / 2);
-				playerBuffer.update(ownPlayer);
-				playerBuffer.setColorInt(Color.MAGENTA);
-				game.gameScreen.getPlayerMap().put(1, playerBuffer);
-			}
-		checkIfGameCanStart();
-	}
-	
-	public void startServer(){
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
 		ownPlayer.y = 50;
 		game.gameScreen.getPlayerMap().put(joinedPlayers, ownPlayer);
 		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
+		
+		game.toast.makeText(" player game has started. GameTime: " + gameTime + " PlayerCount: " + playerCount , "font", 
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.ROUND, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+		
+		if (bcConfig.gameMode == GameMode.SINGLEPLAYER){ //TODO only needed to test with one device. can be removed in final version
+			this.playerCount = 1;
+		}
+		checkIfGameCanStart();
+	}
+
+	/**
+	 * Constructor - Set attributes witch used by client and server
+	 */
+	public MultigameLogic(ColorBattleGame game) {
+		
+		this.game = game;
+		this.bcConfig = game.bcConfig;
+		
+		this.isGameStarted = false;
+		this.gameTime = game.bcConfig.gameTime;
+		this.ownPlayer = game.gameScreen.getPlayer();
+		
+		if (game.netSvc instanceof NetworkService)
+			game.netSvc.addObserver(this);
 	}
 	
+	/**
+	 * called by client to join to an open game
+	 */
 	public void joinGame(){
 		PlayerSimulation playerSimulation = new PlayerSimulation(ownPlayer);
 		sendJoinMsg(playerSimulation);	
 	}
 	
+	/**
+	 * called every time if a player has joined the game.
+	 * Check if game can be start
+	 */
 	private void checkIfGameCanStart(){
 		if(playerCount == joinedPlayers)
 			sendGameStartMsg();
 	}
 	
+	/**
+	 * Add new player to game. Also set start position and player id to new player
+	 * @param playerSim	received player object
+	 */
 	private void addPlayerToGame(PlayerSimulation playerSim){
 		Player playerBuffer;
 		HashMap<Integer, Player> playerMap = game.gameScreen.getPlayerMap();
@@ -76,7 +108,6 @@ public class MultigameLogic implements Observer{
 			return;
 		
 		joinedPlayers++;
-		//TODO set start position of playerSim. HINT: playerSim will update playerBuffer
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
@@ -86,14 +117,14 @@ public class MultigameLogic implements Observer{
 				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
-					// player.x = 
-					// player.y =
+				playerSim.x = 600;
+				playerSim.y = 200;
 				playerBuffer = new Player(Color.BLUE, 64 / 2); //TODO replace 64 with player width var
 				playerSim.setColorInt(Color.BLUE);
 				break;
 			case 4: //unten links
-					// player.x = 
-					// player.y =
+				playerSim.x = 600;
+				playerSim.y = 200;
 				playerBuffer = new Player(Color.PINK, 64 / 2); //TODO replace 64 with player width var
 				playerSim.setColorInt(Color.PINK);
 				break;
@@ -107,28 +138,23 @@ public class MultigameLogic implements Observer{
 		checkIfGameCanStart();
 	}
 	
+	/**
+	 * Called to send own player simulation over network
+	 * @param ownPlayerSim
+	 */
 	private void sendJoinMsg(final PlayerSimulation ownPlayerSim){
-//		new Thread(new Runnable() {
-//			public void run() {
-//				ToggleTask toggleTask = new ToggleTask();
-//				Timer timer = new Timer();
-//				timer.schedule(toggleTask, 3000);
-//				while(!isGameStarted){
-					try{
-//						if(!toggleTask.toggleState()){
-//							toggleTask.setToggleState(true);
-							game.netSvc.send(ownPlayerSim);
-							Gdx.app.debug("Multiplayer Game", "sent join msg");
-//						}
-					} catch (NetworkException e) {
-						Gdx.app.error("NetworkException", "Can't send join message.", e);
-					}
-//				}
-//				timer.cancel();
-//			} 
-//		}).start(); 
+		try{
+			game.netSvc.send(ownPlayerSim);
+			Gdx.app.debug("Multiplayer Game", "sent join msg");
+		} catch (NetworkException e) {
+			Gdx.app.error("NetworkException", "Can't send join message.", e);
+		} 
 	}
 	
+	/**
+	 *  Send message to all players that the game can be start.
+	 *  After sending map, own player map updates with game onformations
+	 */
 	private void sendGameStartMsg(){
 		Gdx.app.debug("Multiplayer Game", "Game could be start, send message to other players.");
 		HashMap<Integer, Player> playerMap = game.gameScreen.getPlayerMap();
@@ -145,25 +171,39 @@ public class MultigameLogic implements Observer{
 			Gdx.app.error("NetworkException", "Can't send start message.", e);
 		}
 	}
-	
+
+	/**
+	 * Observer pattern - called from network services if a new object receives the device
+	 */
 	@Override
 	public void update(Observable obs, Object obj) {
-		if(obj instanceof StartGameMsg) {
-			StartGameMsg startGameMsg = (StartGameMsg) obj;
-			updatePlayerMap(startGameMsg.getPlayerMap());
-			
-			isGameStarted = true;
-			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
-		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
-			Gdx.app.debug("Multiplayer Game", "new player try to join game");
+		// needed if game is started. Set new player informations to game
+		if (isGameStarted && (obj instanceof PlayerSimulation)){
 			PlayerSimulation playerSim = (PlayerSimulation) obj;
-			addPlayerToGame(playerSim);
-		} else if (isGameStarted && (obj instanceof PlayerSimulation)){
-			PlayerSimulation playerSim = (PlayerSimulation) obj;
-//			game.gameScreen.getPlayerMap().get(playerSim.id).update(playerSim);
+	//		game.gameScreen.getPlayerMap().get(playerSim.id).update(playerSim);
 			game.gameScreen.updateOtherPlayer(playerSim); //only for two player mode
+	//		Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
 			
-//			Gdx.app.debug("Multiplayer Game", "update player with id " + playerSim.id + " in playerMap.");
+		// handled by clients just before the game starts. 
+		// StartGameMsg contains player infomations witch set by server
+		} else if(obj instanceof StartGameMsg) { 
+			StartGameMsg startGameMsg = (StartGameMsg) obj;
+			game.bcConfig.gameTime = startGameMsg.gameTime;
+			updatePlayerMap(startGameMsg.getPlayerMap());
+			isGameStarted = true; //now game will be start
+			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
+			
+		// handled by server if a new player like to join the game
+		} else if (!isGameStarted && (obj instanceof PlayerSimulation)) {
+//			game.toast.makeText("New player joined",
+//					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+			if (isServer){
+				Gdx.app.debug("Multiplayer Game", "new player try to join game");
+				PlayerSimulation playerSim = (PlayerSimulation) obj;
+				addPlayerToGame(playerSim);
+			}
+			
+		//PowerUps
 		} else if (obj instanceof PowerUpSpawnMsg){
 			PowerUpSpawnMsg powerUpSpawnMsg = (PowerUpSpawnMsg)obj;
 			game.gameScreen.spawnPowerUp(powerUpSpawnMsg);
@@ -176,6 +216,10 @@ public class MultigameLogic implements Observer{
 		}
 	}
 	
+	/**
+	 * Removes own player from player map and set own player and playermap to game screen
+	 * @param playerMap
+	 */
 	private void updatePlayerMap(HashMap<Integer, Player> playerMap){
 		Player player = getOwnPlayer(playerMap);
 		game.gameScreen.getPlayer().update(player);
@@ -184,12 +228,18 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "found player id " + player.id + " in playerMap.");
 		playerMap.remove(player.id);
 		Gdx.app.debug("Multiplayer Game", "removed own player with id " + player.id + " in playerMap.");
+//		game.gameScreen.setOtherPlayers(playerMap);
 		game.gameScreen.setPlayerMap(playerMap);
 	}
 	
+	/**
+	 * Searches for own player in playermap. 
+	 * Own player could be found by unique device id.
+	 * @return found player
+	 */
 	private Player getOwnPlayer(HashMap<Integer, Player> playerMap){
 		for (Player p : playerMap.values()){
-			if (p.networkIdentifier.equals(ownPlayer.networkIdentifier)){
+			if (p.deviceId.equals(ownPlayer.deviceId)){
 				return p;
 			}
 		}

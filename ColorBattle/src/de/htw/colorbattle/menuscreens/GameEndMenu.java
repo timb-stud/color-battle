@@ -7,10 +7,20 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.StringBuilder;
+
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.gameobjects.Player;
+import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
+/**
+ * GameEndMenu erstellt die Oberfläche,
+ * inklusive Buttons und Skalierung,
+ * zum anzeigen des Spielergebnisses
+ */
 public class GameEndMenu implements Screen {
 
 	private ColorBattleGame gameRef;
@@ -19,6 +29,7 @@ public class GameEndMenu implements Screen {
 
 	private boolean scoreComputed = false;
 	private GameResult gameresult;
+	private Toast render_toast;
 
 	private Texture wallpaper;
 	private Texture scoreTexture;
@@ -32,17 +43,19 @@ public class GameEndMenu implements Screen {
 				BattleColorConfig.HEIGHT);
 		ownBatch = new SpriteBatch();
 
-		float width = BattleColorConfig.WIDTH;
+		wallpaper = new Texture(
+				Gdx.files.internal("menu/GameFinishWallpaper.png"));
 
-		wallpaper = new Texture(Gdx.files.internal("menu/GameFinishWallpaper.png"));
-
-		backSprite = new TouchSprite(Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
-		backSprite.setPosition((width - backSprite.getWidth()), 5);
+		backSprite = new TouchSprite(
+				Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
+		backSprite.setPosition(5, 5);
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
 		inputMulti.addProcessor(backSprite);
 		Gdx.input.setInputProcessor(inputMulti);
+		
+		this.render_toast  = new Toast(7, 20);
 	}
 
 	@Override
@@ -62,56 +75,68 @@ public class GameEndMenu implements Screen {
 				ownBatch.end();
 			}
 		} else if (gameresult != null) {
-			this.scoreTexture = gameresult.getScoreScreen(ownBatch);
+			this.scoreTexture = gameresult.getScoreScreen(ownBatch, ownCamera);
 			scoreComputed = true;
 		}
+		
+		render_toast.toaster();
 
 		if (backSprite.isTouched()) {
 			backSprite.resetIsTouched();
+			gameRef.setShowSplashScreen(false);
 			gameRef.create(); // TODO könnte man auch anderst lösen...
+			this.dispose();
 		}
-
 	}
 
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
-	}
-
-	// ---------------------- down libgdx Elements ----------------------
-
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-		gameRef.inputMultiplexer.removeProcessor(backSprite);
-	}
-
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-
+		
+		StringBuilder toastMsg = new StringBuilder();
+		float score;
+		for (Player currentPlayer : gameresult.getScoredPlayerList()){
+			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
+			toastMsg.append(" PlayerID: " + currentPlayer.id + " Score: "+ score).append("\n"); 
+		}
+		render_toast.makeText(toastMsg.toString(), "font", 
+		        Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG*2.0f);
+	
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		gameRef.inputMultiplexer.removeProcessor(backSprite);
+		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO was macht der input multiplexer vom game überhaupt mit dem backsprite ??? ???
+		inputMulti.removeProcessor(backSprite);
+		inputMulti = null;
+		ownBatch.dispose();
+		ownCamera = null;
+		wallpaper.dispose();
+		scoreTexture.dispose();
+		backSprite.disposeTouchSprite();
+		backSprite = null;
+		gameresult = null;
+		render_toast=null;
 	}
+
+	// other methods not need here
+	@Override
+	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void show() {
+	}
+
+	@Override
+	public void hide() {
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
+
 }

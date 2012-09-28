@@ -12,6 +12,9 @@ import com.badlogic.gdx.Gdx;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.utils.SerializeUtils;
 
+/**
+ * Service class for WiFi network actions
+ */
 public class NetworkService extends Observable implements NetworkActionResolver {
 	
 	private InetAddress mcGroup;
@@ -21,6 +24,12 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
 	
+	/**
+	 * Constructor of the class. Opens a multicast socket to a specific address and port
+	 * @param mcAddress	multicast address
+	 * @param mcPort	multicast port
+	 * @throws NetworkException	thrown on network errors
+	 */
 	private NetworkService(String mcAddress, int mcPort) throws NetworkException{
         try {
         	this.mcPort = mcPort;
@@ -36,6 +45,10 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 		} 
 	}
 	
+	/**
+	 * singleton pattern - needed to create only one instance of network service
+	 * @return NetworkService instance
+	 */
 	public static NetworkService getInstance(String mcAddress, int mcPort) throws NetworkException{
 		if( netSvc == null)
 			netSvc = new NetworkService(mcAddress, mcPort);
@@ -46,6 +59,9 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 		return netSvc;
 	}
 	
+	/**
+	 * creates a thread in which service wait to receive messages
+	 */
 	private void executeService() {
 		new Thread(new Runnable() {
 			public void run() {
@@ -56,6 +72,9 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 		}).start(); 
 	}
 	
+	/**
+	 * method receives sent NetworkService messages
+	 */
 	private void receive(){
 		byte[] buffer = new byte[MAX_UDP_DATAGRAM_LEN];
 		DatagramPacket receivedPacket = new DatagramPacket(buffer, buffer.length);
@@ -70,6 +89,9 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 		}
 	}
 	
+	/**
+	 * Can send an object to the set multicast address/port
+	 */
 	public void send(Object obj) throws NetworkException{
 		try {
 			byte[] msg = SerializeUtils.serializeObject(obj);

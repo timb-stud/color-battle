@@ -10,6 +10,7 @@ public class Player extends PlayerSimulation {
 	public Color color;
 	public Texture colorTexture;
 	private double gameScore;
+	private int playerRadius;
 
 	public Player() {
 		this(Color.MAGENTA, 30);
@@ -18,6 +19,7 @@ public class Player extends PlayerSimulation {
 	public Player(Color color, float radius) {
 		super(radius);
 		int r = Math.round(radius);
+		this.playerRadius = r;
 		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
 		colorPixmap.setColor(color);
 		colorPixmap.fillCircle(r, r, r);
@@ -41,6 +43,24 @@ public class Player extends PlayerSimulation {
 
 	public Color getColor() {
 		return color;
+	}
+	
+	public void setNewColor(int colorInt){
+		this.colorInt = colorInt;
+		this.color = this.getColorInt();
+	}
+	
+	public void setColor(Color color){
+		this.color = color;
+	}
+	
+	public void repaintColorTexture(){
+		int r = playerRadius;
+		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
+		colorPixmap.setColor(color);
+		colorPixmap.fillCircle(r, r, r);
+		this.colorTexture = new Texture(colorPixmap);
+		colorPixmap.dispose();
 	}
 
 	@Override

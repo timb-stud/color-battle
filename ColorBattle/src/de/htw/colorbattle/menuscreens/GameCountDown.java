@@ -6,12 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.toast.Toast;
+import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
-public class GameCountDownScreen implements Screen {
+/**
+ * GameCountDown erstellt die Oberfläche,
+ * inklusive Skalierung,
+ * welche einen Countdown vor Spielbeginn runter zählt.
+ */
+public class GameCountDown implements Screen {
 	private ColorBattleGame gameRef;
 	private OrthographicCamera ownCamera;
 	
@@ -23,7 +28,7 @@ public class GameCountDownScreen implements Screen {
 	
 	private Toast toast;
 
-	public GameCountDownScreen(ColorBattleGame game) {
+	public GameCountDown(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
 		this.ownCamera.setToOrtho(false, BattleColorConfig.WIDTH,
@@ -34,7 +39,7 @@ public class GameCountDownScreen implements Screen {
 		
 		oldTime = System.currentTimeMillis();
 		
-		this.toast  = new Toast(7, 6);
+		this.toast  = new Toast(7, 20);
 		String message = "You are ";
 		if (game.multiGame.isServer()) {
 			message += "RED";
@@ -42,67 +47,66 @@ public class GameCountDownScreen implements Screen {
 			message += "GREEN";
 		}
 		toast.makeText(message, "font", 
-				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, Toast.TEXT_POS.middle_down, Toast.TEXT_POS.middle_down, Toast.MED);
+				Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
 	}
 	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
-		if (countdown == 0) {
-			gameRef.setScreen(gameRef.gameScreen);
-		} else if(System.currentTimeMillis() - oldTime > 1000) {
-			oldTime = System.currentTimeMillis();
-			setTexture();
-			countdown--;
-		}
 		
 		batch.setProjectionMatrix(ownCamera.combined);
 		batch.begin();
 		batch.draw(texture, ((BattleColorConfig.WIDTH-texture.getWidth())/2), (BattleColorConfig.HEIGHT-texture.getHeight())/2);
 		batch.end();
-		
 		toast.toaster();
+		if (System.currentTimeMillis() - oldTime > 1000) { //Eine Sekunde vergangen
+			if (countdown == 1) {
+				gameRef.setScreen(gameRef.gameScreen);
+			} else {
+				oldTime = System.currentTimeMillis();
+				countdown--;
+				setTexture();
+			}
+		}
 	}
 
 	private void setTexture() {
+		if(texture != null){
+			texture.dispose();
+			texture = null;
+		}
 		texture = new Texture(Gdx.files.internal("menu/" + countdown + ".png"));
 	}
 
 	@Override
+	public void dispose() {
+		ownCamera= null;
+		texture.dispose();
+		batch.dispose();
+		oldTime = 0;
+		toast = null;
+	}
+	
+	// other methods not need here
+	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
