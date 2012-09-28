@@ -1,3 +1,4 @@
+
 package de.htw.colorbattle.multiplayer;
 
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class MultigameLogic implements Observer{
 		this.bcConfig = game.bcConfig;
 		
 		this.isGameStarted = false;
-		this.gameTime = BattleColorConfig.GAME_TIME;
+		this.gameTime = game.bcConfig.gameTime;
 		this.ownPlayer = game.gameScreen.getPlayerSimulation();
 		
 		if (game.netSvc instanceof NetworkService)
@@ -176,15 +177,20 @@ public class MultigameLogic implements Observer{
 		// StartGameMsg contains player infomations witch set by server
 		} else if(obj instanceof StartGameMsg) { 
 			StartGameMsg startGameMsg = (StartGameMsg) obj;
+			game.bcConfig.gameTime = startGameMsg.gameTime;
 			updatePlayerMap(startGameMsg.playerMap);
 			isGameStarted = true; //now game will be start
 			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
 			
 		// handled by server if a new player like to join the game
-		} else if (!isGameStarted && isServer && (obj instanceof PlayerSimulation)) {
-			Gdx.app.debug("Multiplayer Game", "new player try to join game");
-			PlayerSimulation playerSim = (PlayerSimulation) obj;
-			addPlayerToGame(playerSim);
+		} else if (!isGameStarted && (obj instanceof PlayerSimulation)) {
+//			game.toast.makeText("New player joined",
+//					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+			if (isServer){
+				Gdx.app.debug("Multiplayer Game", "new player try to join game");
+				PlayerSimulation playerSim = (PlayerSimulation) obj;
+				addPlayerToGame(playerSim);
+			}
 			
 		//PowerUps
 		} else if (obj instanceof PowerUpSpawnMsg){

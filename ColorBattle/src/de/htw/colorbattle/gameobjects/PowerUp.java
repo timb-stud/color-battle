@@ -36,7 +36,7 @@ public class PowerUp {
 	}
 	
 	public Texture getBombTexture(Color color) {
-		float size = 2.5f;
+		float size = 3.5f;
 		float width = rect.width * size;
 		float height = rect.height * size;
 		Pixmap pixmap = new Pixmap((int)width, (int)height, Format.RGBA8888);
@@ -61,7 +61,7 @@ public class PowerUp {
 	}
 	
 	private void shuffleType(){
-		if(Math.random() < 0.5){
+		if(Math.random() < 0.7){
 			type = Type.BOMB;
 		}else {
 			type = Type.INVERT;

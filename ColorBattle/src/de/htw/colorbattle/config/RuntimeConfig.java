@@ -10,6 +10,7 @@ public class RuntimeConfig {
 	public int multicastPort;
 	public boolean playSound;
 	public GameMode gameMode;
+	public  int gameTime = 60;
 	
 	public float networkPxlUpdateIntervall = 1;
 }

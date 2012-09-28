@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.StringBuilder;
+
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
@@ -90,13 +92,13 @@ public class GameEndMenu implements Screen {
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
 		
-		String toastMsg = "";
+		StringBuilder toastMsg = new StringBuilder();
 		float score;
 		for (Player currentPlayer : gameresult.getScoredPlayerList()){
 			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
-			toastMsg = toastMsg + " PlayerID: " + currentPlayer.id + " Score: "+ score+"\n"; 
+			toastMsg.append(" PlayerID: " + currentPlayer.id + " Score: "+ score).append("\n"); 
 		}
-		render_toast.makeText(toastMsg, "font", 
+		render_toast.makeText(toastMsg.toString(), "font", 
 		        Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG*2.0f);
 	
 	}
