@@ -56,19 +56,25 @@ public class MainMenu implements Screen {
 				Gdx.files.internal("menu/Button_WLAN.png"), ownCamera);
 		wlanGameSprite.setPosition((width - wlanGameSprite.getWidth()) / 2.0f,
 				height - wlanGameSprite.getHeight() - 15.0f);
+		wlanGameSprite.highlightOnTouch = true;
 		wlanGameSprite.setTouchDownPicture(Gdx.files
 				.internal("menu/Button_WLAN_hover.png"));
-		wlanGameSprite.highlightOnTouch = true;
 
 		btGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Button_BT.png"), ownCamera);
 		btGameSprite.setPosition((width - btGameSprite.getWidth()) / 2.0f,
 				(height - btGameSprite.getHeight()) / 2.0f);
+		btGameSprite.highlightOnTouch = true;
+		btGameSprite.setTouchDownPicture(Gdx.files
+				.internal("menu/Button_BT_hover.png"));
 
 		exitGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/ExitGame.png"), ownCamera);
 		exitGameSprite.setPosition((width - exitGameSprite.getWidth()) / 2.0f,
 				+15.0f);
+		exitGameSprite.highlightOnTouch = true;
+		exitGameSprite.setTouchDownPicture(Gdx.files
+				.internal("menu/ExitGame_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();

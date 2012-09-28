@@ -49,6 +49,8 @@ public class GameEndMenu implements Screen {
 		backSprite = new TouchSprite(
 				Gdx.files.internal("menu/GameEndBack.png"), ownCamera);
 		backSprite.setPosition(5, 5);
+		backSprite.highlightOnTouch = true;
+		backSprite.setTouchDownPicture(Gdx.files.internal("menu/back_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
