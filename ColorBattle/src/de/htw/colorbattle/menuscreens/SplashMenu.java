@@ -3,6 +3,7 @@ package de.htw.colorbattle.menuscreens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +22,7 @@ public class SplashMenu implements Screen {
 
 	private TouchSprite splash;
 	private InputMultiplexer inputMulti;
+	private Sound screenTouchedSound;
 
 	/**
 	 * Constructor for the splash screen
@@ -37,6 +39,8 @@ public class SplashMenu implements Screen {
 
 		splash = new TouchSprite(Gdx.files.internal("splash.png"), ownCamera);
 		splash.setPosition(0, 0);
+		
+		screenTouchedSound = Gdx.audio.newSound(Gdx.files.internal("sound/pop.mp3"));
 
 		inputMulti = new InputMultiplexer();
 		inputMulti.addProcessor(splash);
@@ -54,6 +58,8 @@ public class SplashMenu implements Screen {
 
 		if (splash.isTouched()) {
 			splash.resetIsTouched();
+			gameRef.stopSound();
+			screenTouchedSound.play();
 			gameRef.setScreen(new MainMenu(gameRef));
 			this.dispose();
 		} 
@@ -67,11 +73,14 @@ public class SplashMenu implements Screen {
 		splash.disposeTouchSprite();
 		splash = null;
 		inputMulti = null;
+		if(screenTouchedSound != null)
+			screenTouchedSound.dispose();
 	}
 
 	// other methods not need here
 	@Override
 	public void show() {
+		gameRef.playSound();
 	}
 
 	@Override

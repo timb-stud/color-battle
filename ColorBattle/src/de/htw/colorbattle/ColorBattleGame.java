@@ -57,10 +57,6 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
 		
-		if (bcConfig.playSound) {
-			playSound();
-		}	
-
 		try {
 			inputMultiplexer = new InputMultiplexer(this);
 			gameScreen = new GameScreen(this);
@@ -89,6 +85,10 @@ public class ColorBattleGame extends Game implements InputProcessor,
 		music.setVolume(0.5f);
 		music.stop();
 		music.play();
+	}
+	
+	public void stopSound(){
+		music.stop();
 	}
 
 	@Override
