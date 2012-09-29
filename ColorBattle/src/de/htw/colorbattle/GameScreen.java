@@ -421,10 +421,11 @@ public class GameScreen implements Screen {
 		Gdx.app.log("GameScreen", "show();");
 		endTime = System.currentTimeMillis() / 1000
 				+ game.bcConfig.gameTime;
-
+	
 		if (game.bcConfig.playSound) {
 			game.playSound();
-		}		
+		}	
+		
 		// Server
 		isServer = game.multiGame.isServer();
 	}

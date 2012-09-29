@@ -58,7 +58,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
-        bcConfig.playSound = false;
+        bcConfig.playSound = true;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         BattleColorConfig.DEVICE_ID = getDeviceId();
         bcConfig.gameMode = GameMode.OFF; //default is OFF

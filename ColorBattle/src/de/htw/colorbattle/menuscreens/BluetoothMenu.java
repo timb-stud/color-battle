@@ -99,6 +99,7 @@ public class BluetoothMenu implements Screen {
 			 gameRef.netSvc.startServer();
 			 startServer(2);
 		} else if (backSprite.isTouched()) {
+			backSprite.resetIsTouched(); 
 			gameRef.setScreen(new MainMenu(gameRef));
 			this.dispose();
 		}
