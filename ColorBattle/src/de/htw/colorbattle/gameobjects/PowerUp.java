@@ -13,6 +13,7 @@ public class PowerUp {
 	public boolean isBombExploded = false;
 	public boolean invertControl = false;
 	public boolean wasPickedUpByServer = false;
+	public Color pickedUpPlayerColor;
 	public Type type;
 	public Rectangle rect;
 	private Rectangle playerRect;

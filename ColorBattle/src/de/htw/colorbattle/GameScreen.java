@@ -30,6 +30,7 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
+import de.htw.colorbattle.toast.ColorHelper;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
@@ -136,7 +137,7 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(ownCamera.combined);
 
 //		// Server stuff
-		if (isServer && playerMap.size() == 1) {
+		if (isServer){ // && playerMap.size() == 1) {
 			powerup();
 		}
 		
@@ -155,12 +156,12 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		for (Player p : playerMap.values())
 			batch.draw(p.colorTexture, p.x, p.y);
-		if  (playerMap.size() == 1){
+//		if  (playerMap.size() == 1){
 			if (powerUp.isBombExploded) {
 				bombSound.play();
 				drawBomb();
 			}
-		}
+//		}
 		batch.end();
 		colorFrameBuffer.end();
 
@@ -258,14 +259,24 @@ public class GameScreen implements Screen {
 			powerUpSound.play();
 			send(new PowerUpSpawnMsg(powerUp));
 		}
-		boolean pickedByPlayer = powerUp.isPickedUpBy(player);
-		boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
+		boolean pickedByPlayer = false;
+		if(powerUp.isPickedUpBy(player)){
+			pickedByPlayer = true;
+			powerUp.pickedUpPlayerColor = player.color;
+		}
+		boolean pickedByOtherPlayer = false;
+		for (Player p : this.playerMap.values()){
+			if(powerUp.isPickedUpBy(p)){
+				pickedByOtherPlayer = true;
+				powerUp.pickedUpPlayerColor = p.color;
+			}
+		}
 		if (powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
 			send(new InvertControlMsg(false));
 			powerUp.invertControl = false;
 			powerUp.wasPickedUpByServer = pickedByOtherPlayer;
 			if (powerUp.type == PowerUp.Type.BOMB) {
-				send(new BombExplodeMsg(pickedByPlayer));
+				send(new BombExplodeMsg(pickedByPlayer, ColorHelper.getColorInt(powerUp.pickedUpPlayerColor)));
 				powerUp.isBombExploded = true;
 			} else {
 				if (pickedByPlayer) {
@@ -285,12 +296,12 @@ public class GameScreen implements Screen {
 	 * Draws the bomb 
 	 */
 	private void drawBomb() {
-		Color color = powerUp.wasPickedUpByServer ? otherPlayer.color
-				: player.color;
-		batch.draw(powerUp.getBombTexture(color), powerUp.rect.x
-				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-		powerUp.isVisible = false;
 		powerUp.isBombExploded = false;
+		powerUp.isVisible = false;
+		if(powerUp.pickedUpPlayerColor == null)
+			return;
+		batch.draw(powerUp.getBombTexture(powerUp.pickedUpPlayerColor), powerUp.rect.x
+				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
 	}
 
 	/**
@@ -384,6 +395,7 @@ public class GameScreen implements Screen {
 	 */
 	public void explodeBomb(BombExplodeMsg bombExplodeMsg) {
 		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
+		powerUp.pickedUpPlayerColor = ColorHelper.getColorFromInt(bombExplodeMsg.colorInt);
 		powerUp.isBombExploded = true;
 	}
 	
