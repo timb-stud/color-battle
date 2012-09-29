@@ -11,6 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -44,6 +45,7 @@ public class GameScreen implements Screen {
 	private Texture wallpaper;
 	private OrthographicCamera ownCamera;
 	private boolean drawToastCountdown = false;
+	boolean colorRepainted = false;
 
 	// Players & Network
 	private TextureRegion flipper;
@@ -133,8 +135,15 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(ownCamera.combined);
 
 //		// Server stuff
-		if (isServer && game.multiGame.getPlayerCount() == 2) {
+		if (isServer && playerMap.size() == 1) {
 			powerup();
+		}
+		
+		if(!colorRepainted){
+			player.repaintColorTexture();
+			for(Player p : this.playerMap.values())
+				p.repaintColorTexture();
+			colorRepainted = true;
 		}
 
 		// Player draw the player color to the framebuffer// TODO is really everything necessary?
@@ -145,7 +154,7 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		for (Player p : playerMap.values())
 			batch.draw(p.colorTexture, p.x, p.y);
-		if  (game.multiGame.getPlayerCount() == 2){
+		if  (playerMap.size() == 1){
 			if (powerUp.isBombExploded) {
 				bombSound.play();
 				drawBomb();
@@ -338,8 +347,7 @@ public class GameScreen implements Screen {
 				PlayerSimulation initP = it.next();
 				p.update(initP);
 				p.setNewColor(initP.colorInt); //not needed. set in update methode
-//				p.color = Color.MAGENTA;
-				p.repaintColorTexture();
+				Gdx.app.debug("Color", "Changed color to " + initP.colorInt);
 			}
 		}
 //		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
@@ -391,8 +399,7 @@ public class GameScreen implements Screen {
 	public void setOwnPlayer(PlayerSimulation p) {
 		this.player.update(p);
 		this.player.setNewColor(p.colorInt);
-//		this.player.color = Color.ORANGE;
-		this.player.repaintColorTexture();
+		Gdx.app.debug("Color", "Changed color to " + p.colorInt);
 	}
 	
 	/**
