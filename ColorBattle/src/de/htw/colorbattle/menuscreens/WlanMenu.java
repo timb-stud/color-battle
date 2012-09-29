@@ -45,25 +45,35 @@ public class WlanMenu implements Screen {
 		joinWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/join.png"), ownCamera);
 		joinWlanGameSprite.setPosition(10.0f, 320.0f);
+		joinWlanGameSprite.highlightOnTouch = true;
+		joinWlanGameSprite.setTouchDownPicture(Gdx.files.internal("menu/join_hover.png"));
 
 		open2PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/2P_WLAN.png"), ownCamera);
 		open2PlWlanGameSprite.setPosition(
 				440.0f, 320.0f);
+		open2PlWlanGameSprite.highlightOnTouch = true;
+		open2PlWlanGameSprite.setTouchDownPicture(Gdx.files.internal("menu/2P_WLAN_hover.png"));
 
 		open3PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/3P_WLAN.png"), ownCamera);
 		open3PlWlanGameSprite.setPosition(
 				440.0f, 175.0f);
+		open3PlWlanGameSprite.highlightOnTouch = true;
+		open3PlWlanGameSprite.setTouchDownPicture(Gdx.files.internal("menu/3P_WLAN_hover.png"));
 
 		open4PlWlanGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/4P_WLAN.png"), ownCamera);
 		open4PlWlanGameSprite.setPosition(
 				440.0f, 30.0f);
+		open4PlWlanGameSprite.highlightOnTouch = true;
+		open4PlWlanGameSprite.setTouchDownPicture(Gdx.files.internal("menu/4P_WLAN_hover.png"));
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
 		backSprite.setPosition(10, 30.0f);
+		backSprite.highlightOnTouch = true;
+		backSprite.setTouchDownPicture(Gdx.files.internal("menu/back_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();

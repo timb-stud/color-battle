@@ -5,7 +5,6 @@ package de.htw.colorbattle.config;
  */
 public class BattleColorConfig {
 	
-	//only default value, values updated in main activity
 	public static String DEVICE_ID; //gehört eigentlich zur runtime
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 480;

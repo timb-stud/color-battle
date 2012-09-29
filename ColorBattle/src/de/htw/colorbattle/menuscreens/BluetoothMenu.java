@@ -49,16 +49,22 @@ public class BluetoothMenu implements Screen {
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
 						- joinBtGameSprite.getHeight()-15.0f);
+		joinBtGameSprite.highlightOnTouch = true;
+		joinBtGameSprite.setTouchDownPicture(Gdx.files.internal("menu/join_hover.png"));
 
 		openBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Open_BT_Button.png"), ownCamera);
 		openBtGameSprite.setPosition(
 				(width - openBtGameSprite.getWidth()) / 2.0f,
 				(height - openBtGameSprite.getHeight()) / 2.0f);
+		openBtGameSprite.highlightOnTouch = true;
+		openBtGameSprite.setTouchDownPicture(Gdx.files.internal("menu/Open_BT_Button_hover.png"));
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
 		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, +15.0f);
+		backSprite.highlightOnTouch = true;
+		backSprite.setTouchDownPicture(Gdx.files.internal("menu/back_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();

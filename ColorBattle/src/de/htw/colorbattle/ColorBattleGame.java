@@ -27,7 +27,7 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public OrthographicCamera camera;
 
 	public Toast toast;
-	
+
 	public RuntimeConfig bcConfig;
 	public Music music;
 
@@ -91,22 +91,24 @@ public class ColorBattleGame extends Game implements InputProcessor,
 	public void dispose() {
 		super.dispose();
 		gameScreen.disposeFromGameScreen();
+		if (music != null) {
+			music.dispose();
+			music = null;
+		}
 		inputMultiplexer = null;
 		camera = null;
-		bcConfig = null;
-		music = null;
+		bcConfig = null;	
 		multiGame = null;
 		netSvc = null;
 		bluetoothActionResolver = null;
 		mainActivity = null;
-		music.dispose();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.BACK) {
 			// this.setScreen(mainMenuScreen);
-			//Gdx.app.exit();
+			// Gdx.app.exit();
 		}
 		return false;
 	}
