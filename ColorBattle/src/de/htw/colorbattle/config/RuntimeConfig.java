@@ -2,7 +2,7 @@ package de.htw.colorbattle.config;
 
 
 /**
- * Fuer Konfigurationen zur Laufzeit
+ * Variables to set configuration on runtime.
  */
 public class RuntimeConfig {
 	public boolean isWifiConnected;

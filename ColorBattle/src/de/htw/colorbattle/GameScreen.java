@@ -189,6 +189,7 @@ public class GameScreen implements Screen {
 		if (powerUp.invertControl) {
 			player.direction.mul(-1);
 		}
+		
 		// checkDesktopControl(); // not supported atm
 		player.move();
 		gameBorder.handelCollision(player);
