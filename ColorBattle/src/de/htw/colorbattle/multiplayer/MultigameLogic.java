@@ -44,10 +44,6 @@ public class MultigameLogic implements Observer{
 		this.playerCount = playerCount;
 		this.isServer = true;
 		this.joinedPlayers = 1; //1 for own Player
-
-		//swap color of players
-//		if(playerCount == 2)
-//			game.gameScreen.swapPlayers();
 		
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;

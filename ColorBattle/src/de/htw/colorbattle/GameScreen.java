@@ -52,7 +52,6 @@ public class GameScreen implements Screen {
 	// Players & Network
 	private TextureRegion flipper;
 	private Player player;
-	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
 	private HashMap<Integer, Player> playerMap;
 
@@ -110,11 +109,10 @@ public class GameScreen implements Screen {
 
 		playerSimulation = new PlayerSimulation(player);
 
-		otherPlayer = new Player(Color.RED, playerWidth / 2);
 		playerMap = new HashMap<Integer, Player>();
 		playerMap.put(1, new Player(Color.PINK, playerWidth / 2));
 		playerMap.put(2, new Player(Color.BLUE, playerWidth / 2));
-		playerMap.put(3, otherPlayer);
+		playerMap.put(3, new Player(Color.RED, playerWidth / 2));
 		
 		// Powerup
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
@@ -137,7 +135,7 @@ public class GameScreen implements Screen {
 		batch.setProjectionMatrix(ownCamera.combined);
 
 //		// Server stuff
-		if (isServer){ // && playerMap.size() == 1) {
+		if (isServer){
 			powerup();
 		}
 		
@@ -156,12 +154,10 @@ public class GameScreen implements Screen {
 		batch.draw(player.colorTexture, player.x, player.y);
 		for (Player p : playerMap.values())
 			batch.draw(p.colorTexture, p.x, p.y);
-//		if  (playerMap.size() == 1){
 			if (powerUp.isBombExploded) {
 				bombSound.play();
 				drawBomb();
 			}
-//		}
 		batch.end();
 		colorFrameBuffer.end();
 
@@ -302,15 +298,6 @@ public class GameScreen implements Screen {
 			return;
 		batch.draw(powerUp.getBombTexture(powerUp.pickedUpPlayerColor), powerUp.rect.x
 				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-	}
-
-	/**
-	 * The server swaps player and otherPlayer in order to have different color and startpositions.
-	 */
-	public void swapPlayers() {
-		Player buffer = player;
-		player = otherPlayer;
-		otherPlayer = buffer;
 	}
 	
 	/**
@@ -473,7 +460,8 @@ public class GameScreen implements Screen {
 		//andy: ich hab auf den ersten Blick keine Ahnung warum die Texturen verloren gehen, bei den Menues passiert es nicht...
 		//damits halbwegs was aussieht:
 		player.repaintColorTexture();
-		otherPlayer.repaintColorTexture();
+		for (Player p : this.playerMap.values())
+			p.repaintColorTexture();
 	}
 
 	/**
@@ -483,7 +471,8 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		playerTexture.dispose();
 		player.dispose();
-		otherPlayer.dispose();
+		for (Player p : this.playerMap.values())
+			p.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 		wallpaper.dispose();
@@ -502,7 +491,8 @@ public class GameScreen implements Screen {
 	public void disposeFromGameScreen() {
 		playerTexture.dispose();
 		player.dispose();
-		otherPlayer.dispose();
+		for (Player p : this.playerMap.values())
+			p.dispose();
 		colorFrameBuffer.dispose();
 		countDown.dispose();
 		powerUpTexture.dispose();
