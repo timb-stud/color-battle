@@ -510,8 +510,6 @@ public class GameScreen implements Screen {
 	public void disposeFromGameScreen() {
 		playerTexture.dispose();
 		player.dispose();
-		for (Player p : this.playerMap.values())
-			p.dispose();
 		colorFrameBuffer.dispose();
 		countDown.dispose();
 		powerUpTexture.dispose();
