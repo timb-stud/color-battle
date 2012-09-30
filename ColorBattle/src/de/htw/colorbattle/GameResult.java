@@ -25,7 +25,7 @@ public class GameResult {
 
 	private static final float ROUNDING_FACTOR = 1.002f;
 	// Graphics
-	private static final int BAR_HEIGHT = 80;
+	private static final int BAR_HEIGHT = 75;
 	private static final int BAR_MAX_WIDTH = 470;
 
 	private static final int WINDOW_HEIGHT = 350;
