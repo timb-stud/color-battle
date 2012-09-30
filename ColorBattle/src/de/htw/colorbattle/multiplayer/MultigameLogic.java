@@ -104,12 +104,12 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
-				playerSim.x = 750;
+				playerSim.x = 730;
 				playerSim.y = 50;
 				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
-				playerSim.x = 750;
+				playerSim.x = 730;
 				playerSim.y = 430;
 				playerSim.setColorInt(Color.BLUE);
 				break;

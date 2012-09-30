@@ -117,7 +117,7 @@ public class GameScreen implements Screen {
 		playerSimulation = new PlayerSimulation(player);
 
 		playerMap = new HashMap<Integer, Player>();
-		playerMap.put(1, new Player(Color.PINK, playerWidth / 2));
+		playerMap.put(1, new Player(Color.YELLOW, playerWidth / 2));
 		playerMap.put(2, new Player(Color.BLUE, playerWidth / 2));
 		playerMap.put(3, new Player(Color.RED, playerWidth / 2));
 		
