@@ -34,6 +34,10 @@ import de.htw.colorbattle.toast.ColorHelper;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
+/**
+ * Main Game class
+ * The GameScreen will draw the players and PowerUps
+ */
 public class GameScreen implements Screen {
 
 	private ColorBattleGame game;
@@ -75,6 +79,9 @@ public class GameScreen implements Screen {
 	private long endTime;
 	private boolean gameEnd = false;
 
+	/*
+	 * Constructor
+	 */
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -127,6 +134,10 @@ public class GameScreen implements Screen {
 		game.toast.toaster();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		// clear screen & set camera
@@ -328,14 +339,21 @@ public class GameScreen implements Screen {
 		return new GameResult(playerList);
 	}
 
+	/*
+	 * returns the PlayerSimulation
+	 */
 	public PlayerSimulation getPlayerSimulation() {
 		return playerSimulation;
 	}
 
+	/*
+	 * returns the current PlayerMap
+	 */
 	public HashMap<Integer, Player> getPlayerMap() {
 		return playerMap;
 	}
 
+	
 	public void setOtherPlayers(HashMap<Integer, PlayerSimulation> initPlayerMap) {
 		int notNeededPlayerCount = 3 - initPlayerMap.size();
 		for (int i = 1; i <= notNeededPlayerCount; i++)
