@@ -1,7 +1,7 @@
 package de.htw.colorbattle.config;
 
 /**
- * Für eine feste Konfiguration
+ * Fix configuration for WIDTH and HEIGHT of the game
  */
 public class BattleColorConfig {
 	

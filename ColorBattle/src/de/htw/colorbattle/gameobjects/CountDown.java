@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
+/**
+ * Class to generate and control the countdown texture. 
+ * 
+ */
+
 public class CountDown {
 	
 	private int height;
@@ -18,6 +23,11 @@ public class CountDown {
 	public Texture countDownTexture;
 	
 
+	/**
+	 * Constructor to create and configure the pixmap and set it into the countdown texture.
+	 * @param color Color of the countdown
+	 * @param height Height of the pixmap
+	 */
 	public CountDown(Color color, int height) {
 		this.color = color;
 		this.height = height;
@@ -30,6 +40,12 @@ public class CountDown {
 	}
 	
 	
+	/**
+	 * Method to decrease to countdown bar every second by setting the pixmap y coordinate. 
+	 * @param endTime Time when game ends
+	 * @param gameTime Play time of the game
+	 * @return Boolean if game is finished
+	 */
 	public Boolean activateCountDown(long endTime, int gameTime){
 		currentTime = System.currentTimeMillis() / 1000;
 		
@@ -46,19 +62,18 @@ public class CountDown {
 		}
 	}
 	
-	
+	/**
+	 * Method to dispose countdown texture.
+	 */
 	public void dispose(){
 		countDownTexture.dispose();
 	}
 
-	public int getHeight() {
-		return height;
-	}
-	
-	public Color getColor() {
-		return color;
-	}
-	
+	/**
+	 * Method to get the remaining time of the game in seconds. 
+	 * @param gameTime Play time of the game
+	 * @return Remaining time
+	 */
 	public int getRemainingTimeInSeconds(int gameTime) {
 		return (int)(gameTime -  seconds);
 	}
