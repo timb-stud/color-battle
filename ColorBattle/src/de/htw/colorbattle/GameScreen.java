@@ -276,15 +276,6 @@ public class GameScreen implements Screen {
 		powerUp.isVisible = false;
 		powerUp.isBombExploded = false;
 	}
-
-	/**
-	 * The server swaps player and otherPlayer in order to have different color and startpositions.
-	 */
-	public void swapPlayers() {
-		Player buffer = player;
-		player = otherPlayer;
-		otherPlayer = buffer;
-	}
 	
 	/**
 	 * Sends gameobjects to the other devices.
