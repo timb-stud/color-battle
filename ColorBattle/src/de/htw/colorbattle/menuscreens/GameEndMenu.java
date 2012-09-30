@@ -94,15 +94,12 @@ public class GameEndMenu implements Screen {
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
 		
-		StringBuilder toastMsg = new StringBuilder();
 		float score;
 		for (Player currentPlayer : gameresult.getScoredPlayerList()){
 			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
-			toastMsg.append(" PlayerID: " + currentPlayer.id + " Score: "+ score).append("\n"); 
+			render_toast.makeText("PlayerID: " + currentPlayer.id + " Score: "+ score, "font", 
+			        Toast.COLOR_PREF.RED, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG * 4.0f);
 		}
-		render_toast.makeText(toastMsg.toString(), "font", 
-		        Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG*2.0f);
-	
 	}
 
 	@Override

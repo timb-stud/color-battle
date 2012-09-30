@@ -64,6 +64,8 @@ public class ColorBattleGame extends Game implements InputProcessor,
 				SplashMenu splashMenu = new SplashMenu(this);
 				this.setScreen(splashMenu);
 			} else {
+				if(music != null)
+					music.stop();
 				MainMenu mainMenu = new MainMenu(this);
 				this.setScreen(mainMenu);
 			}

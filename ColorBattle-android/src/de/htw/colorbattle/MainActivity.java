@@ -95,12 +95,13 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
     /**
      * Displays a dialog asking to enable bluetooth
      */
-    public void enableBluetoothQuestion(){
+    public boolean enableBluetoothQuestion(){
         // If BT is not on, request that it be enabled.
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
+        return isBluetoothEnabled();
     }
     
     /**
