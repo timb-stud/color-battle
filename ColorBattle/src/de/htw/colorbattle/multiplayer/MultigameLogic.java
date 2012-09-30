@@ -47,7 +47,7 @@ public class MultigameLogic implements Observer{
 		
 		ownPlayer.id = joinedPlayers;
 		ownPlayer.x = 50;
-		ownPlayer.y = 50;
+		ownPlayer.y = 430;
 		this.logicPlayerMap = new HashMap<Integer, PlayerSimulation>();
 		this.logicPlayerMap.put(joinedPlayers, ownPlayer);
 		Gdx.app.debug("Multiplayer Game", "player with id " + ownPlayer.id + "has started multiGame server. game time: " + gameTime + " player count: " + playerCount);
@@ -105,18 +105,18 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
-				playerSim.x = 600;
-				playerSim.y = 200;
+				playerSim.x = 50;
+				playerSim.y = 50;
 				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
-				playerSim.x = 600;
-				playerSim.y = 200;
+				playerSim.x = 750;
+				playerSim.y = 50;
 				playerSim.setColorInt(Color.BLUE);
 				break;
 			case 4: //unten links
-				playerSim.x = 600;
-				playerSim.y = 200;
+				playerSim.x = 50;
+				playerSim.y = 750;
 				playerSim.setColorInt(Color.PINK);
 				break;
 			default:
