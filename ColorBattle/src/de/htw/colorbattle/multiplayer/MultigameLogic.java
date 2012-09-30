@@ -9,7 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 import de.htw.colorbattle.ColorBattleGame;
-import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
@@ -105,19 +104,19 @@ public class MultigameLogic implements Observer{
 		Gdx.app.debug("Multiplayer Game", "player with id " + joinedPlayers + " has joined the game.");
 		switch (joinedPlayers) {
 			case 2: //unten rechts
-				playerSim.x = 50;
+				playerSim.x = 750;
 				playerSim.y = 50;
 				playerSim.setColorInt(Color.RED);
 				break;
 			case 3: //oben rechts
 				playerSim.x = 750;
-				playerSim.y = 50;
+				playerSim.y = 430;
 				playerSim.setColorInt(Color.BLUE);
 				break;
 			case 4: //unten links
 				playerSim.x = 50;
-				playerSim.y = 750;
-				playerSim.setColorInt(Color.PINK);
+				playerSim.y = 50;
+				playerSim.setColorInt(Color.YELLOW);
 				break;
 			default:
 				throw new RuntimeException("Undefined number of joined players");
