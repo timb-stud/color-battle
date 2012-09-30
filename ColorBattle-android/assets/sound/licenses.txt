@@ -31,3 +31,11 @@ This sound is extracted from a sound file created by bennychico11
 by: 		bennychico11
 license:	http://creativecommons.org/licenses/by/3.0/
 from:		http://www.freesound.org/people/bennychico11/sounds/110930/
+
+
+
+click.mp3
+
+by: 		LS
+license:	http://creativecommons.org/licenses/by/3.0/
+from:		http://www.freesound.org/people/LS/sounds/13658/

@@ -13,9 +13,7 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 
 /**
- * MainMenu erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * für das Hauptmenü
+ * Creates the MainMenu GUI with all Buttons
  */
 public class MainMenu implements Screen {
 
@@ -37,6 +35,9 @@ public class MainMenu implements Screen {
 	 */
 	private boolean endButtonPushed = false;
 
+	/*
+	 * Constructor
+	 */
 	public MainMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -56,19 +57,25 @@ public class MainMenu implements Screen {
 				Gdx.files.internal("menu/Button_WLAN.png"), ownCamera);
 		wlanGameSprite.setPosition((width - wlanGameSprite.getWidth()) / 2.0f,
 				height - wlanGameSprite.getHeight() - 15.0f);
+		wlanGameSprite.highlightOnTouch = true;
 		wlanGameSprite.setTouchDownPicture(Gdx.files
 				.internal("menu/Button_WLAN_hover.png"));
-		wlanGameSprite.highlightOnTouch = true;
 
 		btGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Button_BT.png"), ownCamera);
 		btGameSprite.setPosition((width - btGameSprite.getWidth()) / 2.0f,
 				(height - btGameSprite.getHeight()) / 2.0f);
+		btGameSprite.highlightOnTouch = true;
+		btGameSprite.setTouchDownPicture(Gdx.files
+				.internal("menu/Button_BT_hover.png"));
 
 		exitGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/ExitGame.png"), ownCamera);
 		exitGameSprite.setPosition((width - exitGameSprite.getWidth()) / 2.0f,
 				+15.0f);
+		exitGameSprite.highlightOnTouch = true;
+		exitGameSprite.setTouchDownPicture(Gdx.files
+				.internal("menu/ExitGame_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
@@ -78,6 +85,10 @@ public class MainMenu implements Screen {
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		if (!endButtonPushed) {
@@ -105,10 +116,11 @@ public class MainMenu implements Screen {
 				this.dispose();
 			} else if (btGameSprite.isTouched()) {
 				btGameSprite.resetIsTouched();
-				gameRef.mainActivity.enableBluetoothQuestion();
-				gameRef.netSvc = gameRef.bluetoothActionResolver;
-				gameRef.setScreen(new BluetoothMenu(gameRef));
-				this.dispose();
+				if (gameRef.mainActivity.enableBluetoothQuestion()){
+					gameRef.netSvc = gameRef.bluetoothActionResolver;
+					gameRef.setScreen(new BluetoothMenu(gameRef));
+					this.dispose();
+				}
 			} else if (exitGameSprite.isTouched()) {
 				endButtonPushed = true;
 				gameRef.dispose();
@@ -118,6 +130,10 @@ public class MainMenu implements Screen {
 		}
 	}
 
+	/*
+	 * Dispose all objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -136,23 +152,44 @@ public class MainMenu implements Screen {
 	}
 
 	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}

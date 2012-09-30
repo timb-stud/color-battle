@@ -9,8 +9,19 @@ import java.io.ObjectOutputStream;
 
 import com.badlogic.gdx.Gdx;
 
+
+/**
+ * Class to serialize and deserialize objects before sending over network
+ *
+ */
 public class SerializeUtils {
 
+	
+	/**
+	 * Method to serialize object into byte code
+	 * @param o Object for serialization
+	 * @return Byte code of the serialized object
+	 */
 	public static byte[] serializeObject(Object o) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -29,7 +40,11 @@ public class SerializeUtils {
 		}
 	}
 
-	
+	/**
+	 * Method to deserialize byte code into objects
+	 * @param b Byte code to deserialization
+	 * @return Object of the deserialization
+	 */
 	public static Object deserializeObject(byte[] b) {
 		try {
 			ObjectInputStream in = new ObjectInputStream(

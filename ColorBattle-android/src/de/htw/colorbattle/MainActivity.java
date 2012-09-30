@@ -58,7 +58,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
-        bcConfig.playSound = false;
+        bcConfig.playSound = true;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         BattleColorConfig.DEVICE_ID = getDeviceId();
         bcConfig.gameMode = GameMode.OFF; //default is OFF
@@ -95,12 +95,13 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
     /**
      * Displays a dialog asking to enable bluetooth
      */
-    public void enableBluetoothQuestion(){
+    public boolean enableBluetoothQuestion(){
         // If BT is not on, request that it be enabled.
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
+        return isBluetoothEnabled();
     }
     
     /**

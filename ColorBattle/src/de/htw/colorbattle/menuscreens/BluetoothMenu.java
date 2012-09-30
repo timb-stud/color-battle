@@ -12,9 +12,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 /**
- * BluetoothMenu  erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * um ein BluetoothGame zu starten
+ * BluetoothMenu  creates GUI, with Buttons to start a BluetoothGame
  */
 public class BluetoothMenu implements Screen {
 
@@ -30,6 +28,9 @@ public class BluetoothMenu implements Screen {
 
 	private Texture wallpaper;
 
+	/*
+	 * Constructor
+	 */
 	public BluetoothMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -49,16 +50,22 @@ public class BluetoothMenu implements Screen {
 		joinBtGameSprite.setPosition(
 				(width - joinBtGameSprite.getWidth()) / 2.0f, height
 						- joinBtGameSprite.getHeight()-15.0f);
+		joinBtGameSprite.highlightOnTouch = true;
+		joinBtGameSprite.setTouchDownPicture(Gdx.files.internal("menu/join_hover.png"));
 
 		openBtGameSprite = new TouchSprite(
 				Gdx.files.internal("menu/Open_BT_Button.png"), ownCamera);
 		openBtGameSprite.setPosition(
 				(width - openBtGameSprite.getWidth()) / 2.0f,
 				(height - openBtGameSprite.getHeight()) / 2.0f);
+		openBtGameSprite.highlightOnTouch = true;
+		openBtGameSprite.setTouchDownPicture(Gdx.files.internal("menu/Open_BT_Button_hover.png"));
 
 		backSprite = new TouchSprite(Gdx.files.internal("menu/back.png"),
 				ownCamera);
 		backSprite.setPosition((width - backSprite.getWidth()) / 2.0f, +15.0f);
+		backSprite.highlightOnTouch = true;
+		backSprite.setTouchDownPicture(Gdx.files.internal("menu/back_hover.png"));
 
 		// for Touch-Events
 		inputMulti = new InputMultiplexer();
@@ -68,7 +75,10 @@ public class BluetoothMenu implements Screen {
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
-	@Override
+	/*
+	 * Main loop in this class
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// camera.update();
@@ -93,17 +103,25 @@ public class BluetoothMenu implements Screen {
 			 gameRef.netSvc.startServer();
 			 startServer(2);
 		} else if (backSprite.isTouched()) {
+			backSprite.resetIsTouched(); 
 			gameRef.setScreen(new MainMenu(gameRef));
 			this.dispose();
 		}
 	}
 	
+	/*
+	 * Creates the MultigameLogic and switch the current screen to the JoininScreen
+	 */
 	private void startServer(int players){
 		gameRef.multiGame = new MultigameLogic(gameRef, players);
 		gameRef.setScreen(new JoiningScreen(gameRef));
 		this.dispose();
 	}
 
+	/*
+	 * Dispose all objects
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -123,23 +141,43 @@ public class BluetoothMenu implements Screen {
 	
 	// other methods not need here
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
