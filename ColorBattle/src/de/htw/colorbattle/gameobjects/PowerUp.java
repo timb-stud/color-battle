@@ -88,7 +88,7 @@ public class PowerUp {
 	 * Method to set the PowerUp type randomly
 	 */
 	private void shuffleType(){
-		if(Math.random() < 0.7){
+		if(Math.random() < 0.6){
 			type = Type.BOMB;
 		}else {
 			type = Type.INVERT;
