@@ -175,14 +175,19 @@ public class MultigameLogic implements Observer{
 		} else if(obj instanceof StartGameMsg) { 
 			StartGameMsg startGameMsg = (StartGameMsg) obj;
 			game.bcConfig.gameTime = startGameMsg.gameTime;
+			this.playerCount = startGameMsg.playerCount;
 			updatePlayerMap(startGameMsg.playerMap);
+			
+//			game.toast.makeText("You are Player " + ownPlayer.id, "font", 
+//					Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG);
+			
 			isGameStarted = true; //now game will be start
 			Gdx.app.debug("Multiplayer Game", "Game started with " + startGameMsg.playerMap.size() + " otherPlayers in playerMap.");
 			
 		// handled by server if a new player like to join the game
 		} else if (!isGameStarted && (obj instanceof PlayerSimulation)) {
-//			game.toast.makeText("New player joined",
-//					"font", Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
+//			game.toast.makeText("New player joined", "font", 
+//					Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.MED);
 			if (isServer){
 				Gdx.app.debug("Multiplayer Game", "new player try to join game");
 				PlayerSimulation playerSim = (PlayerSimulation) obj;
