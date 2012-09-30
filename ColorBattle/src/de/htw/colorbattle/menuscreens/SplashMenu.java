@@ -11,8 +11,7 @@ import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 
 /**
- * SplashMenu erstellt die Oberfläche des SplashScreens,
- * inklusive Touchfunktion und Skalierung
+ * Classn to Display a SplashMenu
  */
 public class SplashMenu implements Screen {
 
@@ -47,6 +46,10 @@ public class SplashMenu implements Screen {
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -65,6 +68,10 @@ public class SplashMenu implements Screen {
 		} 
 	}
 
+	/*
+	 * Dispose all objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -77,26 +84,46 @@ public class SplashMenu implements Screen {
 			screenTouchedSound.dispose();
 	}
 
-	// other methods not need here
+	/*
+	 * Plays a sound when the Screen is shown
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 		gameRef.playSound();
 	}
 
+	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
-
 }
