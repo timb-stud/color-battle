@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.StringBuilder;
-
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.GameResult;
 import de.htw.colorbattle.config.BattleColorConfig;
@@ -17,9 +15,7 @@ import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
 /**
- * GameEndMenu erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * zum anzeigen des Spielergebnisses
+ * GameEndMenu creates a GUI and Buttons and shows the Menu at the End of a Game
  */
 public class GameEndMenu implements Screen {
 
@@ -36,6 +32,9 @@ public class GameEndMenu implements Screen {
 	private InputMultiplexer inputMulti;
 	private TouchSprite backSprite;
 
+	/*
+	 * Constructor
+	 */
 	public GameEndMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -58,6 +57,10 @@ public class GameEndMenu implements Screen {
 		this.render_toast  = new Toast(7, 20);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -89,20 +92,24 @@ public class GameEndMenu implements Screen {
 		}
 	}
 
+	/*
+	 * sets a GameResult and print it on the Screen via ToastMessage
+	 */
 	public void setGameresult(GameResult gameresult) {
 		this.gameresult = gameresult;
 		
-		StringBuilder toastMsg = new StringBuilder();
 		float score;
 		for (Player currentPlayer : gameresult.getScoredPlayerList()){
 			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
-			toastMsg.append(" PlayerID: " + currentPlayer.id + " Score: "+ score).append("\n"); 
+			render_toast.makeText("PlayerID: " + currentPlayer.id + " Score: "+ score, "font", 
+			        Toast.COLOR_PREF.RED, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG * 4.0f);
 		}
-		render_toast.makeText(toastMsg.toString(), "font", 
-		        Toast.COLOR_PREF.BLUE, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG*2.0f);
-	
 	}
 
+	/*
+	 * Dispose all objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		gameRef.inputMultiplexer.removeProcessor(backSprite);// TODO was macht der input multiplexer vom game überhaupt mit dem backsprite ??? ???
@@ -119,24 +126,44 @@ public class GameEndMenu implements Screen {
 	}
 
 	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
-
 }

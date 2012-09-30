@@ -94,6 +94,8 @@ public class Player extends PlayerSimulation {
 		Pixmap colorPixmap = new Pixmap(r * 2, r * 2, Format.RGBA8888);
 		colorPixmap.setColor(color);
 		colorPixmap.fillCircle(r, r, r);
+		if(this.colorTexture != null)
+			this.colorTexture.dispose();
 		this.colorTexture = new Texture(colorPixmap);
 		colorPixmap.dispose();
 	}

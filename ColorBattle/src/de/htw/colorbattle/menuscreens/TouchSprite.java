@@ -1,6 +1,8 @@
 package de.htw.colorbattle.menuscreens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,6 +20,7 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	public boolean highlightOnTouch;
 	private Texture highlightTexture = null;
 	private Texture buttonTexture;
+	private Sound click;
 	
 	/* 
 	 * Constructor
@@ -29,6 +32,7 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		this.buttonTexture = t;
 		this.camera = camera;
 		this.highlightOnTouch = false;
+		this.click = Gdx.audio.newSound(Gdx.files.internal("sound/click.mp3"));
 	}
 	
 	/*
@@ -40,6 +44,7 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		super(new Texture(f));
 		this.buttonTexture = this.getTexture();
 		this.camera = camera;
+		this.click = Gdx.audio.newSound(Gdx.files.internal("sound/click.mp3"));
 	}
 	
 	/*
@@ -85,6 +90,8 @@ public class TouchSprite extends Sprite implements InputProcessor {
 	 * reset the touched state
 	 */
 	public void resetIsTouched() {
+		if(click != null)
+			click.play();
 		isTouched = false;
 	}
 
@@ -195,5 +202,7 @@ public class TouchSprite extends Sprite implements InputProcessor {
 		if (buttonTexture != null){
 			buttonTexture.dispose();
 		}
+		if(click != null)
+			click.dispose();
 	}
 }

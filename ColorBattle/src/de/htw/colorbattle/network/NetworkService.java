@@ -22,7 +22,7 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 	private int mcPort;
 	private static NetworkService netSvc;
 	
-	private static final int MAX_UDP_DATAGRAM_LEN = 1024;
+	private static final int MAX_UDP_DATAGRAM_LEN = 2048;
 	
 	/**
 	 * Constructor of the class. Opens a multicast socket to a specific address and port

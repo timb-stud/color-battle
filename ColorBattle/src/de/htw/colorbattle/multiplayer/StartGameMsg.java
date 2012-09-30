@@ -2,8 +2,9 @@ package de.htw.colorbattle.multiplayer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
-import de.htw.colorbattle.gameobjects.Player;
+
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
 
 
@@ -12,40 +13,17 @@ import de.htw.colorbattle.gameobjects.PlayerSimulation;
  * This message gets send to the clients if all clients are connected and the game starts.
  */
 public class StartGameMsg implements Serializable{
-	
-	public StartGameMsg(HashMap<Integer, Player> pMap, int gameTime) {
-		playerMap = new HashMap<Integer, PlayerSimulation>();
-		this.gameTime = gameTime;
-		setPlayerMap(pMap);
-	}
-	
-	/**
-	 *  Sets the playerMap
-	 * @param pMap
-	 */
-	private void setPlayerMap(HashMap<Integer, Player> pMap){
-		for (Player p : pMap.values()){
-			PlayerSimulation ps = new PlayerSimulation(p);
-			playerMap.put(ps.id, ps);
-		}
-	}
-	
-	/**
-	 * 
-	 * @return the playerMap
-	 */
-	public HashMap<Integer, Player> getPlayerMap(){
-		HashMap<Integer, Player> pMap = new HashMap<Integer, Player>();
-		for (PlayerSimulation ps : playerMap.values()){
-			Player p = new Player(ps.getColorInt(), ps.radius);
-			p.update(ps);
-			Gdx.app.debug("Multiplayer Game", "player with id " + p.id + " colorTexture: " + p.colorTexture);
-			pMap.put(p.id, p);
-		}
-		return pMap;
-	}
-	
 	private static final long serialVersionUID = 6555904338790084806L;
 	public int gameTime = 60; //default value
+	public int playerCount;
 	public HashMap<Integer, PlayerSimulation> playerMap;
+	
+	public StartGameMsg(HashMap<Integer, PlayerSimulation> pMap, int gameTime) {
+//		playerMap = pMap;
+		playerMap = new HashMap<Integer, PlayerSimulation>();
+		playerMap.putAll(pMap);
+		this.gameTime = gameTime;
+		this.playerCount = playerMap.size();
+		Gdx.app.debug("StartMessage", "Send StartMsg with " + playerCount + " players in map");
+	}
 }

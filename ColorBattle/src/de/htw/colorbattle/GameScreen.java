@@ -3,6 +3,7 @@ package de.htw.colorbattle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.CountDown;
@@ -28,9 +30,14 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
+import de.htw.colorbattle.toast.ColorHelper;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
+/**
+ * Main Game class
+ * The GameScreen will draw the players and PowerUps
+ */
 public class GameScreen implements Screen {
 
 	private ColorBattleGame game;
@@ -44,11 +51,11 @@ public class GameScreen implements Screen {
 	private Texture wallpaper;
 	private OrthographicCamera ownCamera;
 	private boolean drawToastCountdown = false;
+	boolean colorRepainted = false;
 
 	// Players & Network
 	private TextureRegion flipper;
 	private Player player;
-	private Player otherPlayer;
 	private PlayerSimulation playerSimulation;
 	private HashMap<Integer, Player> playerMap;
 
@@ -72,6 +79,9 @@ public class GameScreen implements Screen {
 	private long endTime;
 	private boolean gameEnd = false;
 
+	/*
+	 * Constructor
+	 */
 	public GameScreen(ColorBattleGame game) throws NetworkException {
 		this.game = game;
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
@@ -93,14 +103,12 @@ public class GameScreen implements Screen {
 		playerTexture = new Texture(Gdx.files.internal("player.png"));
 		wallpaper = new Texture(Gdx.files.internal("GameScreenWallpaper.png"));
 
-		playerMap = new HashMap<Integer, Player>();
 
 		int playerWidth = playerTexture.getWidth();
 		int playerHeight = playerTexture.getHeight();
 
 		// set player color
 		player = new Player(Color.GREEN, playerWidth / 2);
-		player.setColorInt(Color.GREEN);
 
 		// set player default position
 		player.x = width / 2 - playerWidth / 2;
@@ -108,9 +116,11 @@ public class GameScreen implements Screen {
 
 		playerSimulation = new PlayerSimulation(player);
 
-		otherPlayer = new Player(Color.RED, playerWidth / 2);
-		otherPlayer.setColorInt(Color.RED);
-
+		playerMap = new HashMap<Integer, Player>();
+		playerMap.put(1, new Player(Color.PINK, playerWidth / 2));
+		playerMap.put(2, new Player(Color.BLUE, playerWidth / 2));
+		playerMap.put(3, new Player(Color.RED, playerWidth / 2));
+		
 		// Powerup
 		powerUpTexture = new Texture(Gdx.files.internal("powerup.png"));
 		powerUp = new PowerUp(0, 0, powerUpTexture.getWidth(),
@@ -124,6 +134,10 @@ public class GameScreen implements Screen {
 		game.toast.toaster();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		// clear screen & set camera
@@ -131,9 +145,16 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(ownCamera.combined);
 
-		// Server stuff
-		if (isServer) {
+//		// Server stuff
+		if (isServer){
 			powerup();
+		}
+		
+		if(!colorRepainted){
+			player.repaintColorTexture();
+			for(Player p : this.playerMap.values())
+				p.repaintColorTexture();
+			colorRepainted = true;
 		}
 
 		// Player draw the player color to the framebuffer// TODO is really everything necessary?
@@ -142,11 +163,12 @@ public class GameScreen implements Screen {
 		colorFrameBuffer.begin();
 		batch.begin();
 		batch.draw(player.colorTexture, player.x, player.y);
-		batch.draw(otherPlayer.colorTexture, otherPlayer.x, otherPlayer.y);
-		if (powerUp.isBombExploded) {
-			bombSound.play();
-			drawBomb();
-		}
+		for (Player p : playerMap.values())
+			batch.draw(p.colorTexture, p.x, p.y);
+			if (powerUp.isBombExploded) {
+				bombSound.play();
+				drawBomb();
+			}
 		batch.end();
 		colorFrameBuffer.end();
 
@@ -154,7 +176,8 @@ public class GameScreen implements Screen {
 		batch.draw(wallpaper, 0, 0); // draw Wallpaper
 		batch.draw(flipper, 0, 0);
 		batch.draw(playerTexture, player.x, player.y);
-		batch.draw(playerTexture, otherPlayer.x, otherPlayer.y);
+		for (Player p : playerMap.values())
+			batch.draw(playerTexture, p.x, p.y);
 		if (powerUp.isVisible) {
 			batch.draw(powerUpTexture, powerUp.rect.x, powerUp.rect.y);
 		}
@@ -172,8 +195,10 @@ public class GameScreen implements Screen {
 		gameBorder.handelCollision(player);
 		playerSimulation.move();
 		gameBorder.handelCollision(playerSimulation);
-		otherPlayer.move();
-		gameBorder.handelCollision(otherPlayer);
+		for (Player p : playerMap.values()){
+			p.move();
+			gameBorder.handelCollision(p);
+		}
 
 		// NetworkCommunication
 		if (playerSimulation.distance(player) > game.bcConfig.networkPxlUpdateIntervall) {
@@ -242,14 +267,24 @@ public class GameScreen implements Screen {
 			powerUpSound.play();
 			send(new PowerUpSpawnMsg(powerUp));
 		}
-		boolean pickedByPlayer = powerUp.isPickedUpBy(player);
-		boolean pickedByOtherPlayer = powerUp.isPickedUpBy(otherPlayer);
+		boolean pickedByPlayer = false;
+		if(powerUp.isPickedUpBy(player)){
+			pickedByPlayer = true;
+			powerUp.pickedUpPlayerColor = player.color;
+		}
+		boolean pickedByOtherPlayer = false;
+		for (Player p : this.playerMap.values()){
+			if(powerUp.isPickedUpBy(p)){
+				pickedByOtherPlayer = true;
+				powerUp.pickedUpPlayerColor = p.color;
+			}
+		}
 		if (powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
 			send(new InvertControlMsg(false));
 			powerUp.invertControl = false;
 			powerUp.wasPickedUpByServer = pickedByOtherPlayer;
 			if (powerUp.type == PowerUp.Type.BOMB) {
-				send(new BombExplodeMsg(pickedByPlayer));
+				send(new BombExplodeMsg(pickedByPlayer, ColorHelper.getColorInt(powerUp.pickedUpPlayerColor)));
 				powerUp.isBombExploded = true;
 			} else {
 				if (pickedByPlayer) {
@@ -269,12 +304,12 @@ public class GameScreen implements Screen {
 	 * Draws the bomb 
 	 */
 	private void drawBomb() {
-		Color color = powerUp.wasPickedUpByServer ? otherPlayer.color
-				: player.color;
-		batch.draw(powerUp.getBombTexture(color), powerUp.rect.x
-				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
-		powerUp.isVisible = false;
 		powerUp.isBombExploded = false;
+		powerUp.isVisible = false;
+		if(powerUp.pickedUpPlayerColor == null)
+			return;
+		batch.draw(powerUp.getBombTexture(powerUp.pickedUpPlayerColor), powerUp.rect.x
+				- powerUp.rect.width, powerUp.rect.y - powerUp.rect.height);
 	}
 	
 	/**
@@ -299,29 +334,41 @@ public class GameScreen implements Screen {
 	private GameResult getGameResult() {
 		LinkedList<Player> playerList = new LinkedList<Player>();
 		playerList.add(player);
-		playerList.add(otherPlayer);
-		// for (Player p : playerMap.values()) {
-		// playerList.add(p);
-		// }
+		 for (Player p : playerMap.values()) {
+			 playerList.add(p);
+		 }
 		return new GameResult(playerList);
 	}
 
+	/*
+	 * returns the PlayerSimulation
+	 */
 	public PlayerSimulation getPlayerSimulation() {
 		return playerSimulation;
 	}
 
+	/*
+	 * returns the current PlayerMap
+	 */
 	public HashMap<Integer, Player> getPlayerMap() {
 		return playerMap;
 	}
 
-	public void setPlayerMap(HashMap<Integer, Player> playerMap) {
-		Iterator<Player> i = playerMap.values().iterator();
-		this.otherPlayer.update(i.next()); // TODO only for playing with 2
-											// players
-		this.playerMap = playerMap;
-		// for(Player p : playerMap.values()){
-		// this.playerMap.get(p.id).update(p);
-		// }
+	
+	public void setOtherPlayers(HashMap<Integer, PlayerSimulation> initPlayerMap) {
+		int notNeededPlayerCount = 3 - initPlayerMap.size();
+		for (int i = 1; i <= notNeededPlayerCount; i++)
+			this.playerMap.remove(i);
+		Iterator<PlayerSimulation> it = initPlayerMap.values().iterator();
+		for(Player p : this.playerMap.values()){
+			if (it.hasNext()){
+				PlayerSimulation initP = it.next();
+				p.update(initP);
+				p.setNewColor(initP.colorInt); //not needed. set in update methode
+				Gdx.app.debug("Color", "Changed color to " + initP.colorInt);
+			}
+		}
+//		this.otherPlayer.update(i.next()); // TODO only for playing with 2 players
 	}
 
 	public Player getPlayer() {
@@ -329,7 +376,14 @@ public class GameScreen implements Screen {
 	}
 
 	public void updateOtherPlayer(PlayerSimulation ps) {
-		otherPlayer.update(ps);
+//		otherPlayer.update(ps);
+		for(int key : this.playerMap.keySet()){
+			Player p = this.playerMap.get(key);
+			if(p.id == ps.id){
+				p.update(ps);
+//				playerMap.put(key, p);
+			}
+		}
 	}
 
 	/**
@@ -347,6 +401,7 @@ public class GameScreen implements Screen {
 	 */
 	public void explodeBomb(BombExplodeMsg bombExplodeMsg) {
 		powerUp.wasPickedUpByServer = bombExplodeMsg.wasPickedUpByServer;
+		powerUp.pickedUpPlayerColor = ColorHelper.getColorFromInt(bombExplodeMsg.colorInt);
 		powerUp.isBombExploded = true;
 	}
 	
@@ -360,6 +415,12 @@ public class GameScreen implements Screen {
 		playInvertSound = true;
 	}
 
+	public void setOwnPlayer(PlayerSimulation p) {
+		this.player.update(p);
+		this.player.setNewColor(p.colorInt);
+		Gdx.app.debug("Color", "Changed color to " + p.colorInt);
+	}
+	
 	/**
 	 * checks Input-Keys for Desktop Version
 	 */
@@ -386,10 +447,11 @@ public class GameScreen implements Screen {
 		Gdx.app.log("GameScreen", "show();");
 		endTime = System.currentTimeMillis() / 1000
 				+ game.bcConfig.gameTime;
-
+	
 		if (game.bcConfig.playSound) {
 			game.playSound();
-		}		
+		}	
+		
 		// Server
 		isServer = game.multiGame.isServer();
 	}
@@ -417,7 +479,8 @@ public class GameScreen implements Screen {
 		//andy: ich hab auf den ersten Blick keine Ahnung warum die Texturen verloren gehen, bei den Menues passiert es nicht...
 		//damits halbwegs was aussieht:
 		player.repaintColorTexture();
-		otherPlayer.repaintColorTexture();
+		for (Player p : this.playerMap.values())
+			p.repaintColorTexture();
 	}
 
 	/**
@@ -427,7 +490,8 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		playerTexture.dispose();
 		player.dispose();
-		otherPlayer.dispose();
+		for (Player p : this.playerMap.values())
+			p.dispose();
 		colorFrameBuffer.dispose();
 		batch.dispose();
 		wallpaper.dispose();
@@ -446,7 +510,8 @@ public class GameScreen implements Screen {
 	public void disposeFromGameScreen() {
 		playerTexture.dispose();
 		player.dispose();
-		otherPlayer.dispose();
+		for (Player p : this.playerMap.values())
+			p.dispose();
 		colorFrameBuffer.dispose();
 		countDown.dispose();
 		powerUpTexture.dispose();
@@ -456,4 +521,5 @@ public class GameScreen implements Screen {
 		gameBorder = null;
 		ownCamera = null;
 	}
+
 }

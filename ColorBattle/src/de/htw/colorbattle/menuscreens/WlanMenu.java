@@ -12,9 +12,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.multiplayer.MultigameLogic;
 
 /**
- * WlanMenu erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * um ein WlanGame zu starten
+ * WlanMenu creates GUI and Buttons to start a WLAN Game
  */
 public class WlanMenu implements Screen {
 
@@ -32,6 +30,9 @@ public class WlanMenu implements Screen {
 
 	private Texture wallpaper;
 
+	/*
+	 * Constructor
+	 */
 	public WlanMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -85,6 +86,10 @@ public class WlanMenu implements Screen {
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -130,11 +135,18 @@ public class WlanMenu implements Screen {
 
 	}
 	
+	/*
+	 * Starts a new MultigameLogic and switch to the JoiningScreen
+	 */
 	private void startServer(int players){
 		gameRef.multiGame = new MultigameLogic(gameRef, players);
 		gameRef.setScreen(new JoiningScreen(gameRef));
 	}
 	
+	/*
+	 * Dispose all objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -157,23 +169,44 @@ public class WlanMenu implements Screen {
 	}
 	
 	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}

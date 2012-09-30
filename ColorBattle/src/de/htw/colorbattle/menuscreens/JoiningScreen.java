@@ -10,9 +10,8 @@ import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 
 /**
- * JoiningScreen erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * welche zum warten auf andere Spieler benutzt wird.
+ * JoiningScreen. This is a Screen is shown when waiting for other Players.
+ * If all players are joined it switch to the GameCountDown Screen
  */
 public class JoiningScreen implements Screen {
 	private ColorBattleGame gameRef;
@@ -23,6 +22,9 @@ public class JoiningScreen implements Screen {
 	private InputMultiplexer inputMulti;
 	private TouchSprite backSprite;
 
+	/*
+	 * Constructor
+	 */
 	public JoiningScreen(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -49,6 +51,10 @@ public class JoiningScreen implements Screen {
 				Gdx.input.setInputProcessor(inputMulti);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -71,6 +77,10 @@ public class JoiningScreen implements Screen {
 		}
 	}
 
+	/*
+	 * Dispose all Objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -84,22 +94,43 @@ public class JoiningScreen implements Screen {
 	}
 
 	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}

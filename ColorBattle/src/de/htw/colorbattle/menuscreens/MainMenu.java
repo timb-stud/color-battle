@@ -13,9 +13,7 @@ import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.network.NetworkService;
 
 /**
- * MainMenu erstellt die Oberfläche,
- * inklusive Buttons und Skalierung,
- * für das Hauptmenü
+ * Creates the MainMenu GUI with all Buttons
  */
 public class MainMenu implements Screen {
 
@@ -37,6 +35,9 @@ public class MainMenu implements Screen {
 	 */
 	private boolean endButtonPushed = false;
 
+	/*
+	 * Constructor
+	 */
 	public MainMenu(ColorBattleGame game) {
 		this.gameRef = game;
 		this.ownCamera = new OrthographicCamera();
@@ -84,6 +85,10 @@ public class MainMenu implements Screen {
 		Gdx.input.setInputProcessor(inputMulti);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		if (!endButtonPushed) {
@@ -111,10 +116,11 @@ public class MainMenu implements Screen {
 				this.dispose();
 			} else if (btGameSprite.isTouched()) {
 				btGameSprite.resetIsTouched();
-				gameRef.mainActivity.enableBluetoothQuestion();
-				gameRef.netSvc = gameRef.bluetoothActionResolver;
-				gameRef.setScreen(new BluetoothMenu(gameRef));
-				this.dispose();
+				if (gameRef.mainActivity.enableBluetoothQuestion()){
+					gameRef.netSvc = gameRef.bluetoothActionResolver;
+					gameRef.setScreen(new BluetoothMenu(gameRef));
+					this.dispose();
+				}
 			} else if (exitGameSprite.isTouched()) {
 				endButtonPushed = true;
 				gameRef.dispose();
@@ -124,6 +130,10 @@ public class MainMenu implements Screen {
 		}
 	}
 
+	/*
+	 * Dispose all objects used in this class
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		ownBatch.dispose();
@@ -142,23 +152,44 @@ public class MainMenu implements Screen {
 	}
 
 	// other methods not need here
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
