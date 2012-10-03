@@ -30,6 +30,7 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
+import de.htw.colorbattle.multiplayer.SpeedUpControlMsg;
 import de.htw.colorbattle.toast.ColorHelper;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
@@ -190,6 +191,13 @@ public class GameScreen implements Screen {
 			player.direction.mul(-1);
 		}
 		
+		//update Player movement speed
+		if (powerUp.speedUpControl) {
+			player.speed = 400;
+		}else{
+			player.speed = 200;
+		}
+		
 		// checkDesktopControl(); // not supported atm
 		player.move();
 		gameBorder.handelCollision(player);
@@ -281,12 +289,14 @@ public class GameScreen implements Screen {
 		}
 		if (powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
 			send(new InvertControlMsg(false));
+			send(new SpeedUpControlMsg(false));
 			powerUp.invertControl = false;
+			powerUp.speedUpControl = false;
 			powerUp.wasPickedUpByServer = pickedByOtherPlayer;
 			if (powerUp.type == PowerUp.Type.BOMB) {
 				send(new BombExplodeMsg(pickedByPlayer, ColorHelper.getColorInt(powerUp.pickedUpPlayerColor)));
 				powerUp.isBombExploded = true;
-			} else {
+			} else if (powerUp.type == PowerUp.Type.INVERT) {
 				if (pickedByPlayer) {
 					powerUp.isVisible = false;
 					powerUp.invertControl = true;
@@ -296,6 +306,17 @@ public class GameScreen implements Screen {
 					playInvertSound = true;
 					send(new InvertControlMsg(true));
 				}
+			}else if (powerUp.type == PowerUp.Type.SPEED){
+				if (pickedByPlayer) {
+					powerUp.isVisible = false;
+					powerUp.speedUpControl = true;
+					playInvertSound = true;
+				} else {
+					powerUp.isVisible = false;
+					playInvertSound = true;
+					send(new SpeedUpControlMsg(true));
+				}
+				
 			}
 		}
 	}
@@ -411,6 +432,16 @@ public class GameScreen implements Screen {
 	 */
 	public void invertControl(InvertControlMsg invertControlMsg) {
 		powerUp.invertControl = invertControlMsg.invertControl;
+		powerUp.isVisible = false;
+		playInvertSound = true;
+	}
+	
+	/**
+	 * Gets called if the server sends a message that a player has picked up the Speed PowerUp
+	 * @param speedUpControlMsg
+	 */
+	public void speedUpControl(SpeedUpControlMsg speedUpControlMsg) {
+		powerUp.speedUpControl = speedUpControlMsg.speedUpControl;
 		powerUp.isVisible = false;
 		playInvertSound = true;
 	}

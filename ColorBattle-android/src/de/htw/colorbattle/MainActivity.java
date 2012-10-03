@@ -61,7 +61,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.playSound = true;
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         BattleColorConfig.DEVICE_ID = getDeviceId();
-        bcConfig.gameMode = GameMode.OFF; //default is OFF
+        bcConfig.gameMode = GameMode.SINGLEPLAYER; //default is OFF
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
