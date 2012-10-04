@@ -64,6 +64,8 @@ public class GameScreen implements Screen {
 	private PowerUp powerUp;
 	private Texture powerUpTexture;
 	private float powerUpTimer;
+	private boolean speedUp = true;
+	private int powerUpSpeedBy = 2;
 	
 	
 	//Sound
@@ -193,10 +195,17 @@ public class GameScreen implements Screen {
 		
 		//update Player movement speed
 		if (powerUp.speedUpControl) {
-			player.speed = 400;
+			if(speedUp){
+				player.speed = player.speed * powerUpSpeedBy;
+				speedUp = false;
+			}
 		}else{
-			player.speed = 200;
+			if(!speedUp){
+				player.speed = player.speed / powerUpSpeedBy;
+				speedUp = true;
+			}
 		}
+			
 		
 		// checkDesktopControl(); // not supported atm
 		player.move();
