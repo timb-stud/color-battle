@@ -27,8 +27,6 @@ public class GameCountDown implements Screen {
 	private short countdown = 3;
 	private long oldTime;
 
-	private Toast toast;
-
 	/*
 	 * Constructor
 	 */
@@ -78,8 +76,8 @@ public class GameCountDown implements Screen {
 				setTexture();
 			}
 		}
-		if (toast != null) {
-			toast.toaster();
+		if (gameRef.toast != null) {
+			gameRef.toast.toaster();
 		}
 	}
 
@@ -104,7 +102,7 @@ public class GameCountDown implements Screen {
 		texture.dispose();
 		batch.dispose();
 		oldTime = 0;
-		toast = null;
+		//toast = null;
 	}
 
 	// other methods not need here
