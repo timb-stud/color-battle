@@ -240,6 +240,15 @@ public class GameScreen implements Screen {
 			this.dispose();//neu könnte noch probleme verursachen
 		}
 		
+		countdownMessages();
+		game.toast.toaster();
+	}
+	
+	
+	/**
+	 * Prints in periodicaly intervals how much time is left till game ends
+	 */
+	private void countdownMessages(){
 		//toaster
 		switch (countDown.getRemainingTimeInSeconds(game.bcConfig.gameTime)) {
 			case 31: drawToastCountdown = true;
@@ -270,7 +279,6 @@ public class GameScreen implements Screen {
 				}
 				break;
 		}
-		game.toast.toaster();
 	}
 
 	/**
