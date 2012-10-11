@@ -1,4 +1,4 @@
-package de.htw.colorbattle.toast;
+package de.htw.colorbattle.utils;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -21,5 +21,23 @@ public class ColorHelper {
 	 */
 	public static int getColorInt(Color colorObj) {
 		return Color.rgba8888(colorObj);	
+	}
+	
+	/**
+	 * Return the name as String of the given color
+	 * @param color
+	 * @return
+	 */
+	public static String getColorName(Color color){
+		if (color.equals(Color.GREEN))
+			return "GREEN";
+		if (color.equals(Color.RED))
+			return "RED";
+		if (color.equals(Color.BLUE))
+			return "BLUE";
+		if (color.equals(Color.YELLOW))
+			return "YELLOW";
+		
+		return "<unknown color>";
 	}
 }

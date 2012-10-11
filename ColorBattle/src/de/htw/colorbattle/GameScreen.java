@@ -31,9 +31,9 @@ import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
 import de.htw.colorbattle.multiplayer.SpeedUpControlMsg;
-import de.htw.colorbattle.toast.ColorHelper;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
+import de.htw.colorbattle.utils.ColorHelper;
 
 /**
  * Main Game class
