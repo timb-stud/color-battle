@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
+import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
+import de.htw.colorbattle.utils.ColorHelper;
 
 /**
  * GameCountDown prints a Countdown to start the Game
@@ -40,19 +42,14 @@ public class GameCountDown implements Screen {
 		texture = new Texture(Gdx.files.internal("menu/3.png"));
 
 		oldTime = System.currentTimeMillis();
-
-		if (game.multiGame.getPlayerCount() == 2) {
-			this.toast = new Toast(7, 20);
-			String message = "You are ";
-			if (game.multiGame.isServer()) {
-				message += "GREEN";
-			} else {
-				message += "RED";
-			}
-			toast.makeText(message, "font", Toast.COLOR_PREF.BLUE,
-					Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down,
-					Toast.LONG);
-		}
+		
+		//Prints own player informations as toast message
+		Player player = game.gameScreen.getPlayer();
+		String colorName = ColorHelper.getColorName(player.color);
+		String message = "You are Player " + player.id + " with " + colorName + " color!";
+		game.toast.makeText(message, "font", Toast.COLOR_PREF.BLUE,
+				Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down,
+				Toast.LONG);
 	}
 
 	/*
