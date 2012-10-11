@@ -13,6 +13,7 @@ import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.gameobjects.Player;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
+import de.htw.colorbattle.utils.ColorHelper;
 
 /**
  * GameEndMenu creates a GUI and Buttons and shows the Menu at the End of a Game
@@ -101,7 +102,8 @@ public class GameEndMenu implements Screen {
 		float score;
 		for (Player currentPlayer : gameresult.getScoredPlayerList()){
 			score = (float) ((float) Math.round((currentPlayer.getGameScore()) * 100.0) / 100.0);
-			render_toast.makeText("PlayerID: " + currentPlayer.id + " Score: "+ score, "font", 
+			render_toast.makeText("Player: " + currentPlayer.id + " ("+ ColorHelper.getColorName(currentPlayer.color)  
+																							+ ") Score: "+ score, "font", 
 			        Toast.COLOR_PREF.RED, Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down, Toast.LONG * 4.0f);
 		}
 	}
