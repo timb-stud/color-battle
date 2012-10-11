@@ -45,9 +45,9 @@ public class GameCountDown implements Screen {
 			this.toast = new Toast(7, 20);
 			String message = "You are ";
 			if (game.multiGame.isServer()) {
-				message += "RED";
-			} else {
 				message += "GREEN";
+			} else {
+				message += "RED";
 			}
 			toast.makeText(message, "font", Toast.COLOR_PREF.BLUE,
 					Toast.STYLE.NORMAL, TEXT_POS.middle, TEXT_POS.middle_down,
