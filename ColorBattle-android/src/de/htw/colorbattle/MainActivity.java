@@ -1,5 +1,10 @@
 package de.htw.colorbattle;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +21,9 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
@@ -62,12 +70,52 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         BattleColorConfig.DEVICE_ID = getDeviceId();
         bcConfig.gameMode = GameMode.OFF; //default is OFF
+        bcConfig = configToInternalStorage(bcConfig);
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid, this);
         initialize(colorBattleGame, cfg);
         this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
+    }
+    
+    private RuntimeConfig configToInternalStorage(RuntimeConfig config){
+		String FILENAME = "ColorBattleConfig.json";
+		Gson gson = new Gson();
+		String json = gson.toJson(config);
+		
+		String path = getFilesDir().getAbsolutePath();
+		Log.d("Config Path", path);
+		
+		File file = new File(getFilesDir(), FILENAME );
+		if (file.exists()){
+			try {
+				return gson.fromJson(new InputStreamReader(openFileInput(FILENAME)), RuntimeConfig.class);
+			} catch (JsonSyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (JsonIOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		FileOutputStream fos;
+		try {
+			fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+			fos.write(json.getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return config;
     }
     
     /**
