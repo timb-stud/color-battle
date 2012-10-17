@@ -113,14 +113,16 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
 				RuntimeConfig conf = gson.fromJson( isr, RuntimeConfig.class);
 				is.close();
 				isr.close();
-				Log.d("Json", "Load config from SD.");
-				if(conf.useExtConfigFile)
+				if(conf.useExtConfigFile){
+					Log.d("Json", "Load config from SD.");
 					return conf;
+				}
 	    	}
 		} catch (IOException e) {
 	    	Log.d("Json", "Can't read config file.");
 			e.printStackTrace();
 		}
+    	Log.d("Json", "External config load was skipped.");
     	return config;
     }
     
