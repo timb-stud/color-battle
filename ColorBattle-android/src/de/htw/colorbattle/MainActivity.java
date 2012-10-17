@@ -65,6 +65,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         cfg.useCompass = false;
         
         RuntimeConfig bcConfig = new RuntimeConfig();
+        bcConfig.useExtConfigFile = true;
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
@@ -113,7 +114,8 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
 				is.close();
 				isr.close();
 				Log.d("Json", "Load config from SD.");
-				return conf;
+				if(conf.useExtConfigFile)
+					return conf;
 	    	}
 		} catch (IOException e) {
 	    	Log.d("Json", "Can't read config file.");
