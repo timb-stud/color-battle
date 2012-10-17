@@ -3,7 +3,6 @@ package de.htw.colorbattle;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +26,6 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
@@ -84,6 +81,12 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
     }
     
+    /**
+     * Saves the config file on the external storage as json file.
+     * If a config file exists, it will be load on game start
+     * @param config
+     * @return
+     */
     private RuntimeConfig configToExternalStorage(RuntimeConfig config){
     	if(!canWriteExtStorage())
     		return config;
@@ -94,7 +97,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
     	
 		File path = getExternalFilesDir(null);
     	File file = new File(path, FILENAME);
-    	Log.d("Json", file.getAbsolutePath());
+    	Log.d("Json", "Path to config file: " + file.getAbsolutePath());
     	try{
 	    	if(!file.exists()){
 	            OutputStream os = new FileOutputStream(file);
@@ -113,13 +116,16 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
 				return conf;
 	    	}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+	    	Log.d("Json", "Can't read config file.");
 			e.printStackTrace();
 		}
-    	Log.d("Json", "Can't read config file.");
     	return config;
     }
     
+    /**
+     * Tests if the external storage is mounted and writeable
+     * @return
+     */
     private boolean canWriteExtStorage(){
     	boolean mExternalStorageAvailable = false;
     	boolean mExternalStorageWriteable = false;
@@ -138,45 +144,6 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
     	    mExternalStorageAvailable = mExternalStorageWriteable = false;
     	}
     	return mExternalStorageWriteable;
-    }
-    
-    private RuntimeConfig configToInternalStorage(RuntimeConfig config){
-		String FILENAME = "ColorBattleConfig.json";
-		Gson gson = new Gson();
-		String json = gson.toJson(config);
-		
-		String path = getFilesDir().getAbsolutePath();
-		Log.d("Config Path", path);
-		
-		File file = new File(getFilesDir(), FILENAME );
-		if (file.exists()){
-			try {
-				return gson.fromJson(new InputStreamReader(openFileInput(FILENAME)), RuntimeConfig.class);
-			} catch (JsonSyntaxException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (JsonIOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		
-		FileOutputStream fos;
-		try {
-			fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-			fos.write(json.getBytes());
-			fos.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return config;
     }
     
     /**
