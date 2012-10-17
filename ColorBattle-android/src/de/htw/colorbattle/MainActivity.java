@@ -1,5 +1,13 @@
 package de.htw.colorbattle;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -10,12 +18,14 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.gson.Gson;
 
 import de.htw.colorbattle.bluetooth.BluetoothActionResolverAndroid;
 import de.htw.colorbattle.bluetooth.BluetoothMultiplayer;
@@ -55,6 +65,7 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         cfg.useCompass = false;
         
         RuntimeConfig bcConfig = new RuntimeConfig();
+        bcConfig.useExtConfigFile = true;
         bcConfig.isWifiConnected = isWifiConnected();
         bcConfig.multicastAddress = "230.0.0.1";
         bcConfig.multicastPort = 1334; //TODO read multicast port from settings view
@@ -62,12 +73,79 @@ public class MainActivity extends AndroidApplication implements MainActivityInte
         bcConfig.networkPxlUpdateIntervall = 0.1f;
         BattleColorConfig.DEVICE_ID = getDeviceId();
         bcConfig.gameMode = GameMode.OFF; //default is OFF
+        bcConfig = configToExternalStorage(bcConfig);
         
        	this.bluetoothMultiplayer = new BluetoothMultiplayer();
         bluetoothActionResolverAndroid = new BluetoothActionResolverAndroid(bluetoothMultiplayer);
         this.colorBattleGame = new ColorBattleGame(bcConfig, bluetoothActionResolverAndroid, this);
         initialize(colorBattleGame, cfg);
         this.bluetoothMultiplayer.setColorBattleGame(colorBattleGame);
+    }
+    
+    /**
+     * Saves the config file on the external storage as json file.
+     * If a config file exists, it will be load on game start
+     * @param config
+     * @return
+     */
+    private RuntimeConfig configToExternalStorage(RuntimeConfig config){
+    	if(!canWriteExtStorage())
+    		return config;
+    	
+		String FILENAME = "ColorBattleConfig.json";
+		Gson gson = new Gson();
+		String json = gson.toJson(config);
+    	
+		File path = getExternalFilesDir(null);
+    	File file = new File(path, FILENAME);
+    	Log.d("Json", "Path to config file: " + file.getAbsolutePath());
+    	try{
+	    	if(!file.exists()){
+	            OutputStream os = new FileOutputStream(file);
+	            byte[] data =json.getBytes();
+	            os.write(data);
+	            os.close();
+		        Log.d("Json", "Create and save new config file.");
+		        return config;
+	    	} else {
+				InputStream is = new BufferedInputStream(new FileInputStream(file));
+				InputStreamReader isr = new InputStreamReader(is);
+				RuntimeConfig conf = gson.fromJson( isr, RuntimeConfig.class);
+				is.close();
+				isr.close();
+				Log.d("Json", "Load config from SD.");
+				if(conf.useExtConfigFile)
+					return conf;
+	    	}
+		} catch (IOException e) {
+	    	Log.d("Json", "Can't read config file.");
+			e.printStackTrace();
+		}
+    	return config;
+    }
+    
+    /**
+     * Tests if the external storage is mounted and writeable
+     * @return
+     */
+    private boolean canWriteExtStorage(){
+    	boolean mExternalStorageAvailable = false;
+    	boolean mExternalStorageWriteable = false;
+    	String state = Environment.getExternalStorageState();
+
+    	if (Environment.MEDIA_MOUNTED.equals(state)) {
+    	    // We can read and write the media
+    	    mExternalStorageAvailable = mExternalStorageWriteable = true;
+    	} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+    	    // We can only read the media
+    	    mExternalStorageAvailable = true;
+    	    mExternalStorageWriteable = false;
+    	} else {
+    	    // Something else is wrong. It may be one of many other states, but all we need
+    	    //  to know is we can neither read nor write
+    	    mExternalStorageAvailable = mExternalStorageWriteable = false;
+    	}
+    	return mExternalStorageWriteable;
     }
     
     /**
