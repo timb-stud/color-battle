@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -17,9 +19,13 @@ import de.htw.colorbattle.exception.NetworkException;
 public class TCPService extends Observable implements NetworkActionResolver {
 	
 	ServerSocket socket;
+	int port;
+	String sendAddress;
 	
-	public TCPService(int port) throws NetworkException{
+	public TCPService(String sendAddress, int port) throws NetworkException{
 		try{
+			this.sendAddress = sendAddress;
+			this.port = port;
 			socket = new ServerSocket(port);
 			executeService();
 		} catch (Exception e) {
@@ -46,6 +52,8 @@ public class TCPService extends Observable implements NetworkActionResolver {
            Object obj = ois.readObject();
 		   setChanged();
 		   notifyObservers(obj);
+//		   connectionSocket.close();
+//		   ois.close();
 	    } catch (UnknownHostException e) {
 	        e.printStackTrace();
 	        Gdx.app.error("NetworkService", "Unknown host", e);
@@ -61,21 +69,19 @@ public class TCPService extends Observable implements NetworkActionResolver {
 	@Override
 	public void send(Object obj) throws NetworkException{
 	    try {
-			  String sentence;
-			  String modifiedSentence;
-			  BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
-			  Socket clientSocket = new Socket("localhost", 6789);
-			  DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-			  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			  sentence = inFromUser.readLine();
-			  outToServer.writeBytes(sentence + '\n');
-			  modifiedSentence = inFromServer.readLine();
-			  System.out.println("FROM SERVER: " + modifiedSentence);
-			  clientSocket.close();
+	    	Socket s = new Socket(sendAddress, port);  
+	    	OutputStream os = s.getOutputStream();  
+	    	ObjectOutputStream oos = new ObjectOutputStream(os);  
+	    	oos.writeObject(obj);  
+	    	oos.close();  
+	    	os.close();  
+	    	s.close(); 
 	    } catch (UnknownHostException e) {
 	        e.printStackTrace();
+	        Gdx.app.error("NetworkService", "Unknown host", e);
 	    } catch (IOException e) {
 	        e.printStackTrace();
+	        Gdx.app.error("NetworkService", "IOException", e);
 	    } 
 	}
 
