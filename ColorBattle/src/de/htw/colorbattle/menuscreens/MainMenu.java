@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import de.htw.colorbattle.ColorBattleGame;
 import de.htw.colorbattle.config.BattleColorConfig;
 import de.htw.colorbattle.exception.NetworkException;
-import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.UDPService;
 
 /**
  * Creates the MainMenu GUI with all Buttons
@@ -106,7 +106,7 @@ public class MainMenu implements Screen {
 				wlanGameSprite.resetIsTouched();
 				gameRef.setScreen(new WlanMenu(gameRef));
 				try {
-					gameRef.netSvc = NetworkService.getInstance(
+						gameRef.netSvc = UDPService.getInstance(
 							gameRef.bcConfig.multicastAddress,
 							gameRef.bcConfig.multicastPort);
 				} catch (NetworkException e) {
