@@ -1,9 +1,6 @@
 package de.htw.colorbattle.network;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -18,7 +15,7 @@ import de.htw.colorbattle.exception.NetworkException;
 
 public class TCPService extends Observable implements NetworkActionResolver {
 	
-	ServerSocket socket;
+	ServerSocket serverSocket;
 	int port;
 	String sendAddress;
 	
@@ -26,7 +23,7 @@ public class TCPService extends Observable implements NetworkActionResolver {
 		try{
 			this.sendAddress = sendAddress;
 			this.port = port;
-			socket = new ServerSocket(port);
+			serverSocket = new ServerSocket(port);
 			executeService();
 		} catch (Exception e) {
 			Gdx.app.error("NetworkService", "Can't create NetworkService", e);
@@ -46,10 +43,11 @@ public class TCPService extends Observable implements NetworkActionResolver {
 	
 	private void receive(){
         try{
-           Socket connectionSocket = socket.accept();
+           Socket connectionSocket = serverSocket.accept();
            ObjectInputStream ois=
               new ObjectInputStream(connectionSocket.getInputStream());
            Object obj = ois.readObject();
+           Gdx.app.debug("Receiving", "new package received!");
 		   setChanged();
 		   notifyObservers(obj);
 //		   connectionSocket.close();
@@ -69,13 +67,14 @@ public class TCPService extends Observable implements NetworkActionResolver {
 	@Override
 	public void send(Object obj) throws NetworkException{
 	    try {
-	    	Socket s = new Socket(sendAddress, port);  
-	    	OutputStream os = s.getOutputStream();  
+	    	Socket clientSocket = new Socket(sendAddress, port);
+	    	OutputStream os = clientSocket.getOutputStream();  
 	    	ObjectOutputStream oos = new ObjectOutputStream(os);  
 	    	oos.writeObject(obj);  
+	    	Gdx.app.debug("Sending", "send object!");
 	    	oos.close();  
 	    	os.close();  
-	    	s.close(); 
+	    	clientSocket.close(); 
 	    } catch (UnknownHostException e) {
 	        e.printStackTrace();
 	        Gdx.app.error("NetworkService", "Unknown host", e);
