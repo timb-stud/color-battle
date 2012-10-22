@@ -17,13 +17,14 @@ public class PowerUp {
 	public boolean isBombExploded = false;
 	public boolean invertControl = false;
 	public boolean speedUpControl = false;
+	public boolean speedDownControl = false;
 	public boolean wasPickedUpByServer = false;
 	public Color pickedUpPlayerColor;
 	public Type type;
 	public Rectangle rect;
 	private Rectangle playerRect;
 
-	public enum Type {BOMB, INVERT, SPEED}
+	public enum Type {BOMB, INVERT, SPEED, SLOW}
 
 	/**
 	 * Constructor to generate a new PowerUp object 
@@ -90,12 +91,14 @@ public class PowerUp {
 	 * Method to set the PowerUp type randomly
 	 */
 	private void shuffleType(){
-		double random = Math.random();
-		if(random < 0.4){
+		double random = Math.random();		
+		if(random < 0.3) {							// ~30% chance
 			type = Type.BOMB;
-		}else if (random > 0.8){
+		} else if (random >= 0.3 && random < 0.5) { // ~20% chance
 			type = Type.INVERT;
-		}else{
+		} else if(random >= 0.5 && random < 0.7) {	// ~20% chance
+			type = Type.SLOW;
+		} else {									// ~20% chance
 			type = Type.SPEED;
 		}
 	}
