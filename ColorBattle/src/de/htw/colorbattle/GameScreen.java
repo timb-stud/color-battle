@@ -67,8 +67,8 @@ public class GameScreen implements Screen {
 	private float powerUpTimer;
 	private boolean speedUp = true;
 	private boolean speedDown = true;
-	private int powerUpSpeedBy = 2;
-	private float powerUpSpeedDownBy = 0.7f;
+	private final float powerUpSpeedBy = 1.75f;
+	private final float powerUpSpeedDownBy = 0.6f;
 	
 	//Sound
 	private Sound bombSound;

@@ -98,7 +98,7 @@ public class PowerUp {
 			type = Type.INVERT;
 		} else if(random >= 0.5 && random < 0.7) {	// ~20% chance
 			type = Type.SLOW;
-		} else {									// ~20% chance
+		} else {									// ~30% chance
 			type = Type.SPEED;
 		}
 	}
