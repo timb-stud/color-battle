@@ -92,13 +92,13 @@ public class PowerUp {
 	 */
 	private void shuffleType(){
 		double random = Math.random();		
-		if(random < 0.3) {							// ~30% chance
+		if(random < 0.35) {							// ~35% chance
 			type = Type.BOMB;
-		} else if (random >= 0.3 && random < 0.5) { // ~20% chance
+		} else if (random >= 0.35 && random < 0.5) { // ~15% chance
 			type = Type.INVERT;
-		} else if(random >= 0.5 && random < 0.7) {	// ~20% chance
+		} else if(random >= 0.5 && random < 0.65) {	// ~15% chance
 			type = Type.SLOW;
-		} else {									// ~30% chance
+		} else {									// ~35% chance
 			type = Type.SPEED;
 		}
 	}
