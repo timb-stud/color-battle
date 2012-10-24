@@ -207,6 +207,9 @@ public class MultigameLogic implements Observer{
 		}else if(obj instanceof SpeedUpControlMsg) {
 			SpeedUpControlMsg speedUpControlMsg = (SpeedUpControlMsg)obj;
 			game.gameScreen.speedUpControl(speedUpControlMsg);
+		}else if(obj instanceof SpeedDownControlMsg) {
+			SpeedDownControlMsg speedDownControlMsg = (SpeedDownControlMsg)obj;
+			game.gameScreen.speedDownControl(speedDownControlMsg);
 		}
 	}
 	
