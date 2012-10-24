@@ -30,9 +30,11 @@ import de.htw.colorbattle.menuscreens.GameEndMenu;
 import de.htw.colorbattle.multiplayer.BombExplodeMsg;
 import de.htw.colorbattle.multiplayer.InvertControlMsg;
 import de.htw.colorbattle.multiplayer.PowerUpSpawnMsg;
-import de.htw.colorbattle.toast.ColorHelper;
+import de.htw.colorbattle.multiplayer.SpeedDownControlMsg;
+import de.htw.colorbattle.multiplayer.SpeedUpControlMsg;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
+import de.htw.colorbattle.utils.ColorHelper;
 
 /**
  * Main Game class
@@ -63,7 +65,10 @@ public class GameScreen implements Screen {
 	private PowerUp powerUp;
 	private Texture powerUpTexture;
 	private float powerUpTimer;
-	
+	private boolean speedUp = true;
+	private boolean speedDown = true;
+	private final float powerUpSpeedBy = 1.75f;
+	private final float powerUpSpeedDownBy = 0.6f;
 	
 	//Sound
 	private Sound bombSound;
@@ -190,6 +195,32 @@ public class GameScreen implements Screen {
 			player.direction.mul(-1);
 		}
 		
+		//update Player movement speed
+		if (powerUp.speedUpControl) {
+			if(speedUp){
+				player.speed = player.speed * powerUpSpeedBy;
+				speedUp = false;
+			}
+		} else {
+			if(!speedUp){
+				player.speed = player.speed / powerUpSpeedBy;
+				speedUp = true;
+			}
+		}
+		
+		if (powerUp.speedDownControl) {
+			if(speedDown){
+				player.speed = player.speed * powerUpSpeedDownBy;
+				speedDown = false;
+			}
+		} else {
+			if(!speedDown){
+				player.speed = player.speed / powerUpSpeedDownBy;
+				speedDown = true;
+			}
+		}
+			
+		
 		// checkDesktopControl(); // not supported atm
 		player.move();
 		gameBorder.handelCollision(player);
@@ -223,6 +254,15 @@ public class GameScreen implements Screen {
 			this.dispose();//neu könnte noch probleme verursachen
 		}
 		
+		countdownMessages();
+		game.toast.toaster();
+	}
+	
+	
+	/**
+	 * Prints in periodicaly intervals how much time is left till game ends
+	 */
+	private void countdownMessages(){
 		//toaster
 		switch (countDown.getRemainingTimeInSeconds(game.bcConfig.gameTime)) {
 			case 31: drawToastCountdown = true;
@@ -253,7 +293,6 @@ public class GameScreen implements Screen {
 				}
 				break;
 		}
-		game.toast.toaster();
 	}
 
 	/**
@@ -281,12 +320,16 @@ public class GameScreen implements Screen {
 		}
 		if (powerUp.isVisible && (pickedByPlayer || pickedByOtherPlayer)) {
 			send(new InvertControlMsg(false));
+			send(new SpeedUpControlMsg(false));
+			send(new SpeedDownControlMsg(false));
 			powerUp.invertControl = false;
+			powerUp.speedUpControl = false;
+			powerUp.speedDownControl = false;
 			powerUp.wasPickedUpByServer = pickedByOtherPlayer;
 			if (powerUp.type == PowerUp.Type.BOMB) {
 				send(new BombExplodeMsg(pickedByPlayer, ColorHelper.getColorInt(powerUp.pickedUpPlayerColor)));
 				powerUp.isBombExploded = true;
-			} else {
+			} else if (powerUp.type == PowerUp.Type.INVERT) {
 				if (pickedByPlayer) {
 					powerUp.isVisible = false;
 					powerUp.invertControl = true;
@@ -295,6 +338,26 @@ public class GameScreen implements Screen {
 					powerUp.isVisible = false;
 					playInvertSound = true;
 					send(new InvertControlMsg(true));
+				}
+			} else if (powerUp.type == PowerUp.Type.SPEED) {
+				if (pickedByPlayer) {
+					powerUp.isVisible = false;
+					powerUp.speedUpControl = true;
+					playInvertSound = true;
+				} else {
+					powerUp.isVisible = false;
+					playInvertSound = true;
+					send(new SpeedUpControlMsg(true));
+				}
+			} else if (powerUp.type == PowerUp.Type.SLOW) {
+				if (pickedByPlayer) {
+					powerUp.isVisible = false;
+					powerUp.speedDownControl = true;
+					playInvertSound = true;
+				} else {
+					powerUp.isVisible = false;
+					playInvertSound = true;
+					send(new SpeedDownControlMsg(true));
 				}
 			}
 		}
@@ -414,6 +477,26 @@ public class GameScreen implements Screen {
 		powerUp.isVisible = false;
 		playInvertSound = true;
 	}
+	
+	/**
+	 * Gets called if the server sends a message that a player has picked up the Speed PowerUp
+	 * @param speedUpControlMsg
+	 */
+	public void speedUpControl(SpeedUpControlMsg speedUpControlMsg) {
+		powerUp.speedUpControl = speedUpControlMsg.speedUpControl;
+		powerUp.isVisible = false;
+		playInvertSound = true;
+	}
+	
+	/**
+	 * Gets called if the server sends a message that a player has picked up the SpeedDown PowerUp
+	 * @param speedDownControlMsg
+	 */
+	public void speedDownControl(SpeedDownControlMsg speedDownControlMsg) {
+		powerUp.speedDownControl = speedDownControlMsg.speedDownControl;
+		powerUp.isVisible = false;
+		playInvertSound = true;
+	}
 
 	public void setOwnPlayer(PlayerSimulation p) {
 		this.player.update(p);
@@ -519,5 +602,4 @@ public class GameScreen implements Screen {
 		gameBorder = null;
 		ownCamera = null;
 	}
-
 }

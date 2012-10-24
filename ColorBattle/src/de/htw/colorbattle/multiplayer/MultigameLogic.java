@@ -13,7 +13,8 @@ import de.htw.colorbattle.config.GameMode;
 import de.htw.colorbattle.config.RuntimeConfig;
 import de.htw.colorbattle.exception.NetworkException;
 import de.htw.colorbattle.gameobjects.PlayerSimulation;
-import de.htw.colorbattle.network.NetworkService;
+import de.htw.colorbattle.network.TCPService;
+import de.htw.colorbattle.network.UDPService;
 import de.htw.colorbattle.toast.Toast;
 import de.htw.colorbattle.toast.Toast.TEXT_POS;
 
@@ -72,7 +73,7 @@ public class MultigameLogic implements Observer{
 		this.gameTime = game.bcConfig.gameTime;
 		this.ownPlayer = game.gameScreen.getPlayerSimulation();
 		
-		if (game.netSvc instanceof NetworkService)
+		if (game.netSvc instanceof UDPService || game.netSvc instanceof TCPService)
 			game.netSvc.addObserver(this);
 	}
 	
@@ -203,6 +204,12 @@ public class MultigameLogic implements Observer{
 		} else if(obj instanceof InvertControlMsg) {
 			InvertControlMsg invertControlMsg = (InvertControlMsg)obj;
 			game.gameScreen.invertControl(invertControlMsg);
+		}else if(obj instanceof SpeedUpControlMsg) {
+			SpeedUpControlMsg speedUpControlMsg = (SpeedUpControlMsg)obj;
+			game.gameScreen.speedUpControl(speedUpControlMsg);
+		}else if(obj instanceof SpeedDownControlMsg) {
+			SpeedDownControlMsg speedDownControlMsg = (SpeedDownControlMsg)obj;
+			game.gameScreen.speedDownControl(speedDownControlMsg);
 		}
 	}
 	

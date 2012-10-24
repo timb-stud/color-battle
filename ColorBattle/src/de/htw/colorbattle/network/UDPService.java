@@ -15,12 +15,12 @@ import de.htw.colorbattle.utils.SerializeUtils;
 /**
  * Service class for WiFi network actions
  */
-public class NetworkService extends Observable implements NetworkActionResolver {
+public class UDPService extends Observable implements NetworkActionResolver {
 	
 	private InetAddress mcGroup;
 	private MulticastSocket mcSocket;
 	private int mcPort;
-	private static NetworkService netSvc;
+	private static UDPService netSvc;
 	
 	private static final int MAX_UDP_DATAGRAM_LEN = 2048;
 	
@@ -30,7 +30,7 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 	 * @param mcPort	multicast port
 	 * @throws NetworkException	thrown on network errors
 	 */
-	private NetworkService(String mcAddress, int mcPort) throws NetworkException{
+	private UDPService(String mcAddress, int mcPort) throws NetworkException{
         try {
         	this.mcPort = mcPort;
 			this.mcSocket = new MulticastSocket(mcPort);
@@ -49,9 +49,9 @@ public class NetworkService extends Observable implements NetworkActionResolver 
 	 * singleton pattern - needed to create only one instance of network service
 	 * @return NetworkService instance
 	 */
-	public static NetworkService getInstance(String mcAddress, int mcPort) throws NetworkException{
+	public static UDPService getInstance(String mcAddress, int mcPort) throws NetworkException{
 		if( netSvc == null)
-			netSvc = new NetworkService(mcAddress, mcPort);
+			netSvc = new UDPService(mcAddress, mcPort);
 		
 		if(mcPort != netSvc.mcPort )
 			Gdx.app.debug("NetworkService instance", "HINT: NetworkService will only create once!");

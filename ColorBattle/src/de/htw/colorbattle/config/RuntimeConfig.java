@@ -5,6 +5,7 @@ package de.htw.colorbattle.config;
  * Variables to set configuration on runtime.
  */
 public class RuntimeConfig {
+	public boolean useExtConfigFile;
 	public boolean isWifiConnected;
 	public String multicastAddress;
 	public int multicastPort;
